@@ -29,12 +29,13 @@ public class Review extends BaseEntity{
 
     private String detailAddress;
 
-    private String title;
-
     private String imageFiles;
 
     @Lob
     private String content;
 
     private Integer rate;
+
+    @Column(name = "like_cnt")
+    private Integer like;
 }

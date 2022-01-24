@@ -20,4 +20,6 @@ public class Member {
     private String imgUrl;
 
     private String name;
+
+    private String nickname;
 }
