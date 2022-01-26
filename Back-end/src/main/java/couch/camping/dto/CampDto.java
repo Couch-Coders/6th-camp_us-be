@@ -1,32 +1,16 @@
-package couch.camping.entity;
+package couch.camping.dto;
 
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
-
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
 @Builder
-public class Camp {
-
-    @Id @GeneratedValue
-    @Column(name = "camp_id")
-    private Long id;
-
-    @Column(name = "like_cnt")
-    private Integer like;
+public class CampDto {
 
     private String facltNm;
     private String lineIntro;
-
-    @Lob
     private String intro;
-
-    @Lob
     private String featureNm;
     private String induty;
     private String lctCl;
@@ -36,12 +20,8 @@ public class Camp {
     private Float mapX;
     private Float mapY;
     private String tel;
-
-    @Lob
     private String direction;
     private String homepage;
-
-    @Lob
     private String resveUrl;
     private String resveCl;
     private Integer autoSiteCo;
