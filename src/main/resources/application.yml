@@ -1,3 +1,15 @@
+google:
+  auth:
+    url: https://oauth2.googleapis.com
+    scope: profile,email,openid
+  login:
+    url: https://accounts.google.com
+  redirect:
+    uri: http://localhost:8080/google/login/redirect
+  client:
+    id: 175480644408-bahub4buuc9nec1n4t6ip203fm8ukk5u.apps.googleusercontent.com
+  secret: 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
+
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/camp?serverTimezone=Asia/Seoul&characterEncoding=UTF-8

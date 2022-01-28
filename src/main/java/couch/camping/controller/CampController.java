@@ -24,7 +24,7 @@ public class CampController {
             Camp map = modelMapper.map(campDto, Camp.class);
             campService.save(map);
         }
-
         return "ok";
     }
+
 }
