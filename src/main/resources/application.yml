@@ -12,10 +12,9 @@ google:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/camp?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: 369369rt
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: pass
   jpa:
     hibernate:
       ddl-auto: update
