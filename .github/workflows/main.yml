@@ -25,6 +25,6 @@ jobs:
       - name: deploy to heroku
         uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         with:
-          heroku_api_key: ${eb71f4ef-9d11-40ca-b544-1aa0c2660973}
-          heroku_app_name: "couch-coding-camp-us-be" #Must be unique in Heroku
-          heroku_email: "789456jang@gmail.com"
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "camping-be" #Must be unique in Heroku
+          heroku_email: "issiscv46@gmail.com"
