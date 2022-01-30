@@ -22,8 +22,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-      - name: build frontend to resources
-        run: sh build.sh
       - name: deploy to heroku
         uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         with:
