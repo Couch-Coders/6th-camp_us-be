@@ -20,6 +20,8 @@ public class Camp {
     @Column(name = "like_cnt")
     private Integer like;
 
+    private Integer rate;
+
     private String facltNm;
     private String lineIntro;
 
