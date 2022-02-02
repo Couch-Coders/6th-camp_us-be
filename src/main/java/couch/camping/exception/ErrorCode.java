@@ -1,4 +1,4 @@
-package couch.camping.exceptions;
+package couch.camping.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

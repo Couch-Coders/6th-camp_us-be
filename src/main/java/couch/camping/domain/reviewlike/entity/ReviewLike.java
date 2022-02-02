@@ -1,4 +1,4 @@
-package couch.camping.domain.reviewlike;
+package couch.camping.domain.reviewlike.entity;
 
 import couch.camping.domain.base.BaseTimeEntity;
 import couch.camping.domain.member.entity.Member;

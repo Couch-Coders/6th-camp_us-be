@@ -1,4 +1,4 @@
-package couch.camping.controller;
+package couch.camping.controller.member;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -7,7 +7,7 @@ import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
 import couch.camping.message.request.RegisterInfo;
 import couch.camping.message.response.MemberInfo;
-import couch.camping.util.RequestUtility;
+import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/members")
 @RequiredArgsConstructor
 public class MemberController {
     private final FirebaseAuth firebaseAuth;
@@ -28,7 +28,7 @@ public class MemberController {
         // TOKEN을 가져온다.
         FirebaseToken decodedToken;
         try {
-            String token = RequestUtility.getAuthorizationToken(authorization);
+            String token = RequestUtil.getAuthorizationToken(authorization);
             decodedToken = firebaseAuth.verifyIdToken(token);
         } catch (IllegalArgumentException | FirebaseAuthException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, 
@@ -40,6 +40,9 @@ public class MemberController {
         return new MemberInfo(registeredUser);
     }
 
+    /**
+        질문, authentication 객체를 어떻게 받는지
+     */
     @GetMapping("/me")
     public MemberInfo getUserMe(Authentication authentication) {
         Member member = ((Member) authentication.getPrincipal());

@@ -1,4 +1,4 @@
-package couch.camping.exceptions;
+package couch.camping.exception;
 
 public class AuthException extends Exception {
     private static final long serialVersionUID = 1L;

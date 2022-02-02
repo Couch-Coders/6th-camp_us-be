@@ -1,7 +1,7 @@
-package couch.camping.controller;
+package couch.camping.controller.camp;
 
-import couch.camping.domain.camp.CampDto;
-import couch.camping.domain.camp.CampListDto;
+import couch.camping.controller.camp.dto.CampDto;
+import couch.camping.controller.camp.dto.CampListDto;
 import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.camp.service.CampService;
 import lombok.RequiredArgsConstructor;

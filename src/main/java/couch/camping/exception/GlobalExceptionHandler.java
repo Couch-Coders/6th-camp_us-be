@@ -1,4 +1,4 @@
-package couch.camping.exceptions;
+package couch.camping.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

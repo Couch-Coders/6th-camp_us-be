@@ -3,7 +3,7 @@ package couch.camping.filter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import couch.camping.util.RequestUtility;
+import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
@@ -33,7 +33,7 @@ public class JwtFilter extends OncePerRequestFilter{
         // get the token from the request
         FirebaseToken decodedToken;
         try{
-            String header = RequestUtility.getAuthorizationToken(request.getHeader("Authorization"));
+            String header = RequestUtil.getAuthorizationToken(request.getHeader("Authorization"));
             decodedToken = firebaseAuth.verifyIdToken(header);//디코딩한 firebase 토큰을 반환
         } catch (FirebaseAuthException | IllegalArgumentException e) {
             // ErrorMessage 응답 전송

@@ -1,4 +1,4 @@
-package couch.camping.domain.camp;
+package couch.camping.controller.camp.dto;
 
 import lombok.*;
 
