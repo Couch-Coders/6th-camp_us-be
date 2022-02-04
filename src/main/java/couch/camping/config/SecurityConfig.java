@@ -45,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //인증 예외 URL 설정
         web.ignoring().antMatchers(HttpMethod.POST, "/members")
                 .antMatchers(HttpMethod.POST ,"/camps/save")
+                .antMatchers(HttpMethod.GET ,"/test")
                 .antMatchers("/css/**")
                 .antMatchers("/static/**")
                 .antMatchers("/js/**")

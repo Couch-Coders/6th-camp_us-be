@@ -9,6 +9,7 @@ import couch.camping.message.request.RegisterInfo;
 import couch.camping.message.response.MemberInfo;
 import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/members")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
     private final FirebaseAuth firebaseAuth;
     private final MemberService customUserDetailsService;
@@ -25,6 +27,8 @@ public class MemberController {
     @PostMapping("")
     public MemberInfo register(@RequestHeader("Authorization") String authorization,
                                @RequestBody RegisterInfo registerInfo) {
+        log.info("##########register check log############");
+
         // TOKEN을 가져온다.
         FirebaseToken decodedToken;
         try {
@@ -45,6 +49,7 @@ public class MemberController {
      */
     @GetMapping("/me")
     public MemberInfo getUserMe(Authentication authentication) {
+        log.info("@@@@@@@@login check log@@@@@@@@@@@@");
         Member member = ((Member) authentication.getPrincipal());
         return new MemberInfo(member);
     }
