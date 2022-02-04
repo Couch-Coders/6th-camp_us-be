@@ -1,9 +1,10 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: pass
+    url: jdbc:mysql://camping.citsvvicombz.ap-northeast-2.rds.amazonaws.com:3306/campus?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: campus
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
