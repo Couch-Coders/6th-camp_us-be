@@ -1,8 +1,9 @@
-package couch.camping.controller.member;
+package couch.camping.domain.member.controller;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import couch.camping.domain.member.dto.MemberRequestDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
 import couch.camping.message.request.RegisterInfo;
@@ -22,12 +23,18 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class MemberController {
     private final FirebaseAuth firebaseAuth;
-    private final MemberService customUserDetailsService;
+    private final MemberService memberService;
+
+    //로컬 회원 등록 api
+    @PostMapping("/local/save")
+    public MemberRequestDto save(@RequestBody MemberRequestDto memberRequestDto) {
+        Member register = memberService.register(memberRequestDto.getUsername(), memberRequestDto.getEmail(), memberRequestDto.getNickname());
+        return memberRequestDto;
+    }
 
     @PostMapping("")
     public MemberInfo register(@RequestHeader("Authorization") String authorization,
                                @RequestBody RegisterInfo registerInfo) {
-        log.info("##########register check log############");
 
         // TOKEN을 가져온다.
         FirebaseToken decodedToken;
@@ -39,17 +46,13 @@ public class MemberController {
                 "{\"code\":\"INVALID_TOKEN\", \"message\":\"" + e.getMessage() + "\"}");
         }
         // 사용자를 등록한다.
-        Member registeredUser = customUserDetailsService.register(
+        Member registeredUser = memberService.register(
             decodedToken.getUid(), decodedToken.getEmail(), registerInfo.getNickname());
         return new MemberInfo(registeredUser);
     }
 
-    /**
-        질문, authentication 객체를 어떻게 받는지
-     */
     @GetMapping("/me")
     public MemberInfo getUserMe(Authentication authentication) {
-        log.info("@@@@@@@@login check log@@@@@@@@@@@@");
         Member member = ((Member) authentication.getPrincipal());
         return new MemberInfo(member);
     }

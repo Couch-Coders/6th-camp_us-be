@@ -1,8 +1,7 @@
 package couch.camping.config;
 
-import com.google.firebase.auth.FirebaseAuth;
 import couch.camping.domain.member.service.MemberService;
-import couch.camping.filter.JwtFilter;
+import couch.camping.filter.LocalJwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -16,13 +15,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Order(2)
+@Order(1)
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
     private final MemberService userDetailsService;
-    private final FirebaseAuth firebaseAuth;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -34,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests() // 요청에 대한 권한 지정
                 .anyRequest().authenticated() // 모든 요청이 인증되어야한다.
                 .and()
-                .addFilterBefore(new JwtFilter(userDetailsService, firebaseAuth),
+                .addFilterBefore(new LocalJwtFilter(userDetailsService),
                         UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));

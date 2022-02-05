@@ -15,6 +15,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @Builder
 public class Member implements UserDetails {
+    //uid
     @Id
     private String username;
     @Column

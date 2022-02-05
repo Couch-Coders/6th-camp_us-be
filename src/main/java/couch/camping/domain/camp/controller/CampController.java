@@ -1,7 +1,7 @@
-package couch.camping.controller.camp;
+package couch.camping.domain.camp.controller;
 
-import couch.camping.controller.camp.dto.CampDto;
-import couch.camping.controller.camp.dto.CampListDto;
+import couch.camping.domain.camp.dto.CampDto;
+import couch.camping.domain.camp.dto.CampListDto;
 import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.camp.service.CampService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class CampController {
     private final CampService campService;
     private final ModelMapper modelMapper;
 
-    @PostMapping("/save")
+    @PostMapping("")
     public String save(@RequestBody CampListDto campListDto) {
 
         for (CampDto campDto : campListDto.getItem()) {

@@ -1,4 +1,4 @@
-package couch.camping.controller.test;
+package couch.camping.domain.test;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
