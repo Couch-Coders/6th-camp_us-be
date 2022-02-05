@@ -1,4 +1,4 @@
-package couch.camping.domain.camp.dto;
+package couch.camping.controller.camp.dto.request;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter @Setter
 @Builder
-public class CampDto {
+public class CampSaveRequestDto {
 
     private String facltNm;
     private String lineIntro;

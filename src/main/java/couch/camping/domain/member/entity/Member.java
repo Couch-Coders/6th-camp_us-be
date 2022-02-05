@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Collection;
@@ -18,12 +17,9 @@ public class Member implements UserDetails {
     //uid
     @Id
     private String username;
-    @Column
     private String email;
-    @Column
     private String nickname;
-
-
+    private String imgUrl;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

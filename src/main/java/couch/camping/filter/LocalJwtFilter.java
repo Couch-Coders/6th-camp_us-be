@@ -28,7 +28,7 @@ public class LocalJwtFilter extends OncePerRequestFilter{
         // get the token from the request
         String header;
         try{
-            header = request.getHeader("Authorization");
+            header = request.getHeader("Authorization");//test
         } catch (IllegalArgumentException e) {
             // ErrorMessage 응답 전송
             response.setStatus(HttpStatus.SC_UNAUTHORIZED);
@@ -45,7 +45,7 @@ public class LocalJwtFilter extends OncePerRequestFilter{
             SecurityContextHolder.getContext().setAuthentication(authentication);//securityContextHolder 에 인증 객체 저장
         } catch(UsernameNotFoundException e){
             // ErrorMessage 응답 전송
-            response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+            response.setStatus(HttpStatus.SC_NOT_FOUND);
             response.setContentType("application/json");
             response.getWriter().write("{\"code\":\"USER_NOT_FOUND\"}");
             return;

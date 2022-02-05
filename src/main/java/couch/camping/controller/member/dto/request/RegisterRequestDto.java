@@ -1,4 +1,4 @@
-package couch.camping.message.request;
+package couch.camping.controller.member.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterInfo {
+public class RegisterRequestDto {
     private String nickname;
 }

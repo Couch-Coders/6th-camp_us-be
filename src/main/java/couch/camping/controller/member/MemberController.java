@@ -1,13 +1,13 @@
-package couch.camping.domain.member.controller;
+package couch.camping.controller.member;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import couch.camping.domain.member.dto.MemberRequestDto;
+import couch.camping.controller.member.dto.request.MemberSaveRequestDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
-import couch.camping.message.request.RegisterInfo;
-import couch.camping.message.response.MemberInfo;
+import couch.camping.controller.member.dto.request.RegisterRequestDto;
+import couch.camping.controller.member.dto.response.RegisterResponseDto;
 import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,16 +25,16 @@ public class MemberController {
     private final FirebaseAuth firebaseAuth;
     private final MemberService memberService;
 
-    //로컬 회원 등록 api
+    //로컬 회원 가입 api
     @PostMapping("/local/save")
-    public MemberRequestDto save(@RequestBody MemberRequestDto memberRequestDto) {
-        Member register = memberService.register(memberRequestDto.getUsername(), memberRequestDto.getEmail(), memberRequestDto.getNickname());
-        return memberRequestDto;
+    public MemberSaveRequestDto save(@RequestBody MemberSaveRequestDto memberSaveRequestDto) {
+        memberService.register(memberSaveRequestDto.getUsername(), memberSaveRequestDto.getEmail(), memberSaveRequestDto.getNickname(), "nopic");
+        return memberSaveRequestDto;
     }
 
     @PostMapping("")
-    public MemberInfo register(@RequestHeader("Authorization") String authorization,
-                               @RequestBody RegisterInfo registerInfo) {
+    public RegisterResponseDto register(@RequestHeader("Authorization") String authorization,
+                                        @RequestBody RegisterRequestDto registerRequestDto) {
 
         // TOKEN을 가져온다.
         FirebaseToken decodedToken;
@@ -47,13 +47,13 @@ public class MemberController {
         }
         // 사용자를 등록한다.
         Member registeredUser = memberService.register(
-            decodedToken.getUid(), decodedToken.getEmail(), registerInfo.getNickname());
-        return new MemberInfo(registeredUser);
+            decodedToken.getUid(), decodedToken.getEmail(), registerRequestDto.getNickname(), decodedToken.getPicture());
+        return new RegisterResponseDto(registeredUser);
     }
 
     @GetMapping("/me")
-    public MemberInfo getUserMe(Authentication authentication) {
+    public RegisterResponseDto getUserMe(Authentication authentication) {
         Member member = ((Member) authentication.getPrincipal());
-        return new MemberInfo(member);
+        return new RegisterResponseDto(member);
     }
 }

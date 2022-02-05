@@ -1,4 +1,4 @@
-package couch.camping.domain.member.dto;
+package couch.camping.controller.member.dto.request;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MemberRequestDto {
+public class MemberSaveRequestDto {
 
     private String username;
     private String email;
