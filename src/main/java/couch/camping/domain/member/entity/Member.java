@@ -16,8 +16,9 @@ import java.util.Collection;
 public class Member implements UserDetails {
     //uid
     @Id
-    private String username;
+    private String uid;
     private String email;
+    private String name;
     private String nickname;
     private String imgUrl;
 
@@ -34,7 +35,7 @@ public class Member implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return null;
     }
 
     @Override

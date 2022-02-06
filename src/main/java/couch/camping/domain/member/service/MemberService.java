@@ -22,9 +22,10 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public Member register(String uid, String email, String nickname, String imgUrl) {
+    public Member register(String uid, String name, String email, String nickname, String imgUrl) {
         Member member = Member.builder()
-                .username(uid)
+                .uid(uid)
+                .name(name)
                 .email(email)
                 .nickname(nickname)
                 .imgUrl(imgUrl)

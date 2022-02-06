@@ -8,7 +8,9 @@ import lombok.*;
 @Builder
 public class MemberSaveRequestDto {
 
-    private String username;
+    private String uid;
     private String email;
+    private String name;
     private String nickname;
+    private String imgUrl;
 }

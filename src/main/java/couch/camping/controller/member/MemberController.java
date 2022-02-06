@@ -28,14 +28,15 @@ public class MemberController {
     //로컬 회원 가입 api
     @PostMapping("/local/save")
     public MemberSaveRequestDto save(@RequestBody MemberSaveRequestDto memberSaveRequestDto) {
-        memberService.register(memberSaveRequestDto.getUsername(), memberSaveRequestDto.getEmail(), memberSaveRequestDto.getNickname(), "nopic");
+        memberService.register(
+                memberSaveRequestDto.getUid(), memberSaveRequestDto.getName()
+                , memberSaveRequestDto.getEmail(), memberSaveRequestDto.getNickname(), memberSaveRequestDto.getImgUrl());
         return memberSaveRequestDto;
     }
 
     @PostMapping("")
     public RegisterResponseDto register(@RequestHeader("Authorization") String authorization,
                                         @RequestBody RegisterRequestDto registerRequestDto) {
-
         // TOKEN을 가져온다.
         FirebaseToken decodedToken;
         try {
@@ -46,9 +47,9 @@ public class MemberController {
                 "{\"code\":\"INVALID_TOKEN\", \"message\":\"" + e.getMessage() + "\"}");
         }
         // 사용자를 등록한다.
-        Member registeredUser = memberService.register(
-            decodedToken.getUid(), decodedToken.getEmail(), registerRequestDto.getNickname(), decodedToken.getPicture());
-        return new RegisterResponseDto(registeredUser);
+        Member registeredMember = memberService.register(
+            decodedToken.getUid(), decodedToken.getName(), decodedToken.getEmail(), registerRequestDto.getNickname(), decodedToken.getPicture());
+        return new RegisterResponseDto(registeredMember);
     }
 
     @GetMapping("/me")
