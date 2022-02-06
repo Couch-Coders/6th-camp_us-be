@@ -28,11 +28,7 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "camp_id")
     private Camp camp;
 
-    private String address;
-
-    private String detailAddress;
-
-    private String imageFiles;
+    private String imgUrl;
 
     @Lob
     private String content;
