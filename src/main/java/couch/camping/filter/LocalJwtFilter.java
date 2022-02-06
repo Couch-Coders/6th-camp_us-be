@@ -1,5 +1,6 @@
 package couch.camping.filter;
 
+import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
@@ -28,7 +29,7 @@ public class LocalJwtFilter extends OncePerRequestFilter{
         // get the token from the request
         String header;
         try{
-            header = request.getHeader("Authorization");//test
+            header = RequestUtil.getAuthorizationToken(request.getHeader("Authorization"));
         } catch (IllegalArgumentException e) {
             // ErrorMessage 응답 전송
             response.setStatus(HttpStatus.SC_UNAUTHORIZED);
