@@ -1,7 +1,7 @@
 package couch.camping.controller.camp;
 
-import couch.camping.controller.camp.dto.request.CampSaveRequestDto;
 import couch.camping.controller.camp.dto.request.CampListSaveRequestDto;
+import couch.camping.controller.camp.dto.request.CampSaveRequestDto;
 import couch.camping.controller.camp.dto.response.CampResponseDto;
 import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.camp.service.CampService;
@@ -9,17 +9,7 @@ import couch.camping.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequiredArgsConstructor
 @RestController
@@ -42,8 +32,8 @@ public class CampController {
     }
 
     //camp 상세
-    @GetMapping("/{camp_id}")
-    public CampResponseDto campDetail(@PathVariable("camp_id") Long campId){
+    @GetMapping("/{campId}")
+    public CampResponseDto campDetail(@PathVariable Long campId){
         return new CampResponseDto(campService.getCampDetail(campId));
     }
 
