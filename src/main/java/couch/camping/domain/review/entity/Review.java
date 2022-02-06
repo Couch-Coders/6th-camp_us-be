@@ -33,8 +33,8 @@ public class Review extends BaseEntity {
     @Lob
     private String content;
 
-    private Integer rate;
+    private int rate;
 
     @Column(name = "like_cnt")
-    private Integer like;
+    private int like;
 }
