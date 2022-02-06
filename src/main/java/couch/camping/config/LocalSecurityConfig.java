@@ -36,7 +36,7 @@ public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
                         UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-    };
+    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -44,6 +44,7 @@ public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
                 .antMatchers(HttpMethod.POST ,"/members/local")
                 .antMatchers(HttpMethod.POST ,"/camps")
+                .antMatchers(HttpMethod.GET ,"/camps/**")
                 .antMatchers(HttpMethod.GET ,"/test")
 
                 .antMatchers("/css/**")
