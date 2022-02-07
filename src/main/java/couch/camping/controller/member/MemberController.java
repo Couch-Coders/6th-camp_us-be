@@ -3,6 +3,7 @@ package couch.camping.controller.member;
 import com.google.firebase.auth.FirebaseToken;
 import couch.camping.controller.member.dto.request.MemberSaveRequestDto;
 import couch.camping.controller.member.dto.request.RegisterRequestDto;
+import couch.camping.controller.member.dto.response.MemberRetrieveResponseDto;
 import couch.camping.controller.member.dto.response.RegisterResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
@@ -23,7 +24,7 @@ public class MemberController {
 
     //로컬 회원 가입
     @PostMapping("/local")
-    public ResponseEntity<RegisterResponseDto> registerLocal(@RequestBody MemberSaveRequestDto memberSaveRequestDto) {
+    public ResponseEntity<RegisterResponseDto> registerLocalMember(@RequestBody MemberSaveRequestDto memberSaveRequestDto) {
         Member registeredMember = memberService.register(
                 memberSaveRequestDto.getUid(), memberSaveRequestDto.getName()
                 , memberSaveRequestDto.getEmail(), memberSaveRequestDto.getNickname(), memberSaveRequestDto.getImgUrl());
@@ -33,7 +34,7 @@ public class MemberController {
     
     //회원 가입
     @PostMapping("")
-    public ResponseEntity<RegisterResponseDto> register(@RequestHeader("Authorization") String header,
+    public ResponseEntity<RegisterResponseDto> registerMember(@RequestHeader("Authorization") String header,
                                         @RequestBody RegisterRequestDto registerRequestDto) {
         // TOKEN을 가져온다.
         FirebaseToken decodedToken = memberService.decodeToken(header);
@@ -54,11 +55,19 @@ public class MemberController {
     
     //닉네임 수정
     @PatchMapping("/me")
-    public ResponseEntity editNickname(Authentication authentication,
+    public ResponseEntity editMemberNickname(Authentication authentication,
                                        @RequestBody RegisterRequestDto registerRequestDto) {
         Member member = ((Member) authentication.getPrincipal());
-        memberService.editMemberNickName(member.getUid(), registerRequestDto.getNickname());
+        memberService.editMemberNickName(member.getId(), registerRequestDto.getNickname());
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/me/info")
+    public ResponseEntity getMember(Authentication authentication) {
+        Member member = (Member) authentication.getPrincipal();
+
+        return ResponseEntity.ok(new MemberRetrieveResponseDto(member));
+    }
+
 }

@@ -44,8 +44,8 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public void editMemberNickName(String uid, String nickname) {
-        Member member = memberRepository.findById(uid).get();
+    public void editMemberNickName(Long id, String nickname) {
+        Member member = memberRepository.findById(id).get();
         member.setNickname(nickname);
     }
 

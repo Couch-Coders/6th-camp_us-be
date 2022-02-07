@@ -1,24 +1,29 @@
 package couch.camping.controller.member.dto.response;
 
 import couch.camping.domain.member.entity.Member;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter @Setter
-public class RegisterResponseDto {
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class MemberRetrieveResponseDto {
+
     private Long id;
     private String uid;
     private String email;
     private String name;
     private String nickname;
     private String imgUrl;
+    private int reviewCnt;
 
-    public RegisterResponseDto(Member member) {
+    public MemberRetrieveResponseDto(Member member) {
         this.id = member.getId();
         this.uid = member.getUid();
         this.email = member.getEmail();
         this.name = member.getName();
         this.nickname = member.getNickname();
         this.imgUrl = member.getImgUrl();
+        this.reviewCnt = member.getReviewCnt();
     }
 }

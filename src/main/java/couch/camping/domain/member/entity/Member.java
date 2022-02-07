@@ -26,6 +26,7 @@ public class Member implements UserDetails {
     private String name;
     private String nickname;
     private String imgUrl;
+    private int reviewCnt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
