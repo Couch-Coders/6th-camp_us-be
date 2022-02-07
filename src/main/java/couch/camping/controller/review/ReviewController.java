@@ -39,5 +39,15 @@ public class ReviewController {
         List<ReviewRetrieveRequestDto> reviewsDtoList = new ReviewRetrieveRequestDto().listMapper(reviews);
         return new ResponseEntity(reviewsDtoList, HttpStatus.OK);
     }
+    
+    //리뷰 삭제
+    @DeleteMapping("/reviews/{reviewId}")
+    public ResponseEntity deleteReview(@PathVariable Long reviewId, Authentication authentication) {
+        Long memberId = ((Member) authentication.getPrincipal()).getId();
+
+        reviewService.deleteReview(reviewId, memberId);
+
+        return ResponseEntity.noContent().build();
+    }
 
 }

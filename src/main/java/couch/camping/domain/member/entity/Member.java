@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import java.util.Collection;
 
 @Entity
-@Getter @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -27,6 +27,19 @@ public class Member implements UserDetails {
     private String nickname;
     private String imgUrl;
     private int reviewCnt;
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void increaseReviewCnt() {
+        this.reviewCnt = reviewCnt+1;
+    }
+
+    public void decreaseReviewCnt() {
+        this.reviewCnt = reviewCnt - 1;
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

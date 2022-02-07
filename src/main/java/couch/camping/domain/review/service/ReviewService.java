@@ -10,6 +10,7 @@ import couch.camping.domain.review.repository.ReviewRepository;
 import couch.camping.exception.CustomException;
 import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,16 +30,16 @@ public class ReviewService {
 
         Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.NOT_FOUND_USER, "memberId 에 맞는 회원이 없습니다.");
+                    throw new CustomException(ErrorCode.NOT_FOUND_USER, "회원 ID 에 해당하는 회원이 없습니다.");
                 });
 
         Camp findCamp = campRepository.findById(campId)
                 .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.NOT_FOUND_CAMP, "campId 에 맞는 캠핑장이 없습니다.");
+                    throw new CustomException(ErrorCode.NOT_FOUND_CAMP, "캠핑장 ID 에 해당하는 캠핑장이 없습니다.");
                 });
 
 
-        findMember.setReviewCnt(findMember.getReviewCnt()+1);
+        findMember.increaseReviewCnt();
 
         Review review = Review.builder()
                 .member(findMember)
@@ -53,6 +54,23 @@ public class ReviewService {
 
     public List<Review> retrieveAll(Long campId) {
         return reviewRepository.findByCampId(campId);
+    }
+
+
+    @Transactional
+    public void deleteReview(Long reviewId, Long memberId) {
+        try {
+            reviewRepository.deleteById(reviewId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
+        }
+
+        Member findMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_USER, "회원 ID 에 해당하는 회원이 없습니다.");
+                });
+
+        findMember.decreaseReviewCnt();
     }
 
 }

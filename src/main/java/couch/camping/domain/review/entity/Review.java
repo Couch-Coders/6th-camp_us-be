@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter @Setter
+@Getter
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Review extends BaseEntity {
@@ -36,4 +36,12 @@ public class Review extends BaseEntity {
     private int rate;
 
     private int likeCnt;
+
+    public void increaseLikeCnt() {
+         this.likeCnt = likeCnt+1;
+    }
+
+    public void decreaseLikeCnt() {
+        this.likeCnt = likeCnt - 1;
+    }
 }

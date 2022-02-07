@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter @Setter
+@Getter
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class ReviewLike extends BaseTimeEntity {

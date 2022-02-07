@@ -5,6 +5,8 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.repository.MemberRepository;
+import couch.camping.exception.CustomException;
+import couch.camping.exception.ErrorCode;
 import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,8 +50,11 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public void editMemberNickName(Long id, String nickname) {
-        Member member = memberRepository.findById(id).get();
-        member.setNickname(nickname);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_USER, "회원 ID 에 해당하는 회원이 없습니다.");
+                });
+        member.changeNickname(nickname);
     }
 
     //헤더에서
