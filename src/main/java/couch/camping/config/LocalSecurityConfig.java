@@ -6,13 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Profile("dev")
@@ -33,9 +31,7 @@ public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated() // 모든 요청이 인증되어야한다.
                 .and()
                 .addFilterBefore(new LocalJwtFilter(userDetailsService),
-                        UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                        UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -44,8 +40,8 @@ public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
                 .antMatchers(HttpMethod.POST ,"/members/local")
                 .antMatchers(HttpMethod.GET ,"/camps/**")
-                .antMatchers(HttpMethod.GET ,"/test")
                 .antMatchers(HttpMethod.GET, "/reviews/**")
+                .antMatchers(HttpMethod.GET ,"/test")
 
                 .antMatchers("/css/**")
                 .antMatchers("/static/**")

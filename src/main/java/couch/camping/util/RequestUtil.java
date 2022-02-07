@@ -12,7 +12,7 @@ public class RequestUtil {
         log.info("incoming Authorization header: " + header);
         //헤더값에 Authorization 값이 없거나 유효하지 않은 경우
         if(header == null || !header.startsWith("Bearer ")) {
-            throw new CustomException(ErrorCode.INVALID_AUTHORIZATION);
+            throw new CustomException(ErrorCode.INVALID_AUTHORIZATION, "Authorization Header is Null or Empty");
         }
 
         // parts[0] : bearer, parts[1] : token
