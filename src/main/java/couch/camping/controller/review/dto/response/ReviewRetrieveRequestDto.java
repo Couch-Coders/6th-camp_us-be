@@ -32,7 +32,7 @@ public class ReviewRetrieveRequestDto {
                     r.getImgUrl(),
                     r.getContent(),
                     r.getRate(),
-                    r.getLike()
+                    r.getLikeCnt()
             ));
         }
         return list;

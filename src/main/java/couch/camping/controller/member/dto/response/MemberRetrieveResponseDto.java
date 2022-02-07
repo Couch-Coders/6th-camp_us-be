@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 public class MemberRetrieveResponseDto {
 
-    private Long id;
+    private Long memberId;
     private String uid;
     private String email;
     private String name;
@@ -18,7 +18,7 @@ public class MemberRetrieveResponseDto {
     private int reviewCnt;
 
     public MemberRetrieveResponseDto(Member member) {
-        this.id = member.getId();
+        this.memberId = member.getId();
         this.uid = member.getUid();
         this.email = member.getEmail();
         this.name = member.getName();

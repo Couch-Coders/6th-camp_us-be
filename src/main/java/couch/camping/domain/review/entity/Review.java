@@ -35,6 +35,5 @@ public class Review extends BaseEntity {
 
     private int rate;
 
-    @Column(name = "like_cnt")
-    private int like;
+    private int likeCnt;
 }

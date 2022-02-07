@@ -26,8 +26,8 @@ public class ReviewController {
     @PostMapping("/camps/{campId}/reviews")
     public ResponseEntity<ReviewWriteResponseDto> writeReview(@PathVariable Long campId
             , @RequestBody ReviewWriteRequestDto reviewWriteRequestDto, Authentication authentication) {
-
-        Review review = reviewService.write(campId, (Member) authentication.getPrincipal(), reviewWriteRequestDto);
+        Long memberId = ((Member) authentication.getPrincipal()).getId();
+        Review review = reviewService.write(campId, memberId, reviewWriteRequestDto);
         return new ResponseEntity(new ReviewWriteResponseDto(review), HttpStatus.CREATED);
 
     }

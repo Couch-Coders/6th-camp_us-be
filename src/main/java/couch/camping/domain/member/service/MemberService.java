@@ -26,7 +26,10 @@ public class MemberService implements UserDetailsService {
     //스프링 시큐리티에서 DB 에서 uid 를 조회
     @Override
     public UserDetails loadUserByUsername(String uid) throws UsernameNotFoundException {
-        return memberRepository.findByUid(uid).get();
+        return memberRepository.findByUid(uid)
+                .orElseThrow(() -> {
+                    throw new UsernameNotFoundException("해당 회원이 존재하지 않습니다.");
+                });
     }
     
     //회원 등록

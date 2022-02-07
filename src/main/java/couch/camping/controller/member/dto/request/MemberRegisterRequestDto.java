@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequestDto {
+public class MemberRegisterRequestDto {
     private String nickname;
 }

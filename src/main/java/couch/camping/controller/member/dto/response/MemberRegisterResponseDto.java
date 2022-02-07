@@ -5,16 +5,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class RegisterResponseDto {
-    private Long id;
+public class MemberRegisterResponseDto {
+    private Long memberId;
     private String uid;
     private String email;
     private String name;
     private String nickname;
     private String imgUrl;
 
-    public RegisterResponseDto(Member member) {
-        this.id = member.getId();
+    public MemberRegisterResponseDto(Member member) {
+        this.memberId = member.getId();
         this.uid = member.getUid();
         this.email = member.getEmail();
         this.name = member.getName();
