@@ -3,12 +3,19 @@ package couch.camping.domain.member.service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import couch.camping.controller.member.dto.request.MemberReviewRequestDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.repository.MemberRepository;
+import couch.camping.domain.review.entity.Review;
+import couch.camping.domain.review.repository.ReviewRepository;
 import couch.camping.exception.CustomException;
 import couch.camping.exception.ErrorCode;
 import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,9 +27,11 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
+    private final ReviewRepository reviewRepository;
     private final FirebaseAuth firebaseAuth;
     
     //스프링 시큐리티에서 DB 에서 uid 를 조회
@@ -69,5 +78,20 @@ public class MemberService implements UserDetailsService {
                     "{\"code\":\"INVALID_TOKEN\", \"message\":\"" + e.getMessage() + "\"}");
         }
         return decodedToken;
+    }
+
+    public Page<Review> retrieveMemberReviews(Long memberId, MemberReviewRequestDto memberReviewRequestDto) {
+        int page = memberReviewRequestDto.getPage();
+        int size = memberReviewRequestDto.getSize();
+        int sort = memberReviewRequestDto.getSort();
+
+        Sort.Direction sortType;
+        if (sort == 0) sortType = Sort.Direction.DESC;
+        else sortType = Sort.Direction.ASC;
+
+        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(sortType, "createdDate"));
+        Page<Review> reviewPage = reviewRepository.findByMemberId(pageRequest, memberId);
+
+        return reviewPage;
     }
 }

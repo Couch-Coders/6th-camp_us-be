@@ -15,8 +15,12 @@ public class AwareAuditConfig implements AuditorAware<String> {
     public Optional<String> getCurrentAuditor() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        Member member = (Member) authentication.getPrincipal();
+        Member member;
+        try {
+             member = (Member) authentication.getPrincipal();
+        } catch (NullPointerException e) {
+            return null;
+        }
         return Optional.of(member.getNickname());
     }
 }

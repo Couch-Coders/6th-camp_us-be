@@ -3,6 +3,8 @@ package couch.camping.controller.member.dto.response;
 import couch.camping.domain.member.entity.Member;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,6 +18,7 @@ public class MemberRetrieveResponseDto {
     private String nickname;
     private String imgUrl;
     private int reviewCnt;
+    private LocalDateTime createdDate;
 
     public MemberRetrieveResponseDto(Member member) {
         this.memberId = member.getId();
@@ -25,5 +28,6 @@ public class MemberRetrieveResponseDto {
         this.nickname = member.getNickname();
         this.imgUrl = member.getImgUrl();
         this.reviewCnt = member.getReviewCnt();
+        this.createdDate = member.getCreatedDate();
     }
 }

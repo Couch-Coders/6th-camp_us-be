@@ -1,18 +1,23 @@
 package couch.camping.controller.member;
 
 import com.google.firebase.auth.FirebaseToken;
-import couch.camping.controller.member.dto.request.MemberSaveRequestDto;
 import couch.camping.controller.member.dto.request.MemberRegisterRequestDto;
-import couch.camping.controller.member.dto.response.MemberRetrieveResponseDto;
+import couch.camping.controller.member.dto.request.MemberReviewRequestDto;
+import couch.camping.controller.member.dto.request.MemberSaveRequestDto;
 import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
+import couch.camping.controller.member.dto.response.MemberRetrieveResponseDto;
+import couch.camping.controller.member.dto.response.MemberReviewsResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 
 @RestController
@@ -29,7 +34,9 @@ public class MemberController {
                 memberSaveRequestDto.getUid(), memberSaveRequestDto.getName()
                 , memberSaveRequestDto.getEmail(), memberSaveRequestDto.getNickname(), memberSaveRequestDto.getImgUrl());
 
-        return new ResponseEntity<MemberRegisterResponseDto>(new MemberRegisterResponseDto(registeredMember), HttpStatus.CREATED);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new MemberRegisterResponseDto(registeredMember));
     }
     
     //회원 가입
@@ -43,7 +50,9 @@ public class MemberController {
             decodedToken.getUid(), decodedToken.getName(), decodedToken.getEmail()
                 , memberRegisterRequestDto.getNickname(), decodedToken.getPicture());
 
-        return new ResponseEntity<MemberRegisterResponseDto>(new MemberRegisterResponseDto(registeredMember), HttpStatus.CREATED);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new MemberRegisterResponseDto(registeredMember));
     }
     
     //로그인
@@ -69,6 +78,20 @@ public class MemberController {
         Member member = (Member) authentication.getPrincipal();
 
         return ResponseEntity.ok(new MemberRetrieveResponseDto(member));
+    }
+
+    //회원이 작성한 리뷰 조회
+    @GetMapping("/me/reviews")
+    public ResponseEntity<Page<MemberReviewsResponseDto>> getMemberReviews(
+            @Valid MemberReviewRequestDto memberReviewRequestDto,
+            Authentication authentication) {
+        Long memberId = ((Member) authentication.getPrincipal()).getId();
+
+        Page<MemberReviewsResponseDto> map = memberService
+                .retrieveMemberReviews(memberId, memberReviewRequestDto).map(review -> new MemberReviewsResponseDto(review));
+
+        return ResponseEntity.ok(map);
+
     }
 
 }

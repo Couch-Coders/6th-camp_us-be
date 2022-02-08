@@ -27,7 +27,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers,
                                                                   HttpStatus status,
                                                                   WebRequest request) {
-        CustomException e = new CustomException(ErrorCode.BAD_REQUEST_VALIDATION, "요청 바디 검증에 실패했습니다.");
+        CustomException e = new CustomException(ErrorCode.BAD_REQUEST_VALIDATION, ex.getMessage());
 
         return ErrorResponse.toResponseEntity(e);
     }
@@ -38,8 +38,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                          HttpHeaders headers,
                                                          HttpStatus status,
                                                          WebRequest request) {
-
-        CustomException e = new CustomException(ErrorCode.BAD_REQUEST_VALIDATION, "쿼리스트링 검증에 실패했습니다.");
+        CustomException e = new CustomException(ErrorCode.BAD_REQUEST_VALIDATION, ex.getMessage());
         return ErrorResponse.toResponseEntity(e);
     }
 
