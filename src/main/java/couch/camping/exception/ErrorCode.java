@@ -23,6 +23,7 @@ public enum ErrorCode {
     //캠핑장 예외
     EXIST_CAMP(HttpStatus.BAD_REQUEST, "이미 좋아요한 캠핑장입니다."),
     NOT_FOUND_CAMP(HttpStatus.NOT_FOUND, "해당 캠핑장을 찾을 수 없습니다."),
+    NOT_FOUND_CAMP_DETAIL(HttpStatus.NOT_FOUND, "상세검색에 해당하는 캠핑장을 찾을 수 없습니다."),
 
     //리뷰 예외
     NOT_FOUND_REVIEW(HttpStatus.NOT_FOUND, "해당 리뷰를 찾을 수 없습니다."),
