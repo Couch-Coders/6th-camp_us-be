@@ -8,7 +8,6 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@Setter
 @Builder
 public class Camp {
 
@@ -45,27 +44,27 @@ public class Camp {
     @Lob
     private String resveUrl;
     private String resveCl;
-    private Integer autoSiteCo;
-    private Integer glampSiteCo;
-    private Integer caravSiteCo;
-    private Integer sitedStnc;
-    private Integer indvdlCaravSiteCo;
+    private int autoSiteCo;
+    private int glampSiteCo;
+    private int caravSiteCo;
+    private int sitedStnc;
+    private int indvdlCaravSiteCo;
     private String glampInnerFclty;
     private String caravInnerFclty;
     private String operPdCl;
     private String operDeCl;
     private String trlerAcmpnyAt;
     private String caravAcmpnyAt;
-    private Integer toiletCo;
-    private Integer swrmCo;
-    private Integer wtrplCo;
+    private int toiletCo;
+    private int swrmCo;
+    private int wtrplCo;
     private String brazierCl;
     private String sbrsCl;
     private String sbrsEtc;
     private String posblFcltyCl;
     private String posblFcltyEtc;
-    private Integer fireSensorCo;
-    private Integer extshrCo;
+    private int fireSensorCo;
+    private int extshrCo;
     private String themaEnvrnCl;
     private String eqpmnLendCl;
     private String animalCmgCl;

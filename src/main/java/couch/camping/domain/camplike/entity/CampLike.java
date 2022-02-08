@@ -12,7 +12,6 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@Setter
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class CampLike extends BaseTimeEntity {

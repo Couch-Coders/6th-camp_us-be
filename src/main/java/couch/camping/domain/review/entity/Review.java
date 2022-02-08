@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter @Setter
+@Getter
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Review extends BaseEntity {
@@ -28,17 +28,20 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "camp_id")
     private Camp camp;
 
-    private String address;
-
-    private String detailAddress;
-
-    private String imageFiles;
+    private String imgUrl;
 
     @Lob
     private String content;
 
-    private Integer rate;
+    private int rate;
 
-    @Column(name = "like_cnt")
-    private Integer like;
+    private int likeCnt;
+
+    public void increaseLikeCnt() {
+         this.likeCnt = likeCnt+1;
+    }
+
+    public void decreaseLikeCnt() {
+        this.likeCnt = likeCnt - 1;
+    }
 }

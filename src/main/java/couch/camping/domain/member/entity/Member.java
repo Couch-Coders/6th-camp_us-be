@@ -1,26 +1,46 @@
 package couch.camping.domain.member.entity;
 
+import couch.camping.domain.base.BaseTimeEntity;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Collection;
 
 @Entity
-@Getter @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Member implements UserDetails {
+public class Member extends BaseTimeEntity implements UserDetails {
+
+    @Id @GeneratedValue
+    @Column(name = "member_id")
+    private Long id;
     //uid
-    @Id
     private String uid;
     private String email;
     private String name;
     private String nickname;
     private String imgUrl;
+    private int reviewCnt;
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void increaseReviewCnt() {
+        this.reviewCnt = reviewCnt+1;
+    }
+
+    public void decreaseReviewCnt() {
+        this.reviewCnt = reviewCnt - 1;
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

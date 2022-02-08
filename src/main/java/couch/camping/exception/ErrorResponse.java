@@ -17,7 +17,7 @@ public class ErrorResponse {
     private final String detail;
     private final String message;
 
-    public static ResponseEntity<ErrorResponse> toResponseEntity(CustomException e) {
+    public static ResponseEntity<Object> toResponseEntity(CustomException e) {
         ErrorCode errorCode = e.getErrorCode();
 
         return ResponseEntity
@@ -31,7 +31,6 @@ public class ErrorResponse {
                         .message(e.getMessage())//에러 메시지
                         .build()
                 );
-
-
     }
+
 }
