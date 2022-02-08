@@ -32,7 +32,7 @@ public class QNotification extends EntityPathBase<Notification> {
     public final BooleanPath isChecked = createBoolean("isChecked");
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> lastModified = _super.lastModified;
+    public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
 
     public final couch.camping.domain.member.entity.QMember member;
 

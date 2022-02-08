@@ -24,8 +24,6 @@ public class QReview extends EntityPathBase<Review> {
 
     public final couch.camping.domain.base.QBaseEntity _super = new couch.camping.domain.base.QBaseEntity(this);
 
-    public final StringPath address = createString("address");
-
     public final couch.camping.domain.camp.entity.QCamp camp;
 
     public final StringPath content = createString("content");
@@ -36,19 +34,17 @@ public class QReview extends EntityPathBase<Review> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
 
-    public final StringPath detailAddress = createString("detailAddress");
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath imageFiles = createString("imageFiles");
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> lastModified = _super.lastModified;
+    public final StringPath imgUrl = createString("imgUrl");
 
     //inherited
     public final StringPath lastModifiedBy = _super.lastModifiedBy;
 
-    public final NumberPath<Integer> like = createNumber("like", Integer.class);
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
+
+    public final NumberPath<Integer> likeCnt = createNumber("likeCnt", Integer.class);
 
     public final couch.camping.domain.member.entity.QMember member;
 

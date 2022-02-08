@@ -30,7 +30,7 @@ public class QReviewLike extends EntityPathBase<ReviewLike> {
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> lastModified = _super.lastModified;
+    public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
 
     public final couch.camping.domain.member.entity.QMember member;
 
