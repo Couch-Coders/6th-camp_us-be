@@ -3,6 +3,8 @@ package couch.camping.controller.review.dto.response;
 import couch.camping.domain.review.entity.Review;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +17,7 @@ public class ReviewWriteResponseDto {
     private String content;
     private int rate;
     private String imgUrl;
+    private LocalDateTime createdDate;
 
     public ReviewWriteResponseDto(Review review) {
         this.reviewId = review.getId();
@@ -23,5 +26,6 @@ public class ReviewWriteResponseDto {
         this.content = review.getContent();
         this.rate = review.getRate();
         this.imgUrl = review.getImgUrl();
+        this.createdDate = review.getCreatedDate();
     }
 }

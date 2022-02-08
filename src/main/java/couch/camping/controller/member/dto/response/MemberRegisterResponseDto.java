@@ -4,6 +4,8 @@ import couch.camping.domain.member.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter @Setter
 public class MemberRegisterResponseDto {
     private Long memberId;
@@ -12,6 +14,7 @@ public class MemberRegisterResponseDto {
     private String name;
     private String nickname;
     private String imgUrl;
+    private LocalDateTime createdDate;
 
     public MemberRegisterResponseDto(Member member) {
         this.memberId = member.getId();
@@ -20,5 +23,6 @@ public class MemberRegisterResponseDto {
         this.name = member.getName();
         this.nickname = member.getNickname();
         this.imgUrl = member.getImgUrl();
+        this.createdDate = member.getCreatedDate();
     }
 }

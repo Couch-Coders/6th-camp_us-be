@@ -1,7 +1,7 @@
 package couch.camping.controller.review;
 
 import couch.camping.controller.review.dto.request.ReviewWriteRequestDto;
-import couch.camping.controller.review.dto.response.ReviewRetrieveRequestDto;
+import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
 import couch.camping.controller.review.dto.response.ReviewWriteResponseDto;
 import couch.camping.domain.camp.service.CampService;
 import couch.camping.domain.member.entity.Member;
@@ -36,7 +36,7 @@ public class ReviewController {
     public ResponseEntity getReviewList(@PathVariable Long campId) {
 
         List<Review> reviews = reviewService.retrieveAll(campId);
-        List<ReviewRetrieveRequestDto> reviewsDtoList = new ReviewRetrieveRequestDto().listMapper(reviews);
+        List<ReviewRetrieveResponseDto> reviewsDtoList = new ReviewRetrieveResponseDto().listMapper(reviews);
         return new ResponseEntity(reviewsDtoList, HttpStatus.OK);
     }
     
