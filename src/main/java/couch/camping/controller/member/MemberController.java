@@ -2,7 +2,7 @@ package couch.camping.controller.member;
 
 import com.google.firebase.auth.FirebaseToken;
 import couch.camping.controller.member.dto.request.MemberRegisterRequestDto;
-import couch.camping.controller.member.dto.request.MemberReviewRequestDto;
+import couch.camping.controller.member.dto.request.MemberReviewRequestModel;
 import couch.camping.controller.member.dto.request.MemberSaveRequestDto;
 import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
 import couch.camping.controller.member.dto.response.MemberRetrieveResponseDto;
@@ -83,12 +83,12 @@ public class MemberController {
     //회원이 작성한 리뷰 조회
     @GetMapping("/me/reviews")
     public ResponseEntity<Page<MemberReviewsResponseDto>> getMemberReviews(
-            @Valid MemberReviewRequestDto memberReviewRequestDto,
+            @Valid MemberReviewRequestModel memberReviewRequestModel,
             Authentication authentication) {
         Long memberId = ((Member) authentication.getPrincipal()).getId();
 
         Page<MemberReviewsResponseDto> map = memberService
-                .retrieveMemberReviews(memberId, memberReviewRequestDto).map(review -> new MemberReviewsResponseDto(review));
+                .retrieveMemberReviews(memberId, memberReviewRequestModel).map(review -> new MemberReviewsResponseDto(review));
 
         return ResponseEntity.ok(map);
 

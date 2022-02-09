@@ -5,8 +5,6 @@ import couch.camping.domain.review.entity.Review;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -20,26 +18,20 @@ public class ReviewRetrieveResponseDto {
     private Long campId;
     private String imgUrl;
     private String content;
-    private int rate;
-    private int like;
+    private int rateCnt;
+    private int likeCnt;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
 
-    public List<ReviewRetrieveResponseDto> listMapper(List<Review> reviews) {
-        List<ReviewRetrieveResponseDto> list = new ArrayList<>();
-        for (Review r : reviews) {
-            list.add(new ReviewRetrieveResponseDto(
-                    r.getId(),
-                    r.getMember().getId(),
-                    r.getCamp().getId(),
-                    r.getImgUrl(),
-                    r.getContent(),
-                    r.getRate(),
-                    r.getLikeCnt(),
-                    r.getCreatedDate(),
-                    r.getLastModifiedDate()
-            ));
-        }
-        return list;
+    public ReviewRetrieveResponseDto(Review r) {
+        this.reviewId = r.getId();
+        this.memberId = r.getMember().getId();
+        this.campId = r.getCamp().getId();
+        this.imgUrl= r.getImgUrl();
+        this.content = r.getContent();
+        this.rateCnt = r.getRate();
+        this.likeCnt =r.getLikeCnt();
+        this.createdDate = r.getCreatedDate();
+        this.lastModifiedDate = r.getLastModifiedDate();
     }
 }

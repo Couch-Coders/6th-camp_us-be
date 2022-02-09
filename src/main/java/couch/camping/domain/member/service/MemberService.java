@@ -3,7 +3,7 @@ package couch.camping.domain.member.service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import couch.camping.controller.member.dto.request.MemberReviewRequestDto;
+import couch.camping.controller.member.dto.request.MemberReviewRequestModel;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.repository.MemberRepository;
 import couch.camping.domain.review.entity.Review;
@@ -61,7 +61,7 @@ public class MemberService implements UserDetailsService {
     public void editMemberNickName(Long id, String nickname) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.NOT_FOUND_USER, "회원 ID 에 해당하는 회원이 없습니다.");
+                    throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "회원 ID 에 해당하는 회원이 없습니다.");
                 });
         member.changeNickname(nickname);
     }
@@ -80,10 +80,10 @@ public class MemberService implements UserDetailsService {
         return decodedToken;
     }
 
-    public Page<Review> retrieveMemberReviews(Long memberId, MemberReviewRequestDto memberReviewRequestDto) {
-        int page = memberReviewRequestDto.getPage();
-        int size = memberReviewRequestDto.getSize();
-        int sort = memberReviewRequestDto.getSort();
+    public Page<Review> retrieveMemberReviews(Long memberId, MemberReviewRequestModel memberReviewRequestModel) {
+        int page = memberReviewRequestModel.getPage();
+        int size = memberReviewRequestModel.getSize();
+        int sort = memberReviewRequestModel.getSort();
 
         Sort.Direction sortType;
         if (sort == 0) sortType = Sort.Direction.DESC;

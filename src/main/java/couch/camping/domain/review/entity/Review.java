@@ -44,4 +44,11 @@ public class Review extends BaseEntity {
     public void decreaseLikeCnt() {
         this.likeCnt = likeCnt - 1;
     }
+
+    public Review changeReview(String content, int rate, String imgUrl) {
+        this.content = content;
+        this.rate = rate;
+        this.imgUrl = imgUrl;
+        return this;
+    }
 }
