@@ -13,7 +13,7 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
   profiles:
-    active: deploy
+    active: dev
 
 logging.level:
   org.hibernate.SQL: debug
