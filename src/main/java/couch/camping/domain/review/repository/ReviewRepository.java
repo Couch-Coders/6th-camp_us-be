@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
+    Page<Review> findAllByLikeCntGreaterThan(Pageable pageable, int cnt);
+
     Page<Review> findByCampId(Pageable pageable, Long campId);
 
     Page<Review> findByMemberId(Pageable pageable, Long memberId);
