@@ -50,12 +50,12 @@ public class CampService {
         List<Camp> campListFilterBySigungu = campRepository.findAllBySigunguNm(sigunguNm);
 
         for (Camp cam : campListFilterBySigungu) {
-            List<String> camTagList = Arrays.asList(cam.getSbrsCl().split(","));
-            camTagList.retainAll(tagList);
-            if(camTagList.isEmpty()){
+            if (cam.getSbrsCl() == null) {
                 continue;
             }
-            else{
+            List<String> camTagList = new ArrayList<>(Arrays.asList(cam.getSbrsCl().split(",")));
+            camTagList.retainAll(tagList);
+            if(!camTagList.isEmpty()){
                 tempList.add(cam);
             }
         }

@@ -95,8 +95,4 @@ public class CampResponseDto {
         this.tourEraCl = camp.getTourEraCl();
         this.firstImageUrl = camp.getFirstImageUrl();
     }
-
-    public CampResponseDto(String facltNm) {
-        this.facltNm = facltNm;
-    }
 }
