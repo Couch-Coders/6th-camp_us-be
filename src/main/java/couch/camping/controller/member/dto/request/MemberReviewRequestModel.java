@@ -10,7 +10,7 @@ import javax.validation.constraints.Min;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MemberReviewRequestDto {
+public class MemberReviewRequestModel {
 
     @Min(value = 1, message = "페이지를 1 이상 입력해주세요.")
     int page;

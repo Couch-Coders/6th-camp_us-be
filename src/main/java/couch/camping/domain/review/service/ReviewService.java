@@ -1,76 +1,20 @@
 package couch.camping.domain.review.service;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import couch.camping.controller.review.dto.request.ReviewWriteRequestDto;
-import couch.camping.domain.camp.entity.Camp;
-import couch.camping.domain.camp.repository.CampRepository;
+import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
+import couch.camping.controller.review.dto.response.ReviewWriteResponseDto;
 import couch.camping.domain.member.entity.Member;
-import couch.camping.domain.member.repository.MemberRepository;
-import couch.camping.domain.review.entity.Review;
-import couch.camping.domain.review.repository.ReviewRepository;
-import couch.camping.exception.CustomException;
-import couch.camping.exception.ErrorCode;
-import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
-@Service
-@RequiredArgsConstructor
-@Transactional(readOnly = true)
-public class ReviewService {
-
-    private final ReviewRepository reviewRepository;
-    private final CampRepository campRepository;
-    private final MemberRepository memberRepository;
-
-    @Transactional
-    public Review write(Long campId, Long memberId, ReviewWriteRequestDto reviewWriteRequestDto) {
-
-        Member findMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.NOT_FOUND_USER, "회원 ID 에 해당하는 회원이 없습니다.");
-                });
-
-        Camp findCamp = campRepository.findById(campId)
-                .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.NOT_FOUND_CAMP, "캠핑장 ID 에 해당하는 캠핑장이 없습니다.");
-                });
+public interface ReviewService {
 
 
-        findMember.increaseReviewCnt();
-
-        Review review = Review.builder()
-                .member(findMember)
-                .camp(findCamp)
-                .imgUrl(reviewWriteRequestDto.getImgUrl())
-                .content(reviewWriteRequestDto.getContent())
-                .rate(reviewWriteRequestDto.getRate())
-                .build();
-
-        return reviewRepository.save(review);
-    }
-
-    public List<Review> retrieveAll(Long campId) {
-        return reviewRepository.findByCampId(campId);
-    }
-
-
-    @Transactional
-    public void deleteReview(Long reviewId, Long memberId) {
-        try {
-            reviewRepository.deleteById(reviewId);
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
-        }
-
-        Member findMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.NOT_FOUND_USER, "회원 ID 에 해당하는 회원이 없습니다.");
-                });
-
-        findMember.decreaseReviewCnt();
-    }
-
+    ReviewWriteResponseDto write(Long campId, Member member, ReviewWriteRequestDto reviewWriteRequestDto);
+    Page<ReviewRetrieveResponseDto> retrieveAll(Long campId, Pageable pageable, String header) throws FirebaseAuthException;
+    void deleteReview(Long reviewId, Member member);
+    ReviewWriteResponseDto editReview(Long reviewId, ReviewWriteRequestDto reviewWriteRequestDto, Member member);
+    void likeReview(Long reviewId, Member member);
+    Page<ReviewRetrieveResponseDto> getBestReviews();
 }

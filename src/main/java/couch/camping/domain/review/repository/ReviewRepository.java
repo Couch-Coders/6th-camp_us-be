@@ -6,14 +6,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 
-import java.util.List;
-
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    List<Review> findByCampId(Long campId);
+    Page<Review> findAllByLikeCntGreaterThan(Pageable pageable, int cnt);
+
+    Page<Review> findByCampId(Pageable pageable, Long campId);
 
     Page<Review> findByMemberId(Pageable pageable, Long memberId);
 
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying(clearAutomatically = true)
     void deleteById(Long reviewId);
 }
