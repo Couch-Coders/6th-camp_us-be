@@ -12,6 +12,8 @@ public class CampSearchResponseDto {
     private String firstImageUrl;
     private String lineIntro;
     private Integer like;
+    private float mapX;
+    private float mapY;
 
     public CampSearchResponseDto(Camp camp) {
         this.addr1 = camp.getAddr1();
@@ -19,5 +21,7 @@ public class CampSearchResponseDto {
         this.firstImageUrl = camp.getFirstImageUrl();
         this.lineIntro = camp.getLineIntro();
         this.like = camp.getLike();
+        this.mapX = camp.getMapX();
+        this.mapY = camp.getMapY();
     }
 }
