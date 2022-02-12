@@ -39,6 +39,7 @@ public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
         //인증 예외 URL 설정
         web.ignoring()
                 .antMatchers(HttpMethod.POST ,"/members/local")
+                .antMatchers(HttpMethod.POST ,"/camps")
                 .antMatchers(HttpMethod.GET ,"/camps/**")
                 .antMatchers(HttpMethod.POST ,"/camps")
                 .antMatchers(HttpMethod.GET, "/reviews/**")
