@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class ReviewController {
 
-    private final CampService campService;
     private final ReviewService reviewService;
     
     //리뷰 작성

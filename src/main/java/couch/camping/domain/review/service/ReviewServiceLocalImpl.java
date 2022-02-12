@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Profile("local")
@@ -67,12 +68,15 @@ public class ReviewServiceLocalImpl implements ReviewService {
         } else {
             Member member = (Member)userDetailsService.loadUserByUsername(header);//user? id 를 통해 회원 엔티티 조회
             return reviewRepository.findByCampId(pageable, campId)
-                    .map(review -> {
-                        if (review.getMember() == member) {
-                            return new ReviewRetrieveLoginResponse(review, true);
-                        } else {
-                            return new ReviewRetrieveLoginResponse(review, false);
+                    .map(review -> {//컬렉션의 어떤 정보를 조회한걸 알고 있어서 컬렉션과 관련된걸 미리 조회해서 한방에 조회
+                        List<ReviewLike> reviewLikeList = review.getReviewLikeList();//사이즈 = 5개의 리뷰라이크
+
+                        for (ReviewLike reviewLike : reviewLikeList) {
+                            if (reviewLike.getMember() == member) {
+                                return new ReviewRetrieveLoginResponse(review, true);
+                            }
                         }
+                        return new ReviewRetrieveLoginResponse(review, false);
                     });
         }
     }
@@ -126,10 +130,12 @@ public class ReviewServiceLocalImpl implements ReviewService {
             reviewLikeRepository.deleteById(reviewLike.get().getId());//reviewLike 엔티티 삭제
         } else {//좋아료를 누르지 않았으면 리뷰의 좋아요 수 1 증가
             findReview.increaseLikeCnt();
-            reviewLikeRepository.save(ReviewLike.builder()//reviewLike 엔티티 생성
-            .member(member)
-            .review(findReview)
-            .build());
+            ReviewLike saveReviewLike = reviewLikeRepository.save(ReviewLike.builder()//reviewLike 엔티티 생성
+                    .member(member)
+                    .review(findReview)
+                    .build());
+
+            findReview.getReviewLikeList().add(saveReviewLike);
         }
     }
 
