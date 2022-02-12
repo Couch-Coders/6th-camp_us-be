@@ -5,6 +5,7 @@ import couch.camping.controller.review.dto.request.ReviewWriteRequestDto;
 import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
 import couch.camping.controller.review.dto.response.ReviewWriteResponseDto;
 import couch.camping.domain.camp.service.CampService;
+import couch.camping.domain.camp.service.CampServiceImpl;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.review.service.ReviewService;
 import couch.camping.exception.CustomException;
