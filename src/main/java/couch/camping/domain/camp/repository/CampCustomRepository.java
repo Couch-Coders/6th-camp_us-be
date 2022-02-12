@@ -9,5 +9,5 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface CampCustomRepository {
-    Page<Camp> findAllCampSearch(List<String> tagList, Pageable pageable);
+    Page<Camp> findAllCampSearch(List<String> tagList, String sigunguNm, Pageable pageable);
 }
