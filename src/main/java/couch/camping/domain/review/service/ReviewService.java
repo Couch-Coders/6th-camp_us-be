@@ -16,5 +16,5 @@ public interface ReviewService {
     void deleteReview(Long reviewId, Member member);
     ReviewWriteResponseDto editReview(Long reviewId, ReviewWriteRequestDto reviewWriteRequestDto, Member member);
     void likeReview(Long reviewId, Member member);
-    Page<ReviewRetrieveResponseDto> getBestReviews();
+    Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable);
 }

@@ -59,6 +59,10 @@ public class MemberService implements UserDetailsService {
         member.changeNickname(nickname);
     }
 
+    public Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable) {
+        return reviewRepository.findByMemberId(pageable, memberId);
+    }
+
     //헤더에서
     public FirebaseToken decodeToken(String header) {
         try {
@@ -70,7 +74,4 @@ public class MemberService implements UserDetailsService {
         }
     }
 
-    public Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable) {
-        return reviewRepository.findByMemberId(pageable, memberId);
-    }
 }

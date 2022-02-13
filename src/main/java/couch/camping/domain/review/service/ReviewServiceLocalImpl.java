@@ -18,9 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -92,7 +90,7 @@ public class ReviewServiceLocalImpl implements ReviewService {
 
         try {
             member.decreaseReviewCnt();
-            reviewRepository.deleteById(reviewId);
+            reviewRepository.deleteByReviewId(reviewId);
         } catch (EmptyResultDataAccessException e) {
             throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
         }
@@ -145,9 +143,7 @@ public class ReviewServiceLocalImpl implements ReviewService {
         }
     }
 
-    public Page<ReviewRetrieveResponseDto> getBestReviews() {
-
-        PageRequest pageRequest = PageRequest.of(0, 4, Sort.by(Sort.Direction.DESC, "likeCnt"));
-        return reviewRepository.findAllByLikeCntGreaterThan(pageRequest, 1).map(review -> new ReviewRetrieveResponseDto(review));
+    public Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable) {
+        return reviewRepository.findAllByLikeCntGreaterThan(pageable).map(review -> new ReviewRetrieveResponseDto(review));
     }
 }
