@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,10 +67,15 @@ public class ReviewServiceLocalImpl implements ReviewService {
             return reviewRepository.findByCampId(pageable, campId)
                     .map(review -> new ReviewRetrieveResponseDto(review));
         } else {
-            Member member = (Member)userDetailsService.loadUserByUsername(header);//user? id 를 통해 회원 엔티티 조회
+            Member member;
+            try {
+                member = (Member)userDetailsService.loadUserByUsername(header);
+            } catch (UsernameNotFoundException e) {
+                throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
+            }
             return reviewRepository.findByCampId(pageable, campId)
-                    .map(review -> {//컬렉션의 어떤 정보를 조회한걸 알고 있어서 컬렉션과 관련된걸 미리 조회해서 한방에 조회
-                        List<ReviewLike> reviewLikeList = review.getReviewLikeList();//사이즈 = 5개의 리뷰라이크
+                    .map(review -> {
+                        List<ReviewLike> reviewLikeList = review.getReviewLikeList();
 
                         for (ReviewLike reviewLike : reviewLikeList) {
                             if (reviewLike.getMember() == member) {
