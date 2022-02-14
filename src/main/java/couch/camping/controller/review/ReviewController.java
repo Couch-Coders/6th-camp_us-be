@@ -4,11 +4,8 @@ import com.google.firebase.auth.FirebaseAuthException;
 import couch.camping.controller.review.dto.request.ReviewWriteRequestDto;
 import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
 import couch.camping.controller.review.dto.response.ReviewWriteResponseDto;
-import couch.camping.domain.camp.service.CampService;
-import couch.camping.domain.camp.service.CampServiceImpl;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.review.service.ReviewService;
-import couch.camping.exception.CustomException;
 import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,15 +41,10 @@ public class ReviewController {
     public ResponseEntity<Page<ReviewRetrieveResponseDto>> getReviewList(Pageable pageable,
                                                                          @PathVariable Long campId,
                                                                          HttpServletRequest request) throws FirebaseAuthException {
-        String header;
-        try {
-            header = RequestUtil.getAuthorizationToken(request.getHeader("Authorization"));
-        } catch (CustomException e) {
-            header = null;
-        }
+        String header = RequestUtil.getAuthorizationToken(request);
         return ResponseEntity.ok(reviewService.retrieveAll(campId, pageable, header));
     }
-    
+
     //리뷰 수정
     @PutMapping("/reviews/{reviewId}")
     public ResponseEntity editReview(@PathVariable Long reviewId,
