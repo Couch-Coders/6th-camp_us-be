@@ -8,6 +8,7 @@ import couch.camping.controller.camp.dto.response.CampSearchResponseDto;
 import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.camp.service.CampService;
 import couch.camping.domain.camp.service.CampServiceImpl;
+import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,8 +63,10 @@ public class CampController {
 
     //camp 좋아요
     @PatchMapping("/{campId}/like")
-    public ResponseEntity likeCamp(@PathVariable String campId, Authentication authentication) {
-//        campService.likeCamp
-        return null;
+    public ResponseEntity likeCamp(@PathVariable Long campId, Authentication authentication) {
+
+        campService.likeCamp(campId, (Member)authentication.getPrincipal());
+
+        return ResponseEntity.noContent().build();
     }
 }

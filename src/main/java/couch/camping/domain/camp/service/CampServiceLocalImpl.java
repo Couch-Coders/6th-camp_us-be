@@ -4,6 +4,9 @@ import couch.camping.controller.camp.dto.response.CampSearchPagingResponseDto;
 import couch.camping.controller.camp.dto.response.CampSearchResponseDto;
 import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.camp.repository.CampRepository;
+import couch.camping.domain.camplike.entity.CampLike;
+import couch.camping.domain.camplike.repository.CampLikeRepository;
+import couch.camping.domain.member.entity.Member;
 import couch.camping.exception.CustomException;
 import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -28,6 +32,7 @@ public class CampServiceLocalImpl implements CampService{
 
 
     private final CampRepository campRepository;
+    private final CampLikeRepository campLikeRepository;
 
     @Transactional
     public void save(Camp camp) {
@@ -43,8 +48,6 @@ public class CampServiceLocalImpl implements CampService{
         return findCamp;
     }
 
-//    "sbrsCl": "전기,무선인터넷,장작판매,온수,물놀이장,산책로,운동장,운동시설"
-
     //캠핑장 조건 다중 조회
     public Page<CampSearchResponseDto> getCampList(
             Pageable pageable, float rate, String name, String sigunguNm, String tag) {
@@ -53,5 +56,28 @@ public class CampServiceLocalImpl implements CampService{
         Page<Camp> allCampSearch = campRepository.findAllCampSearch(tagList, sigunguNm, pageable);
 
         return allCampSearch.map(CampSearchResponseDto::new);
+    }
+
+    @Transactional
+    public void likeCamp(Long campId, Member member) {
+        Camp findCamp = campRepository.findById(campId)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_CAMP, "캠핑장 ID 에 맞는 캠핑장이 없습니다.");
+                });
+
+        Optional<CampLike> campLike = campLikeRepository.findByCampIdAndMemberId(campId, member.getId());
+
+        if (campLike.isPresent()) {
+            findCamp.decreaseCampLikeCnt();
+            campLikeRepository.deleteById(campLike.get().getId());
+        } else{
+            findCamp.increaseCampLikeCnt();
+            CampLike saveCampLike = campLikeRepository.save(CampLike.builder()
+                    .member(member)
+                    .camp(findCamp)
+                    .build());
+
+            findCamp.getCampLikeList().add(saveCampLike);
+        }
     }
 }

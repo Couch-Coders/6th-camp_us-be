@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -26,6 +27,10 @@ public class QCamp extends EntityPathBase<Camp> {
     public final NumberPath<Integer> autoSiteCo = createNumber("autoSiteCo", Integer.class);
 
     public final StringPath brazierCl = createString("brazierCl");
+
+    public final NumberPath<Integer> campLikeCnt = createNumber("campLikeCnt", Integer.class);
+
+    public final ListPath<couch.camping.domain.camplike.entity.CampLike, couch.camping.domain.camplike.entity.QCampLike> campLikeList = this.<couch.camping.domain.camplike.entity.CampLike, couch.camping.domain.camplike.entity.QCampLike>createList("campLikeList", couch.camping.domain.camplike.entity.CampLike.class, couch.camping.domain.camplike.entity.QCampLike.class, PathInits.DIRECT2);
 
     public final StringPath caravAcmpnyAt = createString("caravAcmpnyAt");
 
