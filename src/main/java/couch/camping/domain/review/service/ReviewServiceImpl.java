@@ -25,9 +25,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Profile("prod")
@@ -65,20 +67,28 @@ public class ReviewServiceImpl implements ReviewService {
         return new ReviewWriteResponseDto(reviewRepository.save(review));
     }
 
-    public Page<ReviewRetrieveResponseDto> retrieveAll(Long campId, Pageable pageable, String header) throws FirebaseAuthException {
+    public Page<ReviewRetrieveResponseDto> retrieveAll(Long campId, Pageable pageable, String header) {
         if (header == null) {
             return reviewRepository.findByCampId(pageable, campId)
                     .map(review -> new ReviewRetrieveResponseDto(review));
         } else {
-            FirebaseToken decodedToken = firebaseAuth.verifyIdToken(header);
-            Member member = (Member)userDetailsService.loadUserByUsername(decodedToken.getUid());
+            Member member;
+            try {
+                FirebaseToken decodedToken = firebaseAuth.verifyIdToken(header);
+                member = (Member)userDetailsService.loadUserByUsername(decodedToken.getUid());
+            } catch (UsernameNotFoundException | FirebaseAuthException | IllegalArgumentException e) {
+                throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
+            }
             return reviewRepository.findByCampId(pageable, campId)
                     .map(review -> {
-                        if (review.getMember() == member) {
-                            return new ReviewRetrieveLoginResponse(review, true);
-                        } else {
-                            return new ReviewRetrieveLoginResponse(review, false);
+                        List<ReviewLike> reviewLikeList = review.getReviewLikeList();
+
+                        for (ReviewLike reviewLike : reviewLikeList) {
+                            if (reviewLike.getMember() == member) {
+                                return new ReviewRetrieveLoginResponse(review, true);
+                            }
                         }
+                        return new ReviewRetrieveLoginResponse(review, false);
                     });
         }
     }
@@ -132,10 +142,13 @@ public class ReviewServiceImpl implements ReviewService {
             reviewLikeRepository.deleteById(reviewLike.get().getId());//reviewLike 엔티티 삭제
         } else {//좋아료를 누르지 않았으면 리뷰의 좋아요 수 1 증가
             findReview.increaseLikeCnt();
-            reviewLikeRepository.save(ReviewLike.builder()//reviewLike 엔티티 생성
+
+            ReviewLike saveReviewLike = reviewLikeRepository.save(ReviewLike.builder()//reviewLike 엔티티 생성
                     .member(member)
                     .review(findReview)
                     .build());
+
+            findReview.getReviewLikeList().add(saveReviewLike);
         }
     }
 

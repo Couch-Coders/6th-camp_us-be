@@ -4,6 +4,8 @@ import couch.camping.exception.CustomException;
 import couch.camping.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Slf4j
 public class RequestUtil {
 
@@ -23,5 +25,11 @@ public class RequestUtil {
 
         //Token return
         return parts[1];
+    }
+
+    public static String getAuthorizationToken(HttpServletRequest request) {
+        String authorization = request.getHeader("Authorization");
+        if (authorization == null || authorization == "") return null;
+        return getAuthorizationToken(authorization);
     }
 }
