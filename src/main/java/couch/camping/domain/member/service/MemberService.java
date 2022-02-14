@@ -3,19 +3,16 @@ package couch.camping.domain.member.service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import couch.camping.controller.member.dto.request.MemberReviewRequestModel;
+import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.repository.MemberRepository;
 import couch.camping.domain.review.entity.Review;
 import couch.camping.domain.review.repository.ReviewRepository;
-import couch.camping.exception.CustomException;
-import couch.camping.exception.ErrorCode;
 import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -45,7 +42,7 @@ public class MemberService implements UserDetailsService {
     
     //회원 등록
     @Transactional
-    public Member register(String uid, String name, String email, String nickname, String imgUrl) {
+    public MemberRegisterResponseDto register(String uid, String name, String email, String nickname, String imgUrl) {
         Member member = Member.builder()
                 .uid(uid)
                 .name(name)
@@ -53,45 +50,27 @@ public class MemberService implements UserDetailsService {
                 .nickname(nickname)
                 .imgUrl(imgUrl)
                 .build();
-        memberRepository.save(member);
-        return member;
+
+        return new MemberRegisterResponseDto(memberRepository.save(member));
     }
 
     @Transactional
-    public void editMemberNickName(Long id, String nickname) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "회원 ID 에 해당하는 회원이 없습니다.");
-                });
+    public void editMemberNickName(Member member, String nickname) {
         member.changeNickname(nickname);
     }
 
     //헤더에서
     public FirebaseToken decodeToken(String header) {
-        FirebaseToken decodedToken = null;
-
         try {
             String token = RequestUtil.getAuthorizationToken(header);
-            decodedToken = firebaseAuth.verifyIdToken(token);
+            return firebaseAuth.verifyIdToken(token);
         } catch (IllegalArgumentException | FirebaseAuthException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                     "{\"code\":\"INVALID_TOKEN\", \"message\":\"" + e.getMessage() + "\"}");
         }
-        return decodedToken;
     }
 
-    public Page<Review> retrieveMemberReviews(Long memberId, MemberReviewRequestModel memberReviewRequestModel) {
-        int page = memberReviewRequestModel.getPage();
-        int size = memberReviewRequestModel.getSize();
-        int sort = memberReviewRequestModel.getSort();
-
-        Sort.Direction sortType;
-        if (sort == 0) sortType = Sort.Direction.DESC;
-        else sortType = Sort.Direction.ASC;
-
-        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(sortType, "createdDate"));
-        Page<Review> reviewPage = reviewRepository.findByMemberId(pageRequest, memberId);
-
-        return reviewPage;
+    public Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable) {
+        return reviewRepository.findByMemberId(pageable, memberId);
     }
 }
