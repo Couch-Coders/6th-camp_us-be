@@ -22,13 +22,21 @@ public class Notification extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member1_id")
     private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member2_id")
+    private Member ownerMember;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
     private Review review;
 
     private boolean isChecked;
+
+    public void changeIsChecked() {
+        this.isChecked = true;
+    }
 
 }

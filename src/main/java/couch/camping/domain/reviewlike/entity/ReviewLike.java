@@ -27,4 +27,16 @@ public class ReviewLike extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public ReviewLike(Member member) {
+        this.member = member;
+    }
+
+    public void addReview(Review review) {
+        if (this.review != null) {
+            this.review.getReviewLikeList().remove(this);
+        }
+        this.review = review;
+        review.getReviewLikeList().add(this);
+    }
 }

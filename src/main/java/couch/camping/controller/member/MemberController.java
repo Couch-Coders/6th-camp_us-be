@@ -6,8 +6,10 @@ import couch.camping.controller.member.dto.request.MemberSaveRequestDto;
 import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
 import couch.camping.controller.member.dto.response.MemberRetrieveResponseDto;
 import couch.camping.controller.member.dto.response.MemberReviewsResponseDto;
+import couch.camping.controller.member.dto.response.NotificationRetrieveResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
+import couch.camping.domain.notification.service.NotificationService;
 import couch.camping.domain.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +26,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
+
     private final MemberService memberService;
     private final ReviewService reviewService;
+    private final NotificationService notificationService;
 
     //로컬 회원 가입
     @PostMapping("/local")
@@ -86,6 +90,23 @@ public class MemberController {
 
         return ResponseEntity.ok(reviewService
                 .retrieveMemberReviews(memberId, pageable).map(review -> new MemberReviewsResponseDto(review)));
+    }
+    
+    //회원 알림 조회
+    @GetMapping("/me/notifications")
+    public ResponseEntity<Page<NotificationRetrieveResponseDto>> getMemberNotifications(Pageable pageable,
+                                                                                        Authentication authentication) {
+        Long memberId = ((Member) authentication.getPrincipal()).getId();
+        return ResponseEntity.ok(notificationService
+                .retrieveNotifications(memberId, pageable));
+    }
+
+    //알림 단건 읽음
+    @PatchMapping("/me/notifications/{notificationId}")
+    public ResponseEntity updateMemberNotification(@PathVariable Long notificationId) {
+        notificationService.updateNotification(notificationId);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
