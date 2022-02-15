@@ -39,6 +39,7 @@ public class ReviewServiceLocalImpl implements ReviewService {
     private final CampRepository campRepository;
     private final UserDetailsService userDetailsService;
 
+    @Override
     @Transactional
     public ReviewWriteResponseDto write(Long campId, Member member, ReviewWriteRequestDto reviewWriteRequestDto) {
 
@@ -46,8 +47,6 @@ public class ReviewServiceLocalImpl implements ReviewService {
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_CAMP, "캠핑장 ID 에 해당하는 캠핑장이 없습니다.");
                 });
-
-        member.increaseReviewCnt();
 
         Review review = Review.builder()
                 .member(member)
@@ -60,6 +59,7 @@ public class ReviewServiceLocalImpl implements ReviewService {
         return new ReviewWriteResponseDto(reviewRepository.save(review));
     }
 
+    @Override
     public Page<ReviewRetrieveResponseDto> retrieveAll(Long campId, Pageable pageable, String header) {
         if (header == null) {
             return reviewRepository.findByCampId(pageable, campId)
@@ -85,18 +85,18 @@ public class ReviewServiceLocalImpl implements ReviewService {
         }
     }
 
+    @Override
     @Transactional
     public void deleteReview(Long reviewId, Member member) {
 
         try {
-            member.decreaseReviewCnt();
-            reviewRepository.deleteByReviewId(reviewId);
+            reviewRepository.deleteById(reviewId);
         } catch (EmptyResultDataAccessException e) {
             throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
         }
-
     }
 
+    @Override
     @Transactional
     public ReviewWriteResponseDto editReview(Long reviewId, ReviewWriteRequestDto reviewWriteRequestDto, Member member) {
 
@@ -118,6 +118,7 @@ public class ReviewServiceLocalImpl implements ReviewService {
         return new ReviewWriteResponseDto(editReview);
     }
 
+    @Override
     @Transactional
     public void likeReview(Long reviewId, Member member) {
 
@@ -145,5 +146,15 @@ public class ReviewServiceLocalImpl implements ReviewService {
 
     public Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable) {
         return reviewRepository.findAllByLikeCntGreaterThan(pageable).map(review -> new ReviewRetrieveResponseDto(review));
+    }
+
+    @Override
+    public long countMemberReviews(Long memberId) {
+        return reviewRepository.countByMemberId(memberId);
+    }
+
+    @Override
+    public Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable) {
+        return reviewRepository.findByMemberId(pageable, memberId);
     }
 }

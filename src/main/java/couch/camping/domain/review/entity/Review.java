@@ -31,7 +31,7 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "camp_id")
     private Camp camp;
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ReviewLike> reviewLikeList = new ArrayList<>();
 
     private String imgUrl;

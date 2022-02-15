@@ -8,6 +8,7 @@ import couch.camping.controller.member.dto.response.MemberRetrieveResponseDto;
 import couch.camping.controller.member.dto.response.MemberReviewsResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
+import couch.camping.domain.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
+    private final ReviewService reviewService;
 
     //로컬 회원 가입
     @PostMapping("/local")
@@ -73,8 +75,8 @@ public class MemberController {
     @GetMapping("/me/info")
     public ResponseEntity getMember(Authentication authentication) {
         Member member = (Member) authentication.getPrincipal();
-
-        return ResponseEntity.ok(new MemberRetrieveResponseDto(member));
+        long count = reviewService.countMemberReviews(member.getId());
+        return ResponseEntity.ok(new MemberRetrieveResponseDto(member, count));
     }
 
     //회원이 작성한 리뷰 조회
@@ -82,7 +84,7 @@ public class MemberController {
     public ResponseEntity<Page<MemberReviewsResponseDto>> getMemberReviews(Pageable pageable, Authentication authentication) {
         Long memberId = ((Member) authentication.getPrincipal()).getId();
 
-        return ResponseEntity.ok(memberService
+        return ResponseEntity.ok(reviewService
                 .retrieveMemberReviews(memberId, pageable).map(review -> new MemberReviewsResponseDto(review)));
     }
 

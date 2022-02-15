@@ -103,13 +103,11 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
     }
 
     @Override
-    public void deleteByReviewId(Long reviewId) {
-        queryFactory
-                .delete(review)
-                .where(review.id.eq(reviewId))
-                .execute();
-
-        em.flush();
-        em.clear();
+    public Long countByMemberId(Long memberId) {
+        return queryFactory
+                .select(review.count())
+                .from(review)
+                .where(review.member.id.eq(memberId))
+                .fetchOne();
     }
 }

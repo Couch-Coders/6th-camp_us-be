@@ -5,6 +5,7 @@ import couch.camping.controller.review.dto.request.ReviewWriteRequestDto;
 import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
 import couch.camping.controller.review.dto.response.ReviewWriteResponseDto;
 import couch.camping.domain.member.entity.Member;
+import couch.camping.domain.review.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,4 +18,6 @@ public interface ReviewService {
     ReviewWriteResponseDto editReview(Long reviewId, ReviewWriteRequestDto reviewWriteRequestDto, Member member);
     void likeReview(Long reviewId, Member member);
     Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable);
+    long countMemberReviews(Long memberId);
+    Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable);
 }

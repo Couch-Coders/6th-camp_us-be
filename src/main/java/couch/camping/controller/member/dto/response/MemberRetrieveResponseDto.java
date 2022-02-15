@@ -17,17 +17,17 @@ public class MemberRetrieveResponseDto {
     private String name;
     private String nickname;
     private String imgUrl;
-    private int reviewCnt;
+    private long reviewCnt;
     private LocalDateTime createdDate;
 
-    public MemberRetrieveResponseDto(Member member) {
+    public MemberRetrieveResponseDto(Member member, long reviewCnt) {
         this.memberId = member.getId();
         this.uid = member.getUid();
         this.email = member.getEmail();
         this.name = member.getName();
         this.nickname = member.getNickname();
         this.imgUrl = member.getImgUrl();
-        this.reviewCnt = member.getReviewCnt();
+        this.reviewCnt = reviewCnt;
         this.createdDate = member.getCreatedDate();
     }
 }

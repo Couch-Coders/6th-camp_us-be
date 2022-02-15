@@ -12,6 +12,5 @@ public interface ReviewCustomRepository {
 
     Page<Review> findByMemberId(Pageable pageable, Long memberId);
 
-    void deleteByReviewId(Long reviewId);
-
+    Long countByMemberId(Long memberId);
 }
