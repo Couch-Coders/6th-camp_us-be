@@ -78,8 +78,8 @@ public class ReviewController {
     
     //bset 리뷰
     @GetMapping("/reviews/best")
-    public ResponseEntity getBestReviews() {
-        Page<ReviewRetrieveResponseDto> responseDto = reviewService.getBestReviews();
+    public ResponseEntity getBestReviews(Pageable pageable) {
+        Page<ReviewRetrieveResponseDto> responseDto = reviewService.getBestReviews(pageable);
 
         return ResponseEntity.ok(responseDto);
     }

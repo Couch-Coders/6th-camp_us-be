@@ -21,9 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -45,6 +43,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserDetailsService userDetailsService;
     private final FirebaseAuth firebaseAuth;
 
+    @Override
     @Transactional
     public ReviewWriteResponseDto write(Long campId, Member member, ReviewWriteRequestDto reviewWriteRequestDto) {
 
@@ -52,9 +51,6 @@ public class ReviewServiceImpl implements ReviewService {
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_CAMP, "캠핑장 ID 에 해당하는 캠핑장이 없습니다.");
                 });
-
-
-        member.increaseReviewCnt();
 
         Review review = Review.builder()
                 .member(member)
@@ -67,6 +63,7 @@ public class ReviewServiceImpl implements ReviewService {
         return new ReviewWriteResponseDto(reviewRepository.save(review));
     }
 
+    @Override
     public Page<ReviewRetrieveResponseDto> retrieveAll(Long campId, Pageable pageable, String header) {
         if (header == null) {
             return reviewRepository.findByCampId(pageable, campId)
@@ -93,18 +90,18 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    @Override
     @Transactional
     public void deleteReview(Long reviewId, Member member) {
 
         try {
-            member.decreaseReviewCnt();
             reviewRepository.deleteById(reviewId);
         } catch (EmptyResultDataAccessException e) {
             throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
         }
-
     }
 
+    @Override
     @Transactional
     public ReviewWriteResponseDto editReview(Long reviewId, ReviewWriteRequestDto reviewWriteRequestDto, Member member) {
 
@@ -126,6 +123,7 @@ public class ReviewServiceImpl implements ReviewService {
         return new ReviewWriteResponseDto(editReview);
     }
 
+    @Override
     @Transactional
     public void likeReview(Long reviewId, Member member) {
 
@@ -152,9 +150,18 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    public Page<ReviewRetrieveResponseDto> getBestReviews() {
+    @Override
+    public Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable) {
+        return reviewRepository.findAllByLikeCntGreaterThan(pageable).map(review -> new ReviewRetrieveResponseDto(review));
+    }
 
-        PageRequest pageRequest = PageRequest.of(0, 4, Sort.by(Sort.Direction.DESC, "likeCnt"));
-        return reviewRepository.findAllByLikeCntGreaterThan(pageRequest, 1).map(review -> new ReviewRetrieveResponseDto(review));
+    @Override
+    public long countMemberReviews(Long memberId) {
+        return reviewRepository.countByMemberId(memberId);
+    }
+
+    @Override
+    public Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable) {
+        return reviewRepository.findByMemberId(pageable, memberId);
     }
 }

@@ -6,13 +6,10 @@ import com.google.firebase.auth.FirebaseToken;
 import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.repository.MemberRepository;
-import couch.camping.domain.review.entity.Review;
 import couch.camping.domain.review.repository.ReviewRepository;
 import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -70,7 +67,4 @@ public class MemberService implements UserDetailsService {
         }
     }
 
-    public Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable) {
-        return reviewRepository.findByMemberId(pageable, memberId);
-    }
 }
