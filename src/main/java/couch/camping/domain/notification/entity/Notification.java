@@ -31,4 +31,8 @@ public class Notification extends BaseTimeEntity {
 
     private boolean isChecked;
 
+    public void changeIsChecked() {
+        this.isChecked = true;
+    }
+
 }

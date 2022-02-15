@@ -8,6 +8,7 @@ import couch.camping.controller.member.dto.response.MemberRetrieveResponseDto;
 import couch.camping.controller.member.dto.response.MemberReviewsResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
+import couch.camping.domain.notification.service.NotificationService;
 import couch.camping.domain.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
+
     private final MemberService memberService;
     private final ReviewService reviewService;
+    private final NotificationService notificationService;
 
     //로컬 회원 가입
     @PostMapping("/local")
@@ -86,6 +89,14 @@ public class MemberController {
 
         return ResponseEntity.ok(reviewService
                 .retrieveMemberReviews(memberId, pageable).map(review -> new MemberReviewsResponseDto(review)));
+    }
+    
+    //알림 단건 읽음
+    @PatchMapping("/me/notifications/{notificationId}")
+    public ResponseEntity updateMemberNotification(@PathVariable Long notificationId) {
+        notificationService.updateNotification(notificationId);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

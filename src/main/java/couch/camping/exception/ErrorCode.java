@@ -28,7 +28,9 @@ public enum ErrorCode {
 
     //리뷰 예외
     NOT_FOUND_REVIEW(HttpStatus.NOT_FOUND, "해당 리뷰를 찾을 수 없습니다."),
-    NOT_FOUND_REPLY(HttpStatus.NOT_FOUND,"해당 리뷰 찾을 수 없습니다.");
+
+    //알림 예외
+    NOT_FOUND_NOTIFICATION(HttpStatus.NOT_FOUND, "해당 알림을 찾을 수 없습니다.");
 
 
     private final HttpStatus httpStatus;

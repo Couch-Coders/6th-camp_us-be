@@ -10,6 +10,8 @@ import couch.camping.controller.review.dto.response.ReviewWriteResponseDto;
 import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.camp.repository.CampRepository;
 import couch.camping.domain.member.entity.Member;
+import couch.camping.domain.notification.entity.Notification;
+import couch.camping.domain.notification.repository.NotificationRepository;
 import couch.camping.domain.review.entity.Review;
 import couch.camping.domain.review.repository.ReviewRepository;
 import couch.camping.domain.reviewlike.entity.ReviewLike;
@@ -42,6 +44,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final CampRepository campRepository;
     private final UserDetailsService userDetailsService;
     private final FirebaseAuth firebaseAuth;
+    private final NotificationRepository notificationRepository;
 
     @Override
     @Transactional
@@ -140,13 +143,23 @@ public class ReviewServiceImpl implements ReviewService {
             reviewLikeRepository.deleteById(reviewLike.get().getId());//reviewLike 엔티티 삭제
         } else {//좋아료를 누르지 않았으면 리뷰의 좋아요 수 1 증가
             findReview.increaseLikeCnt();
-
             ReviewLike saveReviewLike = reviewLikeRepository.save(ReviewLike.builder()//reviewLike 엔티티 생성
                     .member(member)
                     .review(findReview)
                     .build());
 
             findReview.getReviewLikeList().add(saveReviewLike);
+
+            Optional<Notification> optionalNotification = notificationRepository.findByMemberIdAndReviewId(member.getId(), reviewId);
+
+            if (!optionalNotification.isPresent()) {
+                Notification notification = Notification.builder()
+                        .review(findReview)
+                        .member(member)
+                        .build();
+
+                notificationRepository.save(notification);
+            }
         }
     }
 
