@@ -1,8 +1,11 @@
 package couch.camping.domain.camp.entity;
 
+import couch.camping.domain.camplike.entity.CampLike;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -72,4 +75,16 @@ public class Camp {
     private String tourEraCl;
     private String firstImageUrl;
 
+    private int campLikeCnt;
+
+    @OneToMany(mappedBy = "camp")
+    private List<CampLike> campLikeList = new ArrayList<>();
+
+    public void increaseCampLikeCnt() {
+        this.campLikeCnt++;
+    }
+
+    public void decreaseCampLikeCnt() {
+        this.campLikeCnt--;
+    }
 }

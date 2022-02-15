@@ -134,12 +134,13 @@ public class ReviewServiceImpl implements ReviewService {
         
         Optional<ReviewLike> reviewLike = reviewLikeRepository.findByReviewIdAndMemberId(reviewId, member.getId());
         boolean present = reviewLike.isPresent();//회원이 리뷰에 좋아요를 눌렀는지 확인
-        
+
         if (present) {//눌렀으면 리뷰 좋아요 수 1 감소
             findReview.decreaseLikeCnt();
             reviewLikeRepository.deleteById(reviewLike.get().getId());//reviewLike 엔티티 삭제
         } else {//좋아료를 누르지 않았으면 리뷰의 좋아요 수 1 증가
             findReview.increaseLikeCnt();
+
             ReviewLike saveReviewLike = reviewLikeRepository.save(ReviewLike.builder()//reviewLike 엔티티 생성
                     .member(member)
                     .review(findReview)
