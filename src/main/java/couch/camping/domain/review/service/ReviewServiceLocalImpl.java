@@ -130,7 +130,9 @@ public class ReviewServiceLocalImpl implements ReviewService {
                     throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
                 });
         
-        Optional<ReviewLike> optionalReviewLike = reviewLikeRepository.findByReviewIdAndMemberId(reviewId, member.getId());
+        Optional<ReviewLike> optionalReviewLike = reviewLikeRepository
+                .findByReviewIdAndMemberId(reviewId, member.getId());
+
         boolean present = optionalReviewLike.isPresent();//회원이 리뷰에 좋아요를 눌렀는지 확인
         
         if (present) {//눌렀으면 리뷰 좋아요 수 1 감소
@@ -138,14 +140,14 @@ public class ReviewServiceLocalImpl implements ReviewService {
             reviewLikeRepository.deleteById(optionalReviewLike.get().getId());//reviewLike 엔티티 삭제
         } else {//좋아요를 누르지 않았으면 리뷰의 좋아요 수 1 증가
             findReview.increaseLikeCnt();
-            ReviewLike saveReviewLike = reviewLikeRepository.save(ReviewLike.builder()//reviewLike 엔티티 생성
-                    .member(member)
-                    .review(findReview)
-                    .build());
 
-            findReview.getReviewLikeList().add(saveReviewLike);
+            ReviewLike reviewLike = new ReviewLike(member);
+            reviewLike.addReview(findReview);
 
-            Optional<Notification> optionalNotification = notificationRepository.findByMemberIdAndReviewId(member.getId(), reviewId);
+            reviewLikeRepository.save(reviewLike);
+
+            Optional<Notification> optionalNotification = notificationRepository
+                    .findByMemberIdAndReviewId(member.getId(), reviewId);
 
             if (!optionalNotification.isPresent()) {
                 Notification notification = Notification.builder()
