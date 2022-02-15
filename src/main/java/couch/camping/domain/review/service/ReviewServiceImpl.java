@@ -151,16 +151,19 @@ public class ReviewServiceImpl implements ReviewService {
 
             reviewLikeRepository.save(reviewLike);
 
-            Optional<Notification> optionalNotification = notificationRepository
-                    .findByMemberIdAndReviewId(member.getId(), reviewId);
+            if (findReview.getMember() != member) {
+                Optional<Notification> optionalNotification = notificationRepository
+                        .findByMemberIdAndReviewId(member.getId(), reviewId);//좋아요를 누른 회원, 리뷰
 
-            if (!optionalNotification.isPresent()) {
-                Notification notification = Notification.builder()
-                        .review(findReview)
-                        .member(member)
-                        .build();
+                if (!optionalNotification.isPresent()) {
+                    Notification notification = Notification.builder()
+                            .review(findReview)//리뷰 엔티티
+                            .member(member)//좋아요를 누른 회원 엔티티
+                            .ownerMember(findReview.getMember())//게시글의 회원
+                            .build();
 
-                notificationRepository.save(notification);
+                    notificationRepository.save(notification);
+                }
             }
         }
     }

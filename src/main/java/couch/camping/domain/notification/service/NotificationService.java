@@ -1,10 +1,13 @@
 package couch.camping.domain.notification.service;
 
+import couch.camping.controller.member.dto.response.NotificationRetrieveResponseDto;
 import couch.camping.domain.notification.entity.Notification;
 import couch.camping.domain.notification.repository.NotificationRepository;
 import couch.camping.exception.CustomException;
 import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,4 +28,8 @@ public class NotificationService {
         notification.changeIsChecked();
     }
 
+    public Page<NotificationRetrieveResponseDto> retrieveNotifications(Long memberId, Pageable pageable) {
+        return notificationRepository.findByOwnerMemberId(pageable, memberId)
+                .map(notification -> new NotificationRetrieveResponseDto(notification));
+    }
 }
