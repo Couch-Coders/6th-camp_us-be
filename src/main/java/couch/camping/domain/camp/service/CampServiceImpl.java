@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -57,17 +58,18 @@ public class CampServiceImpl implements CampService{
     //캠핑장 조건 다중 조회
     @Override
     public Page<CampSearchResponseDto> getCampList(
-            Pageable pageable, String name, String sigunguNm, String tag, String header, String sort) {
+            Pageable pageable, String name, String sigunguNm, String tag, String header, String sort, Float mapX, Float mapY) {
+        List<String> tagList = new ArrayList<>();
+        if (tag!= null)
+            tagList = Arrays.asList(tag.split("_"));
 
-        List<String> tagList = Arrays.asList(tag.split("_"));
-
-        if (!(sort.equals("distance") || sort.equals("rate"))) {
+        if (!sort.equals("distance") && !sort.equals("rate")) {
             throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "sort 의 값을 distance 또는 rate 만 입력가능합니다.");
         }
 
         if (header == null) {
-            return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable)
-                    .map(CampSearchResponseDto::new);
+            return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable, mapX, mapY)
+                    .map(camp -> new CampSearchResponseDto(camp));
         }
         else {
             Member member;
@@ -77,7 +79,7 @@ public class CampServiceImpl implements CampService{
             } catch (UsernameNotFoundException | FirebaseAuthException | IllegalArgumentException e) {
                 throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
             }
-            return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable)
+            return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable, mapX, mapY)
                     .map(camp -> {
                         List<CampLike> campLikeList = camp.getCampLikeList();
 

@@ -14,7 +14,7 @@ public interface ReviewService {
 
     ReviewWriteResponseDto write(Long campId, Member member, ReviewWriteRequestDto reviewWriteRequestDto);
     Page<ReviewRetrieveResponseDto> retrieveAll(Long campId, Pageable pageable, String header) throws FirebaseAuthException;
-    void deleteReview(Long campId, Long reviewId, Member member);
+    void deleteReview(Long reviewId, Member member);
     ReviewWriteResponseDto editReview(Long reviewId, ReviewWriteRequestDto reviewWriteRequestDto, Member member);
     void likeReview(Long reviewId, Member member);
     Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable);
