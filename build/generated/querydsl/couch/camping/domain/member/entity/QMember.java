@@ -37,8 +37,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath nickname = createString("nickname");
 
-    public final NumberPath<Integer> reviewCnt = createNumber("reviewCnt", Integer.class);
-
     public final StringPath uid = createString("uid");
 
     public QMember(String variable) {

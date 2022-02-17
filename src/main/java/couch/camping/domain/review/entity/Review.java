@@ -3,10 +3,13 @@ package couch.camping.domain.review.entity;
 import couch.camping.domain.base.BaseEntity;
 import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.member.entity.Member;
+import couch.camping.domain.reviewlike.entity.ReviewLike;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,6 +31,9 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "camp_id")
     private Camp camp;
 
+    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<ReviewLike> reviewLikeList = new ArrayList<>();
+
     private String imgUrl;
 
     @Lob
@@ -43,5 +49,12 @@ public class Review extends BaseEntity {
 
     public void decreaseLikeCnt() {
         this.likeCnt = likeCnt - 1;
+    }
+
+    public Review changeReview(String content, int rate, String imgUrl) {
+        this.content = content;
+        this.rate = rate;
+        this.imgUrl = imgUrl;
+        return this;
     }
 }

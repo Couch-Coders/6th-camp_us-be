@@ -2,22 +2,23 @@ package couch.camping.controller.member;
 
 import com.google.firebase.auth.FirebaseToken;
 import couch.camping.controller.member.dto.request.MemberRegisterRequestDto;
-import couch.camping.controller.member.dto.request.MemberReviewRequestDto;
 import couch.camping.controller.member.dto.request.MemberSaveRequestDto;
 import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
 import couch.camping.controller.member.dto.response.MemberRetrieveResponseDto;
 import couch.camping.controller.member.dto.response.MemberReviewsResponseDto;
+import couch.camping.controller.member.dto.response.NotificationRetrieveResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
+import couch.camping.domain.notification.service.NotificationService;
+import couch.camping.domain.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 
 @RestController
@@ -25,18 +26,21 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
+
     private final MemberService memberService;
+    private final ReviewService reviewService;
+    private final NotificationService notificationService;
 
     //로컬 회원 가입
     @PostMapping("/local")
     public ResponseEntity<MemberRegisterResponseDto> registerLocalMember(@RequestBody MemberSaveRequestDto memberSaveRequestDto) {
-        Member registeredMember = memberService.register(
+        MemberRegisterResponseDto responseDto = memberService.register(
                 memberSaveRequestDto.getUid(), memberSaveRequestDto.getName()
                 , memberSaveRequestDto.getEmail(), memberSaveRequestDto.getNickname(), memberSaveRequestDto.getImgUrl());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new MemberRegisterResponseDto(registeredMember));
+                .body(responseDto);
     }
     
     //회원 가입
@@ -46,13 +50,13 @@ public class MemberController {
         // TOKEN을 가져온다.
         FirebaseToken decodedToken = memberService.decodeToken(header);
         // 사용자를 등록한다.
-        Member registeredMember = memberService.register(
-            decodedToken.getUid(), decodedToken.getName(), decodedToken.getEmail()
+        MemberRegisterResponseDto responseDto = memberService.register(
+                decodedToken.getUid(), decodedToken.getName(), decodedToken.getEmail()
                 , memberRegisterRequestDto.getNickname(), decodedToken.getPicture());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new MemberRegisterResponseDto(registeredMember));
+                .body(responseDto);
     }
     
     //로그인
@@ -66,8 +70,7 @@ public class MemberController {
     @PatchMapping("/me")
     public ResponseEntity editMemberNickname(Authentication authentication,
                                        @RequestBody MemberRegisterRequestDto memberRegisterRequestDto) {
-        Member member = ((Member) authentication.getPrincipal());
-        memberService.editMemberNickName(member.getId(), memberRegisterRequestDto.getNickname());
+        memberService.editMemberNickName(((Member) authentication.getPrincipal()), memberRegisterRequestDto.getNickname());
 
         return ResponseEntity.noContent().build();
     }
@@ -76,22 +79,41 @@ public class MemberController {
     @GetMapping("/me/info")
     public ResponseEntity getMember(Authentication authentication) {
         Member member = (Member) authentication.getPrincipal();
-
-        return ResponseEntity.ok(new MemberRetrieveResponseDto(member));
+        long count = reviewService.countMemberReviews(member.getId());
+        return ResponseEntity.ok(new MemberRetrieveResponseDto(member, count));
     }
 
     //회원이 작성한 리뷰 조회
     @GetMapping("/me/reviews")
-    public ResponseEntity<Page<MemberReviewsResponseDto>> getMemberReviews(
-            @Valid MemberReviewRequestDto memberReviewRequestDto,
-            Authentication authentication) {
+    public ResponseEntity<Page<MemberReviewsResponseDto>> getMemberReviews(Pageable pageable, Authentication authentication) {
         Long memberId = ((Member) authentication.getPrincipal()).getId();
 
-        Page<MemberReviewsResponseDto> map = memberService
-                .retrieveMemberReviews(memberId, memberReviewRequestDto).map(review -> new MemberReviewsResponseDto(review));
-
-        return ResponseEntity.ok(map);
-
+        return ResponseEntity.ok(reviewService
+                .retrieveMemberReviews(memberId, pageable).map(review -> new MemberReviewsResponseDto(review)));
+    }
+    
+    //회원 알림 조회
+    @GetMapping("/me/notifications")
+    public ResponseEntity<Page<NotificationRetrieveResponseDto>> getMemberNotifications(Pageable pageable,
+                                                                                        Authentication authentication) {
+        Long memberId = ((Member) authentication.getPrincipal()).getId();
+        return ResponseEntity.ok(notificationService
+                .retrieveNotifications(memberId, pageable));
     }
 
+    //알림 단건 읽음
+    @PatchMapping("/me/notifications/{notificationId}")
+    public ResponseEntity updateMemberNotification(@PathVariable Long notificationId) {
+        notificationService.updateNotification(notificationId);
+
+        return ResponseEntity.noContent().build();
+    }
+    
+    //알림 전체 읽음
+    @PatchMapping("/me/notifications")
+    public ResponseEntity updateMemberNotifications(Authentication authentication) {
+        Long memberId = ((Member) authentication.getPrincipal()).getId();
+        notificationService.updateNotifications(memberId);
+        return ResponseEntity.noContent().build();
+    }
 }

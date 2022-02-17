@@ -36,6 +36,8 @@ public class QNotification extends EntityPathBase<Notification> {
 
     public final couch.camping.domain.member.entity.QMember member;
 
+    public final couch.camping.domain.member.entity.QMember ownerMember;
+
     public final couch.camping.domain.review.entity.QReview review;
 
     public QNotification(String variable) {
@@ -57,6 +59,7 @@ public class QNotification extends EntityPathBase<Notification> {
     public QNotification(Class<? extends Notification> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new couch.camping.domain.member.entity.QMember(forProperty("member")) : null;
+        this.ownerMember = inits.isInitialized("ownerMember") ? new couch.camping.domain.member.entity.QMember(forProperty("ownerMember")) : null;
         this.review = inits.isInitialized("review") ? new couch.camping.domain.review.entity.QReview(forProperty("review"), inits.get("review")) : null;
     }
 

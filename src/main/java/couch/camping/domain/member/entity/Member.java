@@ -27,20 +27,10 @@ public class Member extends BaseTimeEntity implements UserDetails {
     private String name;
     private String nickname;
     private String imgUrl;
-    private int reviewCnt;
 
     public void changeNickname(String nickname) {
         this.nickname = nickname;
     }
-
-    public void increaseReviewCnt() {
-        this.reviewCnt = reviewCnt+1;
-    }
-
-    public void decreaseReviewCnt() {
-        this.reviewCnt = reviewCnt - 1;
-    }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

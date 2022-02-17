@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Profile("dev")
+@Profile("local")
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -39,7 +39,9 @@ public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
         //인증 예외 URL 설정
         web.ignoring()
                 .antMatchers(HttpMethod.POST ,"/members/local")
+                .antMatchers(HttpMethod.POST ,"/camps")
                 .antMatchers(HttpMethod.GET ,"/camps/**")
+                .antMatchers(HttpMethod.POST ,"/camps")
                 .antMatchers(HttpMethod.GET, "/reviews/**")
                 .antMatchers(HttpMethod.GET ,"/test")
 
