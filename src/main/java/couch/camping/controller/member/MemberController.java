@@ -108,5 +108,12 @@ public class MemberController {
 
         return ResponseEntity.noContent().build();
     }
-
+    
+    //알림 전체 읽음
+    @PatchMapping("/me/notifications")
+    public ResponseEntity updateMemberNotifications(Authentication authentication) {
+        Long memberId = ((Member) authentication.getPrincipal()).getId();
+        notificationService.updateNotifications(memberId);
+        return ResponseEntity.noContent().build();
+    }
 }

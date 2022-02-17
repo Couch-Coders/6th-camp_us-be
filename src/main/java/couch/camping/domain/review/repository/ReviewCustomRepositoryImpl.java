@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static couch.camping.domain.review.entity.QReview.review;
@@ -21,25 +20,17 @@ import static couch.camping.domain.review.entity.QReview.review;
 public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final EntityManager em;
 
     @Override
     public Page<Review> findAllByLikeCntGreaterThan(Pageable pageable) {
-        JPAQuery<Review> query = queryFactory
+
+        List<Review> content = queryFactory
                 .selectFrom(review)
                 .where(review.likeCnt.goe(1))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(review.likeCnt.desc());
-
-        for (Sort.Order o : pageable.getSort()) {
-            PathBuilder pathBuilder = new PathBuilder(review.getType(), review.getMetadata());
-            query.orderBy(
-                    new OrderSpecifier<>(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(o.getProperty()))
-            );
-        }
-
-        List<Review> content = query.fetch();
+                .orderBy(review.likeCnt.desc())
+                .fetch();
 
         Long total = queryFactory
                 .select(review.count())

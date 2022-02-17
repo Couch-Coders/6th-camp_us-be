@@ -28,6 +28,11 @@ public class NotificationService {
         notification.changeIsChecked();
     }
 
+    @Transactional
+    public void updateNotifications(Long memberId) {
+        notificationRepository.changeNotifications(memberId);
+    }
+
     public Page<NotificationRetrieveResponseDto> retrieveNotifications(Long memberId, Pageable pageable) {
         return notificationRepository.findByOwnerMemberId(pageable, memberId)
                 .map(notification -> new NotificationRetrieveResponseDto(notification));

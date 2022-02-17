@@ -11,4 +11,6 @@ public interface NotificationCustomRepository {
     Optional<Notification> findByMemberIdAndReviewId(Long memberId, Long reviewId);
 
     Page<Notification> findByOwnerMemberId(Pageable pageable, Long memberId);
+
+    void changeNotifications(Long ownerMemberId);
 }
