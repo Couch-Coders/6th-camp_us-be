@@ -10,4 +10,6 @@ import java.util.List;
 
 public interface CampCustomRepository {
     Page<Camp> findAllCampSearch(List<String> tagList, String sigunguNm, Pageable pageable);
+
+    Double calcDistance(Long campId, Float mapX, Float mapY);
 }

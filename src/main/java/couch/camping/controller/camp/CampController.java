@@ -52,11 +52,13 @@ public class CampController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String sigunguNm,
             @RequestParam(required = false) String tag,
+            @RequestParam(required = false) Float mapX,
+            @RequestParam(required = false) Float mapY,
             HttpServletRequest servletRequest
             ) {
         String header = RequestUtil.getAuthorizationToken(servletRequest);
 
-        return campService.getCampList(pageable, name, sigunguNm, tag, header);
+        return campService.getCampList(pageable, name, sigunguNm, tag, header, mapX, mapY);
     }
 
     //camp 상세

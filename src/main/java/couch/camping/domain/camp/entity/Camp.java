@@ -1,6 +1,7 @@
 package couch.camping.domain.camp.entity;
 
 import couch.camping.domain.camplike.entity.CampLike;
+import couch.camping.domain.review.entity.Review;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -38,8 +39,8 @@ public class Camp {
     private String doNm;
     private String sigunguNm;
     private String addr1;
-    private Float mapX;
-    private Float mapY;
+    private Double mapX;
+    private Double mapY;
     private String tel;
 
     @Lob
@@ -80,6 +81,9 @@ public class Camp {
 
     @OneToMany(mappedBy = "camp")
     private List<CampLike> campLikeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "camp")
+    private List<Review> reviewList = new ArrayList<>();
 
     public void increaseCampLikeCnt() {
         this.campLikeCnt++;

@@ -1,6 +1,7 @@
 package couch.camping.domain.camp.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -58,5 +59,17 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
                 .fetchCount();
 
         return new PageImpl<>(content, pageable, fetchCount);
+    }
+
+    @Override
+    public Double calcDistance(Long campId ,Float mapX, Float mapY) {
+        Tuple tuple = queryFactory.select(camp.mapX, camp.mapY)
+                .from(camp)
+                .where(camp.id.eq(campId))
+                .fetchOne();
+
+        Float x = tuple.get(camp.mapX);
+        Float y = tuple.get(camp.mapY);
+        return null;
     }
 }

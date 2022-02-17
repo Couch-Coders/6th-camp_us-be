@@ -1,11 +1,7 @@
 package couch.camping.domain.camp.service;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import couch.camping.controller.camp.dto.response.CampResponseDto;
-import couch.camping.controller.camp.dto.response.CampSearchPagingResponseDto;
 import couch.camping.controller.camp.dto.response.CampSearchResponseDto;
 import couch.camping.domain.camp.entity.Camp;
-import couch.camping.domain.camp.entity.QCamp;
 import couch.camping.domain.camp.repository.CampRepository;
 import couch.camping.domain.camplike.entity.CampLike;
 import couch.camping.domain.camplike.repository.CampLikeRepository;
@@ -14,21 +10,15 @@ import couch.camping.domain.review.repository.ReviewRepository;
 import couch.camping.exception.CustomException;
 import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -56,7 +46,7 @@ public class CampServiceImpl implements CampService{
 
     //캠핑장 조건 다중 조회
     public Page<CampSearchResponseDto> getCampList(
-            Pageable pageable, String name, String sigunguNm, String tag) {
+            Pageable pageable, String name, String sigunguNm, String tag, String hearder, Float mapX, Float mapY) {
 
         List<String> tagList = Arrays.asList(tag.split("_"));
         Page<Camp> allCampSearch = campRepository.findAllCampSearch(tagList, sigunguNm, pageable);

@@ -50,20 +50,22 @@ public class CampServiceLocalImpl implements CampService{
 
     //캠핑장 조건 다중 조회
     public Page<CampSearchResponseDto> getCampList(
-            Pageable pageable, String name, String sigunguNm, String tag, String header) {
+            Pageable pageable, String name, String sigunguNm, String tag, String header, Float mapX, Float mapY) {
 
         List<String> tagList = Arrays.asList(tag.split("_"));
 
+
+        Double distance = campRepository.calcDistance(null ,mapX, mapY);
+
+        List<Camp> campList = campRepository.findAll();
+
+        for (Camp camp : campList) {
+            Long campId = camp.getId();
+            Double campRate = reviewRepository.avgByRateOfReview(campId);
+            camp.updateCampRate(campRate);
+        }
+
         if (header == null) {
-            List<Camp> campList = campRepository.findAll();
-
-            for (Camp camp : campList) {
-                Long campId = camp.getId();
-                Double campRate = reviewRepository.avgByRateOfReview(campId);
-
-                camp.updateCampRate(campRate);
-            }
-
             return campRepository.findAllCampSearch(tagList, sigunguNm, pageable)
                     .map(CampSearchResponseDto::new);
         }
