@@ -7,7 +7,6 @@ import couch.camping.domain.camp.repository.CampRepository;
 import couch.camping.domain.camplike.entity.CampLike;
 import couch.camping.domain.camplike.repository.CampLikeRepository;
 import couch.camping.domain.member.entity.Member;
-import couch.camping.domain.review.repository.ReviewRepository;
 import couch.camping.exception.CustomException;
 import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -32,14 +32,15 @@ public class CampServiceLocalImpl implements CampService{
 
     private final CampRepository campRepository;
     private final CampLikeRepository campLikeRepository;
-    private final ReviewRepository reviewRepository;
     private final UserDetailsService userDetailsService;
+
     @Transactional
     public void save(Camp camp) {
         campRepository.save(camp);
     }
 
     //캠핑장 단건 조회
+    @Override
     public Camp getCampDetail(Long campId) {
         Camp findCamp = campRepository.findById(campId)
                 .orElseThrow(() -> {
@@ -49,23 +50,21 @@ public class CampServiceLocalImpl implements CampService{
     }
 
     //캠핑장 조건 다중 조회
+    @Override
     public Page<CampSearchResponseDto> getCampList(
-            Pageable pageable, String name, String sigunguNm, String tag, String header) {
+            Pageable pageable, String name, String sigunguNm, String tag, String header, String sort) {
+        List<String> tagList = new ArrayList<>();
+        if (tag!= null)
+            tagList = Arrays.asList(tag.split("_"));
 
-        List<String> tagList = Arrays.asList(tag.split("_"));
+        if (!sort.equals("distance") && !sort.equals("rate")) {
+            System.out.println(sort);
+            throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "sort 의 값을 distance 또는 rate 만 입력가능합니다.");
+        }
 
         if (header == null) {
-            List<Camp> campList = campRepository.findAll();
-
-            for (Camp camp : campList) {
-                Long campId = camp.getId();
-                Double campRate = reviewRepository.avgByRateOfReview(campId);
-
-                camp.updateCampRate(campRate);
-            }
-
-            return campRepository.findAllCampSearch(tagList, sigunguNm, pageable)
-                    .map(CampSearchResponseDto::new);
+            return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable)
+                    .map(camp -> new CampSearchResponseDto(camp));
         }
         else {
             Member member;
@@ -74,7 +73,7 @@ public class CampServiceLocalImpl implements CampService{
             } catch (UsernameNotFoundException e) {
                 throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
             }
-            return campRepository.findAllCampSearch(tagList, sigunguNm, pageable)
+            return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable)
                     .map(camp -> {
                         List<CampLike> campLikeList = camp.getCampLikeList();
 
@@ -90,6 +89,7 @@ public class CampServiceLocalImpl implements CampService{
     }
 
     @Transactional
+    @Override
     public void likeCamp(Long campId, Member member) {
         Camp findCamp = campRepository.findById(campId)
                 .orElseThrow(() -> {
