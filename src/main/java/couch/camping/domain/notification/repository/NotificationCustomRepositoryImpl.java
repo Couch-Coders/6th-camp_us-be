@@ -12,15 +12,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
 import static couch.camping.domain.notification.entity.QNotification.notification;
 
 @RequiredArgsConstructor
-public class NotificationCustomRepositoryImpl implements NotificationCustomRepository{
+public class NotificationCustomRepositoryImpl implements NotificationCustomRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final EntityManager em;
 
     @Override
     public Optional<Notification> findByMemberIdAndReviewId(Long memberId, Long reviewId) {
@@ -58,5 +60,17 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
+    public void changeNotifications(Long ownerMemberId) {
+        queryFactory
+                .update(notification)
+                .set(notification.isChecked, true)
+                .where(notification.ownerMember.id.eq(ownerMemberId))
+                .execute();
+
+        em.flush();
+        em.clear();
     }
 }
