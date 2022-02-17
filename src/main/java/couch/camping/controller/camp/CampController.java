@@ -10,6 +10,7 @@ import couch.camping.domain.camp.service.CampService;
 import couch.camping.domain.camp.service.CampServiceImpl;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
+import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -46,13 +49,14 @@ public class CampController {
     @GetMapping("")
     public Page<CampSearchResponseDto> getCamps(
             Pageable pageable,
-            @RequestParam(defaultValue = "3") float rate,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String sigunguNm,
-            @RequestParam(required = false) String tag
+            @RequestParam(required = false) String tag,
+            HttpServletRequest servletRequest
             ) {
+        String header = RequestUtil.getAuthorizationToken(servletRequest);
 
-        return campService.getCampList(pageable, rate, name, sigunguNm, tag);
+        return campService.getCampList(pageable, name, sigunguNm, tag, header);
     }
 
     //camp 상세
