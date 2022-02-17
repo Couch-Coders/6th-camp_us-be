@@ -39,7 +39,7 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
                 .limit(pageable.getPageSize());
 
         if (sort.equals("rate")) {
-            query.orderBy(camp.rate.desc());
+            query.orderBy(camp.avgRate.desc());
         } else {
             /**
              * distance 는 대영이가 작성

@@ -58,7 +58,6 @@ public class CampServiceLocalImpl implements CampService{
             tagList = Arrays.asList(tag.split("_"));
 
         if (!sort.equals("distance") && !sort.equals("rate")) {
-            System.out.println(sort);
             throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "sort 의 값을 distance 또는 rate 만 입력가능합니다.");
         }
 

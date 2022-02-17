@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -58,16 +59,17 @@ public class CampServiceImpl implements CampService{
     @Override
     public Page<CampSearchResponseDto> getCampList(
             Pageable pageable, String name, String sigunguNm, String tag, String header, String sort) {
+        List<String> tagList = new ArrayList<>();
+        if (tag!= null)
+            tagList = Arrays.asList(tag.split("_"));
 
-        List<String> tagList = Arrays.asList(tag.split("_"));
-
-        if (!(sort.equals("distance") || sort.equals("rate"))) {
+        if (!sort.equals("distance") && !sort.equals("rate")) {
             throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "sort 의 값을 distance 또는 rate 만 입력가능합니다.");
         }
 
         if (header == null) {
             return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable)
-                    .map(CampSearchResponseDto::new);
+                    .map(camp -> new CampSearchResponseDto(camp));
         }
         else {
             Member member;
