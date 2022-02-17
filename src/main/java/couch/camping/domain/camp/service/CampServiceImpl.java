@@ -58,7 +58,7 @@ public class CampServiceImpl implements CampService{
     //캠핑장 조건 다중 조회
     @Override
     public Page<CampSearchResponseDto> getCampList(
-            Pageable pageable, String name, String sigunguNm, String tag, String header, String sort) {
+            Pageable pageable, String name, String sigunguNm, String tag, String header, String sort, Float mapX, Float mapY) {
         List<String> tagList = new ArrayList<>();
         if (tag!= null)
             tagList = Arrays.asList(tag.split("_"));
@@ -68,7 +68,7 @@ public class CampServiceImpl implements CampService{
         }
 
         if (header == null) {
-            return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable)
+            return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable, mapX, mapY)
                     .map(camp -> new CampSearchResponseDto(camp));
         }
         else {
@@ -79,7 +79,7 @@ public class CampServiceImpl implements CampService{
             } catch (UsernameNotFoundException | FirebaseAuthException | IllegalArgumentException e) {
                 throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
             }
-            return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable)
+            return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable, mapX, mapY)
                     .map(camp -> {
                         List<CampLike> campLikeList = camp.getCampLikeList();
 
