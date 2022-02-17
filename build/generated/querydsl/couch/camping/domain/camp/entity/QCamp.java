@@ -86,7 +86,7 @@ public class QCamp extends EntityPathBase<Camp> {
 
     public final StringPath posblFcltyEtc = createString("posblFcltyEtc");
 
-    public final NumberPath<Integer> rate = createNumber("rate", Integer.class);
+    public final NumberPath<Double> rate = createNumber("rate", Double.class);
 
     public final StringPath resveCl = createString("resveCl");
 

@@ -110,4 +110,13 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
                 .where(review.member.id.eq(memberId))
                 .fetchOne();
     }
+
+    @Override
+    public Double avgByRateOfReview(Long CampId) {
+        return queryFactory
+                .select(review.rate.avg())
+                .from(review)
+                .where(review.camp.id.eq(CampId))
+                .fetchOne();
+    }
 }

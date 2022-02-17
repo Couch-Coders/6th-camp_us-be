@@ -2,6 +2,7 @@ package couch.camping.domain.camp.entity;
 
 import couch.camping.domain.camplike.entity.CampLike;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,10 +23,10 @@ public class Camp {
     @Column(name = "like_cnt")
     private Integer like;
 
-    private Integer rate;
-
     private String facltNm;
     private String lineIntro;
+
+    private Double rate;
 
     @Lob
     private String intro;
@@ -86,5 +87,9 @@ public class Camp {
 
     public void decreaseCampLikeCnt() {
         this.campLikeCnt--;
+    }
+
+    public void updateCampRate(Double rate) {
+        this.rate = rate;
     }
 }

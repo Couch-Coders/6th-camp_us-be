@@ -14,4 +14,6 @@ public interface CampRepository extends JpaRepository<Camp, Long>, CampCustomRep
     Page<Camp> findAllBySigunguNm(String sigunguNm, Pageable pageable);
 
     Page<CampSearchResponseDto> findByRate(float rate, Pageable pageable);
+
+
 }
