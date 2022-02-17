@@ -13,4 +13,6 @@ public interface ReviewCustomRepository {
     Page<Review> findByMemberId(Pageable pageable, Long memberId);
 
     Long countByMemberId(Long memberId);
+
+    Double avgByRateOfReview(Long CampId);
 }

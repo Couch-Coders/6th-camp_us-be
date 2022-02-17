@@ -10,6 +10,7 @@ import couch.camping.domain.camp.repository.CampRepository;
 import couch.camping.domain.camplike.entity.CampLike;
 import couch.camping.domain.camplike.repository.CampLikeRepository;
 import couch.camping.domain.member.entity.Member;
+import couch.camping.domain.review.repository.ReviewRepository;
 import couch.camping.exception.CustomException;
 import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 public class CampServiceImpl implements CampService{
 
     private final CampRepository campRepository;
+    private final ReviewRepository reviewRepository;
     private final CampLikeRepository campLikeRepository;
 
     @Transactional
@@ -52,18 +54,25 @@ public class CampServiceImpl implements CampService{
         return findCamp;
     }
 
-//    "sbrsCl": "전기,무선인터넷,장작판매,온수,물놀이장,산책로,운동장,운동시설"
-
     //캠핑장 조건 다중 조회
     public Page<CampSearchResponseDto> getCampList(
-            Pageable pageable, float rate, String name, String sigunguNm, String tag) {
+            Pageable pageable, String name, String sigunguNm, String tag) {
 
         List<String> tagList = Arrays.asList(tag.split("_"));
         Page<Camp> allCampSearch = campRepository.findAllCampSearch(tagList, sigunguNm, pageable);
 
-        return allCampSearch.map(camp -> new CampSearchResponseDto(camp));
+        List<Camp> content = allCampSearch.getContent();
+        for (Camp camp : content) {
+            Long campId = camp.getId();
+            Double campRate = reviewRepository.avgByRateOfReview(campId);
+
+            camp.updateCampRate(campRate);
+        }
+
+        return allCampSearch.map(CampSearchResponseDto::new);
     }
 
+    //캠핑장 좋아요
     @Transactional
     public void likeCamp(Long campId, Member member) {
         Camp findCamp = campRepository.findById(campId)
