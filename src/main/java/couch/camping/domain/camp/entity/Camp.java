@@ -3,7 +3,6 @@ package couch.camping.domain.camp.entity;
 import couch.camping.domain.camplike.entity.CampLike;
 import couch.camping.domain.review.entity.Review;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,17 +20,22 @@ public class Camp {
     @Column(name = "camp_id")
     private Long id;
 
-    @Column(name = "like_cnt")
-    private Integer like;
+    private int likeCnt;
+
+    private int reviewCnt;
+
+    private float rate;
+
+    @OneToMany(mappedBy = "camp")
+    private List<CampLike> campLikeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "camp")
+    private List<Review> reviewList = new ArrayList<>();
 
     private String facltNm;
     private String lineIntro;
-
-    private Double rate;
-
     @Lob
     private String intro;
-
     @Lob
     private String featureNm;
     private String induty;
@@ -39,14 +43,13 @@ public class Camp {
     private String doNm;
     private String sigunguNm;
     private String addr1;
-    private Double mapX;
-    private Double mapY;
-    private String tel;
 
+    private float mapX;
+    private float mapY;
+    private String tel;
     @Lob
     private String direction;
     private String homepage;
-
     @Lob
     private String resveUrl;
     private String resveCl;
@@ -77,23 +80,30 @@ public class Camp {
     private String tourEraCl;
     private String firstImageUrl;
 
-    private int campLikeCnt;
-
-    @OneToMany(mappedBy = "camp")
-    private List<CampLike> campLikeList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "camp")
-    private List<Review> reviewList = new ArrayList<>();
 
     public void increaseCampLikeCnt() {
-        this.campLikeCnt++;
+        this.likeCnt++;
     }
 
     public void decreaseCampLikeCnt() {
-        this.campLikeCnt--;
+        this.likeCnt--;
     }
 
-    public void updateCampRate(Double rate) {
-        this.rate = rate;
+    public void increaseRate(int rate) {
+        if (this.rate == 0) {
+            this.rate = (float)rate;
+        } else {
+            float totalRate = this.rate * this.reviewCnt;
+            totalRate += (float)rate;
+            ++reviewCnt;
+            this.rate = totalRate / reviewCnt;
+        }
+    }
+
+    public void decreaseRate(int rate) {
+        float totalRate = this.rate * this.reviewCnt;
+        totalRate -= (float)rate;
+        --reviewCnt;
+        this.rate = totalRate / reviewCnt;
     }
 }

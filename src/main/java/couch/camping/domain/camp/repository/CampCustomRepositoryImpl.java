@@ -2,32 +2,31 @@ package couch.camping.domain.camp.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import couch.camping.domain.camp.entity.Camp;
-import couch.camping.domain.review.entity.Review;
+import couch.camping.exception.CustomException;
+import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
 import static couch.camping.domain.camp.entity.QCamp.camp;
-import static couch.camping.domain.review.entity.QReview.review;
 
 @RequiredArgsConstructor
+@Slf4j
 public class CampCustomRepositoryImpl implements CampCustomRepository{
 
     private final JPAQueryFactory queryFactory;
 
 
     @Override
-    public Page<Camp> findAllCampSearch(List<String> tagList, String sigunguNm, Pageable pageable) {
+    public Page<Camp> findAllCampSearch(List<String> tagList, String sigunguNm, String sort, Pageable pageable, Float mapX, Float mapY) {
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -45,31 +44,18 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
 
-        for (Sort.Order o : pageable.getSort()) {
-            PathBuilder pathBuilder = new PathBuilder(camp.getType(), camp.getMetadata());
-            query.orderBy(
-                    new OrderSpecifier<>(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(o.getProperty()))
-            );
+        if (sort.equals("rate")) {
+            query.orderBy(camp.rate.desc());
         }
 
         List<Camp> content = query.fetch();
 
-        long fetchCount = queryFactory.selectFrom(camp)
-                .where(builder)
-                .fetchCount();
-
-        return new PageImpl<>(content, pageable, fetchCount);
-    }
-
-    @Override
-    public Double calcDistance(Long campId ,Float mapX, Float mapY) {
-        Tuple tuple = queryFactory.select(camp.mapX, camp.mapY)
+        long total = queryFactory
+                .select(camp.count())
                 .from(camp)
-                .where(camp.id.eq(campId))
+                .where(builder)
                 .fetchOne();
 
-        Float x = tuple.get(camp.mapX);
-        Float y = tuple.get(camp.mapY);
-        return null;
+        return new PageImpl<>(content, pageable, total);
     }
 }

@@ -28,8 +28,6 @@ public class QCamp extends EntityPathBase<Camp> {
 
     public final StringPath brazierCl = createString("brazierCl");
 
-    public final NumberPath<Integer> campLikeCnt = createNumber("campLikeCnt", Integer.class);
-
     public final ListPath<couch.camping.domain.camplike.entity.CampLike, couch.camping.domain.camplike.entity.QCampLike> campLikeList = this.<couch.camping.domain.camplike.entity.CampLike, couch.camping.domain.camplike.entity.QCampLike>createList("campLikeList", couch.camping.domain.camplike.entity.CampLike.class, couch.camping.domain.camplike.entity.QCampLike.class, PathInits.DIRECT2);
 
     public final StringPath caravAcmpnyAt = createString("caravAcmpnyAt");
@@ -70,7 +68,7 @@ public class QCamp extends EntityPathBase<Camp> {
 
     public final StringPath lctCl = createString("lctCl");
 
-    public final NumberPath<Integer> like = createNumber("like", Integer.class);
+    public final NumberPath<Integer> likeCnt = createNumber("likeCnt", Integer.class);
 
     public final StringPath lineIntro = createString("lineIntro");
 
@@ -86,11 +84,13 @@ public class QCamp extends EntityPathBase<Camp> {
 
     public final StringPath posblFcltyEtc = createString("posblFcltyEtc");
 
-    public final NumberPath<Double> rate = createNumber("rate", Double.class);
+    public final NumberPath<Float> rate = createNumber("rate", Float.class);
 
     public final StringPath resveCl = createString("resveCl");
 
     public final StringPath resveUrl = createString("resveUrl");
+
+    public final NumberPath<Integer> reviewCnt = createNumber("reviewCnt", Integer.class);
 
     public final ListPath<couch.camping.domain.review.entity.Review, couch.camping.domain.review.entity.QReview> reviewList = this.<couch.camping.domain.review.entity.Review, couch.camping.domain.review.entity.QReview>createList("reviewList", couch.camping.domain.review.entity.Review.class, couch.camping.domain.review.entity.QReview.class, PathInits.DIRECT2);
 

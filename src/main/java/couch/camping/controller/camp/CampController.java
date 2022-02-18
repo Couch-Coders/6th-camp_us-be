@@ -1,15 +1,12 @@
 package couch.camping.controller.camp;
 
-import couch.camping.controller.camp.dto.request.CampSaveRequestDto;
 import couch.camping.controller.camp.dto.request.CampListSaveRequestDto;
+import couch.camping.controller.camp.dto.request.CampSaveRequestDto;
 import couch.camping.controller.camp.dto.response.CampResponseDto;
-import couch.camping.controller.camp.dto.response.CampSearchPagingResponseDto;
 import couch.camping.controller.camp.dto.response.CampSearchResponseDto;
 import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.camp.service.CampService;
-import couch.camping.domain.camp.service.CampServiceImpl;
 import couch.camping.domain.member.entity.Member;
-import couch.camping.domain.member.service.MemberService;
 import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/camps")
@@ -32,7 +27,6 @@ public class CampController {
 
     private final CampService campService;
     private final ModelMapper modelMapper;
-    private final MemberService memberService;
 
     @PostMapping("")
     public String save(@RequestBody CampListSaveRequestDto campListSaveRequestDto) {
@@ -52,13 +46,15 @@ public class CampController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String sigunguNm,
             @RequestParam(required = false) String tag,
+            @RequestParam(defaultValue = "rate") String sort,
             @RequestParam(required = false) Float mapX,
             @RequestParam(required = false) Float mapY,
-            HttpServletRequest servletRequest
+            HttpServletRequest request
             ) {
-        String header = RequestUtil.getAuthorizationToken(servletRequest);
+        String header = RequestUtil.getAuthorizationToken(request);
 
-        return campService.getCampList(pageable, name, sigunguNm, tag, header, mapX, mapY);
+
+        return campService.getCampList(pageable, name, sigunguNm, tag, header, sort, mapX, mapY);
     }
 
     //camp 상세

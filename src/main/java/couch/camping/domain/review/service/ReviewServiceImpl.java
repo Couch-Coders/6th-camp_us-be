@@ -95,7 +95,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void deleteReview(Long reviewId, Member member) {
+    public void deleteReview(Long campId, Long reviewId, Member member) {
 
         try {
             reviewRepository.deleteById(reviewId);
