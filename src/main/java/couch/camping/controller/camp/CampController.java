@@ -41,20 +41,19 @@ public class CampController {
     //camp 검색
     //?rate=4.5&doNm=경상도&sigunguNm=창원군&name=달빛캠핑장&sort1=distance&sort2=like&tag=와이파이_전기_하수도_수영장&x=3.1423&y=3.141592
     @GetMapping("")
-    public Page<CampSearchResponseDto> getCamps(
+    public ResponseEntity<Page<CampSearchResponseDto>> getCamps(
             Pageable pageable,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String sigunguNm,
             @RequestParam(required = false) String tag,
-            @RequestParam(defaultValue = "rate") String sort,
             @RequestParam(required = false) Float mapX,
             @RequestParam(required = false) Float mapY,
+            @RequestParam(defaultValue = "rate") String sort,
             HttpServletRequest request
             ) {
         String header = RequestUtil.getAuthorizationToken(request);
 
-
-        return campService.getCampList(pageable, name, sigunguNm, tag, header, sort, mapX, mapY);
+        return ResponseEntity.ok(campService.getCampList(pageable, name, sigunguNm, tag, header, sort, mapX, mapY));
     }
 
     //camp 상세

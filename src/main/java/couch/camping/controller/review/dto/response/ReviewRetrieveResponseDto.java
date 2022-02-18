@@ -18,7 +18,7 @@ public class ReviewRetrieveResponseDto {
     private Long campId;
     private String imgUrl;
     private String content;
-    private int rateCnt;
+    private int rate;
     private int likeCnt;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
@@ -29,7 +29,7 @@ public class ReviewRetrieveResponseDto {
         this.campId = r.getCamp().getId();
         this.imgUrl= r.getImgUrl();
         this.content = r.getContent();
-        this.rateCnt = r.getRate();
+        this.rate = r.getRate();
         this.likeCnt =r.getLikeCnt();
         this.createdDate = r.getCreatedDate();
         this.lastModifiedDate = r.getLastModifiedDate();

@@ -95,9 +95,14 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void deleteReview(Long campId, Long reviewId, Member member) {
+    public void deleteReview(Long reviewId, Member member) {
 
         try {
+            Review findReview = reviewRepository.findById(reviewId)
+                    .orElseThrow(() -> {
+                        throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
+                    });
+            findReview.getCamp().decreaseRate(findReview.getRate());
             reviewRepository.deleteById(reviewId);
         } catch (EmptyResultDataAccessException e) {
             throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");

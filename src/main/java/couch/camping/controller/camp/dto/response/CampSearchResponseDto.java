@@ -26,7 +26,7 @@ public class CampSearchResponseDto {
         this.facltNm = camp.getFacltNm();
         this.firstImageUrl = camp.getFirstImageUrl();
         this.lineIntro = camp.getLineIntro();
-        this.rate = camp.getRate();
+        this.rate = camp.getAvgRate();
         this.like = camp.getLikeCnt();
         this.mapX = camp.getMapX();
         this.mapY = camp.getMapY();

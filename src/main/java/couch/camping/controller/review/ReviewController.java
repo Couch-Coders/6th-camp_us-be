@@ -58,11 +58,11 @@ public class ReviewController {
     }
     
     //리뷰 삭제
-    @DeleteMapping("/camps/{campId}/reviews/{reviewId}")
-    public ResponseEntity deleteReview(@PathVariable Long campId, @PathVariable Long reviewId, Authentication authentication) {
+    @DeleteMapping("/reviews/{reviewId}")
+    public ResponseEntity deleteReview(@PathVariable Long reviewId, Authentication authentication) {
 
         Member member = (Member) authentication.getPrincipal();
-        reviewService.deleteReview(campId, reviewId, member);
+        reviewService.deleteReview(reviewId, member);
 
         return ResponseEntity.noContent().build();
     }
