@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import couch.camping.domain.camp.entity.Camp;
+import couch.camping.domain.camp.entity.QCamp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -44,31 +45,32 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
                 .where(builder)
                 .fetchOne();
 
-        List<Camp> content = query.fetch();
+        QCamp tmpCamp = new QCamp("tmp");
 
+        List<Camp> content = null;
         if (sort.equals("rate")) {
             query.orderBy(camp.avgRate.desc());
+            content = query.fetch();
+
+        } else {
+//            query.orderBy(camp.mapX);
 
         }
-//        } else {
-//            List<Camp> content = query.fetch();
+//        content = query.fetch();
+//        Collections.sort(content, (o1, o2) -> {
+//            double dis1 = Math.pow(o1.getMapX() - mapX, 2) + Math.pow(o1.getMapY() - mapY, 2);
+//            double sqrt1 = Math.sqrt(dis1);
 //
-//            Collections.sort(content, (o1, o2) -> {
-//                double dis1 = Math.pow(o1.getMapX() - mapX, 2) + Math.pow(o1.getMapY() - mapY, 2);
-//                double sqrt1 = Math.sqrt(dis1);
+//            double dis2 = Math.pow(o2.getMapX() - mapX, 2) + Math.pow(o2.getMapY() - mapY, 2);
+//            double sqrt2 = Math.sqrt(dis2);
 //
-//                double dis2 = Math.pow(o2.getMapX() - mapX, 2) + Math.pow(o2.getMapY() - mapY, 2);
-//                double sqrt2 = Math.sqrt(dis2);
-//
-//                if (sqrt1 > sqrt2) {
-//                    return 1;//
-//                } else {
-//                    return -1;
-//                }
-//            });
-//
-//            return new PageImpl<>(content, pageable, total);
-//        }
+//            if (sqrt1 > sqrt2) {
+//                return 1;//
+//            } else {
+//                return -1;
+//            }
+//        });
+
         return new PageImpl<>(content, pageable, total);
 
     }
