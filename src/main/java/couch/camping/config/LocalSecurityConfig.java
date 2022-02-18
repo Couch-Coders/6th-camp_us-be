@@ -53,6 +53,6 @@ public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/vendor/**")
                 .antMatchers("/favicon.ico")
                 .antMatchers("/pages/**")
-        ;
+                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**");
     }
 }
