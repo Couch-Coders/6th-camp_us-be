@@ -20,11 +20,11 @@ public class Camp {
     @Column(name = "camp_id")
     private Long id;
 
-    private int likeCnt;
+    private Integer likeCnt;
 
-    private int reviewCnt;
+    private Integer reviewCnt;
 
-    private float rate;
+    private Float avgRate;
 
     @OneToMany(mappedBy = "camp")
     private List<CampLike> campLikeList = new ArrayList<>();
@@ -43,6 +43,7 @@ public class Camp {
     private String doNm;
     private String sigunguNm;
     private String addr1;
+
     private float mapX;
     private float mapY;
     private String tel;
@@ -79,6 +80,7 @@ public class Camp {
     private String tourEraCl;
     private String firstImageUrl;
 
+
     public void increaseCampLikeCnt() {
         this.likeCnt++;
     }
@@ -88,20 +90,21 @@ public class Camp {
     }
 
     public void increaseRate(int rate) {
-        if (this.rate == 0) {
-            this.rate = (float)rate;
+        if (this.reviewCnt == 0 && this.avgRate == 0) {
+            this.avgRate = (float)rate;
+            ++this.reviewCnt;
         } else {
-            float totalRate = this.rate * this.reviewCnt;
+            float totalRate = this.avgRate * this.reviewCnt;
             totalRate += (float)rate;
-            ++reviewCnt;
-            this.rate = totalRate / reviewCnt;
+            ++this.reviewCnt;
+            this.avgRate = totalRate / reviewCnt;
         }
     }
 
     public void decreaseRate(int rate) {
-        float totalRate = this.rate * this.reviewCnt;
+        float totalRate = this.avgRate * this.reviewCnt;
         totalRate -= (float)rate;
-        --reviewCnt;
-        this.rate = totalRate / reviewCnt;
+        --this.reviewCnt;
+        this.avgRate = totalRate / reviewCnt;
     }
 }

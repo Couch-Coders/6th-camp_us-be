@@ -52,18 +52,17 @@ public class CampServiceLocalImpl implements CampService{
     //캠핑장 조건 다중 조회
     @Override
     public Page<CampSearchResponseDto> getCampList(
-            Pageable pageable, String name, String sigunguNm, String tag, String header, String sort) {
+            Pageable pageable, String name, String sigunguNm, String tag, String header, String sort, Float mapX, Float mapY) {
         List<String> tagList = new ArrayList<>();
         if (tag!= null)
             tagList = Arrays.asList(tag.split("_"));
 
         if (!sort.equals("distance") && !sort.equals("rate")) {
-            System.out.println(sort);
             throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "sort 의 값을 distance 또는 rate 만 입력가능합니다.");
         }
 
         if (header == null) {
-            return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable)
+            return campRepository.findAllCampSearch(tagList, name, sigunguNm, sort, pageable, mapX, mapY)
                     .map(camp -> new CampSearchResponseDto(camp));
         }
         else {
@@ -73,7 +72,7 @@ public class CampServiceLocalImpl implements CampService{
             } catch (UsernameNotFoundException e) {
                 throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
             }
-            return campRepository.findAllCampSearch(tagList, sigunguNm, sort, pageable)
+            return campRepository.findAllCampSearch(tagList, name, sigunguNm, sort, pageable, mapX, mapY)
                     .map(camp -> {
                         List<CampLike> campLikeList = camp.getCampLikeList();
 

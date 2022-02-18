@@ -26,6 +26,8 @@ public class QCamp extends EntityPathBase<Camp> {
 
     public final NumberPath<Integer> autoSiteCo = createNumber("autoSiteCo", Integer.class);
 
+    public final NumberPath<Float> avgRate = createNumber("avgRate", Float.class);
+
     public final StringPath brazierCl = createString("brazierCl");
 
     public final ListPath<couch.camping.domain.camplike.entity.CampLike, couch.camping.domain.camplike.entity.QCampLike> campLikeList = this.<couch.camping.domain.camplike.entity.CampLike, couch.camping.domain.camplike.entity.QCampLike>createList("campLikeList", couch.camping.domain.camplike.entity.CampLike.class, couch.camping.domain.camplike.entity.QCampLike.class, PathInits.DIRECT2);
@@ -83,8 +85,6 @@ public class QCamp extends EntityPathBase<Camp> {
     public final StringPath posblFcltyCl = createString("posblFcltyCl");
 
     public final StringPath posblFcltyEtc = createString("posblFcltyEtc");
-
-    public final NumberPath<Float> rate = createNumber("rate", Float.class);
 
     public final StringPath resveCl = createString("resveCl");
 
