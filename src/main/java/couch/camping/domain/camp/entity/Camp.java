@@ -20,11 +20,11 @@ public class Camp {
     @Column(name = "camp_id")
     private Long id;
 
-    private int likeCnt;
+    private Integer likeCnt;
 
-    private int reviewCnt;
+    private Integer reviewCnt;
 
-    private float avgRate;
+    private Float avgRate;
 
     @OneToMany(mappedBy = "camp")
     private List<CampLike> campLikeList = new ArrayList<>();
@@ -43,6 +43,7 @@ public class Camp {
     private String doNm;
     private String sigunguNm;
     private String addr1;
+
     private float mapX;
     private float mapY;
     private String tel;
@@ -78,6 +79,7 @@ public class Camp {
     private String animalCmgCl;
     private String tourEraCl;
     private String firstImageUrl;
+
 
     public void increaseCampLikeCnt() {
         this.likeCnt++;
