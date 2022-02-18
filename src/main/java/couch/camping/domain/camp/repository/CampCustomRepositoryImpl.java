@@ -1,10 +1,15 @@
 package couch.camping.domain.camp.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import couch.camping.domain.camp.entity.Camp;
+import couch.camping.exception.CustomException;
+import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,22 +19,31 @@ import java.util.List;
 import static couch.camping.domain.camp.entity.QCamp.camp;
 
 @RequiredArgsConstructor
+@Slf4j
 public class CampCustomRepositoryImpl implements CampCustomRepository{
 
     private final JPAQueryFactory queryFactory;
 
 
     @Override
-    public Page<Camp> findAllCampSearch(List<String> tagList, String sigunguNm, String sort, Pageable pageable, Float mapX, Float mapY) {
+    public Page<Camp> findAllCampSearch(List<String> tagList, String name, String sigunguNm, String sort, Pageable pageable, Float mapX, Float mapY) {
 
         BooleanBuilder builder = new BooleanBuilder();
 
         for (String s : tagList) {
+            if (s.equals("애견동반")) {
+                builder.and(camp.animalCmgCl.like("가능%"));
+                continue;
+            }
             builder.and(camp.sbrsCl.contains(s));
         }
 
+        if (name != null) {
+            builder.and(camp.facltNm.contains(name));
+        }
+
         if (sigunguNm != null){
-            builder.and(camp.sigunguNm.eq(sigunguNm));
+            builder.and(camp.sigunguNm.contains(sigunguNm));
         }
 
         JPAQuery<Camp> query = queryFactory
@@ -48,7 +62,6 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
 
         if (sort.equals("rate")) {
             query.orderBy(camp.avgRate.desc());
-
         }
 //        } else {
 //            List<Camp> content = query.fetch();
