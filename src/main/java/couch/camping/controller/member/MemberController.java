@@ -116,4 +116,5 @@ public class MemberController {
         notificationService.updateNotifications(memberId);
         return ResponseEntity.noContent().build();
     }
+
 }

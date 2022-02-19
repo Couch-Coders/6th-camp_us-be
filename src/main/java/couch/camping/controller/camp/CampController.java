@@ -45,6 +45,7 @@ public class CampController {
             Pageable pageable,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String sigunguNm,
+            @RequestParam(required = false) String doNm,
             @RequestParam(required = false) String tag,
             @RequestParam(required = false) Float mapX,
             @RequestParam(required = false) Float mapY,
@@ -53,7 +54,7 @@ public class CampController {
             ) {
         String header = RequestUtil.getAuthorizationToken(request);
 
-        return ResponseEntity.ok(campService.getCampList(pageable, name, sigunguNm, tag, header, sort, mapX, mapY));
+        return ResponseEntity.ok(campService.getCampList(pageable, name, doNm, sigunguNm, tag, header, sort, mapX, mapY));
     }
 
     //camp 상세

@@ -24,9 +24,8 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
 
     private final JPAQueryFactory queryFactory;
 
-
     @Override
-    public Page<Camp> findAllCampSearch(List<String> tagList, String name, String sigunguNm, String sort, Pageable pageable, Float mapX, Float mapY) {
+    public Page<Camp> findAllCampSearch(List<String> tagList, String name, String doNm, String sigunguNm, String sort, Pageable pageable, Float mapX, Float mapY) {
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -44,6 +43,10 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
 
         if (sigunguNm != null){
             builder.and(camp.sigunguNm.contains(sigunguNm));
+        }
+
+        if (doNm != null){
+            builder.and(camp.addr1.contains(doNm));
         }
 
         JPAQuery<Camp> query = queryFactory
