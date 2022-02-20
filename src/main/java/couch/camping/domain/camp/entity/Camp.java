@@ -150,6 +150,7 @@ public class Camp {
         float totalRate = this.avgRate * this.reviewCnt;
         totalRate -= (float)rate;
         --this.reviewCnt;
-        this.avgRate = totalRate / reviewCnt;
+        if (totalRate == 0) this.avgRate = 0;
+        else this.avgRate = totalRate / reviewCnt;
     }
 }

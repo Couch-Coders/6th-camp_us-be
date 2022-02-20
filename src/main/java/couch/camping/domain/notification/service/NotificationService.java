@@ -1,6 +1,7 @@
 package couch.camping.domain.notification.service;
 
 import couch.camping.controller.member.dto.response.NotificationRetrieveResponseDto;
+import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.notification.entity.Notification;
 import couch.camping.domain.notification.repository.NotificationRepository;
 import couch.camping.exception.CustomException;
@@ -19,11 +20,15 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
 
     @Transactional
-    public void updateNotification(Long notificationId) {
+    public void updateNotification(Member member, Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_NOTIFICATION, "알림 ID 에 맞는 알림이 없습니다.");
                 });
+
+        if (notification.getOwnerMember() != member) {
+            throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 알림이 아닙니다.");
+        }
 
         notification.changeIsChecked();
     }

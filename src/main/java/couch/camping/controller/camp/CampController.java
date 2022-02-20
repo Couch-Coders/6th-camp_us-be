@@ -13,7 +13,6 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +30,6 @@ public class CampController {
     private final CampService campService;
     private final ModelMapper modelMapper;
 
-    @Profile("local")
     @ApiOperation(value = "캠핑장 데이터 저장 API", notes = "배포용으로 쓰이지 않습니다. 로컬에서만 데이터를 집어넣을 수 있습니다.")
     @PostMapping("")
     public String save(@RequestBody CampListSaveRequestDto campListSaveRequestDto) {
