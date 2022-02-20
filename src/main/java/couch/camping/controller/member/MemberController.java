@@ -1,6 +1,7 @@
 package couch.camping.controller.member;
 
 import com.google.firebase.auth.FirebaseToken;
+import couch.camping.controller.camp.dto.response.CampSearchResponseDto;
 import couch.camping.controller.member.dto.request.MemberRegisterRequestDto;
 import couch.camping.controller.member.dto.request.MemberSaveRequestDto;
 import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
@@ -133,8 +134,10 @@ public class MemberController {
     }
 
     //회원이 좋아요한 캠핑장
+    @ApiOperation(value = "회원이 좋아요한 캠핑장 조회 API",
+            notes = "Header 의 토큰에 해당하는 회원이 좋아요한 캠핑장을 조회및 페이징. 쿼리스트링 예시(?page=0&size=10)")
     @GetMapping("/me/camps")
-    public ResponseEntity MemberLikeCamps(Pageable pageable, Authentication authentication) {
+    public ResponseEntity<Page<CampSearchResponseDto>> MemberLikeCamps(Pageable pageable, Authentication authentication) {
         Long memberId = ((Member) authentication.getPrincipal()).getId();
 
         return ResponseEntity.ok(campService.getMemberLikeCamps(memberId, pageable));
