@@ -92,8 +92,6 @@ public class QCamp extends EntityPathBase<Camp> {
 
     public final NumberPath<Integer> reviewCnt = createNumber("reviewCnt", Integer.class);
 
-    public final ListPath<couch.camping.domain.review.entity.Review, couch.camping.domain.review.entity.QReview> reviewList = this.<couch.camping.domain.review.entity.Review, couch.camping.domain.review.entity.QReview>createList("reviewList", couch.camping.domain.review.entity.Review.class, couch.camping.domain.review.entity.QReview.class, PathInits.DIRECT2);
-
     public final StringPath sbrsCl = createString("sbrsCl");
 
     public final StringPath sbrsEtc = createString("sbrsEtc");
