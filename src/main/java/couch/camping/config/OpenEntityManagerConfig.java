@@ -9,9 +9,9 @@ import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 public class OpenEntityManagerConfig {
     @Bean
     public FilterRegistrationBean<OpenEntityManagerInViewFilter> openEntityManagerInViewFilter() {
-        FilterRegistrationBean<OpenEntityManagerInViewFilter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
-        filterFilterRegistrationBean.setFilter(new OpenEntityManagerInViewFilter());
-        filterFilterRegistrationBean.setOrder(Integer.MIN_VALUE); // 예시를 위해 최우선 순위로 Filter 등록
-        return filterFilterRegistrationBean;
+        FilterRegistrationBean<OpenEntityManagerInViewFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new OpenEntityManagerInViewFilter());
+        filterRegistrationBean.setOrder(Integer.MIN_VALUE);
+        return filterRegistrationBean;
     }
 }

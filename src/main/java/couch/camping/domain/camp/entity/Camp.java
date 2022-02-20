@@ -1,10 +1,10 @@
 package couch.camping.domain.camp.entity;
 
 import couch.camping.domain.camplike.entity.CampLike;
-import couch.camping.domain.review.entity.Review;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,17 +20,14 @@ public class Camp {
     @Column(name = "camp_id")
     private Long id;
 
-    private Integer likeCnt;
+    private int likeCnt;
 
-    private Integer reviewCnt;
+    private int reviewCnt;
 
-    private Float avgRate;
+    private float avgRate;
 
     @OneToMany(mappedBy = "camp")
     private List<CampLike> campLikeList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "camp")
-    private List<Review> reviewList = new ArrayList<>();
 
     private String facltNm;
     private String lineIntro;
@@ -80,6 +77,54 @@ public class Camp {
     private String tourEraCl;
     private String firstImageUrl;
 
+    public Camp(Object[] o) {
+        this.id = ((BigInteger)o[0]).longValue();
+        this.addr1 = (String)o[1];
+        this.animalCmgCl = (String)o[2];
+        this.autoSiteCo = (int)o[3];
+        this.avgRate = (float)o[4];
+        this.brazierCl = (String)o[5];
+        this.caravAcmpnyAt = (String)o[6];
+        this.caravInnerFclty = (String) o[7];
+        this.caravSiteCo = (int)o[8];
+        this.direction = (String) o[9];
+        this.doNm = (String) o[10];
+        this.eqpmnLendCl = (String) o[11];
+        this.extshrCo = (int) o[12];
+        this.facltNm = (String) o[13];
+        this.featureNm = (String) o[14];
+        this.fireSensorCo = (int) o[15];
+        this.firstImageUrl = (String) o[16];
+        this.glampInnerFclty = (String) o[17];
+        this.glampSiteCo = (int) o[18];
+        this.homepage = (String) o[19];
+        this.induty = (String) o[20];
+        this.indvdlCaravSiteCo = (int) o[21];
+        this.intro = (String) o[22];
+        this.lctCl = (String) o[23];
+        this.likeCnt = (int) o[24];
+        this.lineIntro = (String) o[25];
+        this.mapX = (float) o[26];
+        this.mapY = (float) o[27];
+        this.operDeCl = (String) o[28];
+        this.operPdCl = (String) o[29];
+        this.posblFcltyCl = (String) o[30];
+        this.posblFcltyEtc = (String) o[31];
+        this.resveCl = (String) o[32];
+        this.resveUrl = (String) o[33];
+        this.reviewCnt = (int) o[34];
+        this.sbrsCl = (String) o[35];
+        this.sbrsEtc = (String) o[36];
+        this.sigunguNm = (String) o[37];
+        this.sitedStnc = (int) o[38];
+        this.swrmCo = (int) o[39];
+        this.tel = (String) o[40];
+        this.themaEnvrnCl = (String) o[41];
+        this.toiletCo = (int) o[42];
+        this.tourEraCl = (String) o[43];
+        this.trlerAcmpnyAt = (String) o[44];
+        this.wtrplCo = (int) o[45];
+    }
 
     public void increaseCampLikeCnt() {
         this.likeCnt++;

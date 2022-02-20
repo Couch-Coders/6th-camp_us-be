@@ -4,26 +4,29 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import couch.camping.domain.camp.entity.Camp;
-import couch.camping.domain.camp.entity.QCamp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 
 import static couch.camping.domain.camp.entity.QCamp.camp;
+import static couch.camping.domain.camplike.entity.QCampLike.campLike;
 
 @RequiredArgsConstructor
 @Slf4j
 public class CampCustomRepositoryImpl implements CampCustomRepository{
 
     private final JPAQueryFactory queryFactory;
-
+    private final EntityManager em;
 
     @Override
-    public Page<Camp> findAllCampSearch(List<String> tagList, String name, String sigunguNm, String sort, Pageable pageable, Float mapX, Float mapY) {
+    public Page<Camp> findAllCampSearch(List<String> tagList, String name, String doNm, String sigunguNm, String sort, Pageable pageable, Float mapX, Float mapY) {
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -43,11 +46,9 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
             builder.and(camp.sigunguNm.contains(sigunguNm));
         }
 
-        JPAQuery<Camp> query = queryFactory
-                .selectFrom(camp)
-                .where(builder)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize());
+        if (doNm != null){
+            builder.and(camp.addr1.contains(doNm));
+        }
 
         long total = queryFactory
                 .select(camp.count())
@@ -55,34 +56,68 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
                 .where(builder)
                 .fetchOne();
 
-
-        List<Camp> content = null;
         if (sort.equals("rate")) {
-            query.orderBy(camp.avgRate.desc());
 
-            content = query.fetch();
+            List<Camp> content = queryFactory
+                    .selectFrom(camp)
+                    .where(builder)
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .orderBy(camp.avgRate.desc(), camp.id.asc())
+                    .fetch();
 
+            return new PageImpl<>(content, pageable, total);
         } else {
-//            query.orderBy(camp.mapX);
+            int offset = (int) pageable.getOffset();
+            int pageSize = pageable.getPageSize();
+            String sql = "SELECT *,\n" +
+                    "    (\n" +
+                    "      6371 * acos (\n" +
+                    "      cos ( radians(camp.mapy) )\n" +
+                    "      * cos( radians( :mapY ) )\n" +
+                    "      * cos( radians( :mapX ) - radians(camp.mapx) )\n" +
+                    "      + sin ( radians(camp.mapy) )\n" +
+                    "      * sin( radians( :mapY ) )\n" +
+                    "    )\n" +
+                    ") AS distance\n" +
+                    "FROM camp ORDER BY distance asc";
 
+            Query nativeQuery = em.createNativeQuery(sql);
+            nativeQuery.setParameter("mapX", mapX);
+            nativeQuery.setParameter("mapY", mapY);
+            nativeQuery.setFirstResult(offset);
+            nativeQuery.setMaxResults(pageSize);
+
+            List<Object[]> resultList = nativeQuery.getResultList();
+            List<Camp> content = new ArrayList<>();
+            for (Object[] o : resultList) {
+                content.add(new Camp(o));
+            }
+
+            return new PageImpl<>(content, pageable, total);
 
         }
-//        content = query.fetch();
-//        Collections.sort(content, (o1, o2) -> {
-//            double dis1 = Math.pow(o1.getMapX() - mapX, 2) + Math.pow(o1.getMapY() - mapY, 2);
-//            double sqrt1 = Math.sqrt(dis1);
-//
-//            double dis2 = Math.pow(o2.getMapX() - mapX, 2) + Math.pow(o2.getMapY() - mapY, 2);
-//            double sqrt2 = Math.sqrt(dis2);
-//
-//            if (sqrt1 > sqrt2) {
-//                return 1;//
-//            } else {
-//                return -1;
-//            }
-//        });
+    }
+
+    @Override
+    public Page<Camp> findMemberLikeCamp(Long memberId, Pageable pageable) {
+
+        JPAQuery<Camp> query = queryFactory
+                .select(campLike.camp)
+                .from(campLike)
+                .where(campLike.member.id.eq(memberId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(campLike.createdDate.desc());
+
+        List<Camp> content = query.fetch();
+
+        Long total = queryFactory
+                .select(campLike.camp.count())
+                .from(campLike)
+                .where(campLike.member.id.eq(memberId))
+                .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
-
     }
 }
