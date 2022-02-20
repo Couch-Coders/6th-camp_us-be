@@ -7,6 +7,7 @@ import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
 import couch.camping.controller.member.dto.response.MemberRetrieveResponseDto;
 import couch.camping.controller.member.dto.response.MemberReviewsResponseDto;
 import couch.camping.controller.member.dto.response.NotificationRetrieveResponseDto;
+import couch.camping.domain.camp.service.CampService;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
 import couch.camping.domain.notification.service.NotificationService;
@@ -32,6 +33,7 @@ public class MemberController {
     private final MemberService memberService;
     private final ReviewService reviewService;
     private final NotificationService notificationService;
+    private final CampService campService;
 
     //로컬 회원 가입
     @ApiOperation(value = "로컬 회원 가입 API", notes = "로컬 개발 전용 회원 가입 API")
@@ -128,5 +130,13 @@ public class MemberController {
         Long memberId = ((Member) authentication.getPrincipal()).getId();
         notificationService.updateNotifications(memberId);
         return ResponseEntity.noContent().build();
+    }
+
+    //회원이 좋아요한 캠핑장
+    @GetMapping("/me/camps")
+    public ResponseEntity MemberLikeCamps(Pageable pageable, Authentication authentication) {
+        Long memberId = ((Member) authentication.getPrincipal()).getId();
+
+        return ResponseEntity.ok(campService.getMemberLikeCamps(memberId, pageable));
     }
 }
