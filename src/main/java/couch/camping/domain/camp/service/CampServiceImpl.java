@@ -101,14 +101,13 @@ public class CampServiceImpl implements CampService{
                         List<CampLike> campLikeList = camp.getCampLikeList();
 
                         for (CampLike campLike : campLikeList) {
-                            if (campLike.getMember() != member){
-                                return new CampSearchLoginResponse(camp, false);
+                            if (campLike.getMember() == member){
+                                return new CampSearchLoginResponse(camp, true);
                             }
                         }
-                        return new CampSearchLoginResponse(camp, true);
+                        return new CampSearchLoginResponse(camp, false);
                     });
         }
-
     }
 
     //캠핑장 좋아요
