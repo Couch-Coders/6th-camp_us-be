@@ -3,6 +3,8 @@ package couch.camping.domain.camp.service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import couch.camping.controller.camp.dto.response.CampLoginResponseDto;
+import couch.camping.controller.camp.dto.response.CampResponseDto;
 import couch.camping.controller.camp.dto.response.CampSearchLoginResponse;
 import couch.camping.controller.camp.dto.response.CampSearchResponseDto;
 import couch.camping.domain.camp.entity.Camp;
@@ -46,12 +48,28 @@ public class CampServiceImpl implements CampService{
 
     //캠핑장 단건 조회
     @Override
-    public Camp getCampDetail(Long campId) {
-        Camp findCamp = campRepository.findById(campId)
-                .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.NOT_FOUND_CAMP, "campId 에 맞는 캠핑장이 없습니다.");
-                });
-        return findCamp;
+    public CampResponseDto getCampDetail(Long campId, String header) {
+
+        if (header == null) {
+            Camp campById = campRepository.findCampById(campId);
+            return new CampResponseDto(campById);
+        } else {
+            Member member;
+            try {
+                FirebaseToken decodedToken = firebaseAuth.verifyIdToken(header);
+                member = (Member)userDetailsService.loadUserByUsername(decodedToken.getUid());
+            } catch (UsernameNotFoundException | FirebaseAuthException | IllegalArgumentException e) {
+                throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
+            }
+            Camp campById = campRepository.findCampById(campId);
+            List<CampLike> campLikeList = campById.getCampLikeList();
+            for (CampLike campLike : campLikeList) {
+                if (campLike.getMember() == member) {
+                    return new CampLoginResponseDto(campById, true);
+                }
+            }
+            return new CampLoginResponseDto(campById, false);
+        }
     }
 
     //캠핑장 조건 다중 조회

@@ -1,11 +1,15 @@
 package couch.camping.controller.camp.dto.response;
 
 import couch.camping.domain.camp.entity.Camp;
-import lombok.Getter;
-import lombok.Setter;
+import io.swagger.annotations.ApiModel;
+import lombok.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ApiModel(description = "캠핑장 조회 응답 DTO")
 public class CampResponseDto {
 
     private String facltNm;
@@ -50,6 +54,9 @@ public class CampResponseDto {
     private String animalCmgCl;
     private String tourEraCl;
     private String firstImageUrl;
+    private Integer likeCnt;
+    private Float avgRate;
+
 
     public CampResponseDto(Camp camp) {
         this.facltNm = camp.getFacltNm();
@@ -94,5 +101,7 @@ public class CampResponseDto {
         this.animalCmgCl = camp.getAnimalCmgCl();
         this.tourEraCl = camp.getTourEraCl();
         this.firstImageUrl = camp.getFirstImageUrl();
+        this.avgRate = camp.getAvgRate();
+        this.likeCnt = camp.getLikeCnt();
     }
 }

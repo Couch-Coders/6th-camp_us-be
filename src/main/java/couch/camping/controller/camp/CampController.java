@@ -48,12 +48,11 @@ public class CampController {
             @ApiParam(value = "페이징 모델", required = true) Pageable pageable,
             @ApiParam(value = "캠핑장 이름") @RequestParam(required = false) String name,
             @ApiParam(value = "캠핑장 시.군.구") @RequestParam(required = false) String sigunguNm,
-            @ApiParam(value = "시.도") @RequestParam(required = false) String doNm,
+            @ApiParam(value = "캠핑장 도.시") @RequestParam(required = false) String doNm,
             @ApiParam(value = "캠핑장 검색 태그") @RequestParam(required = false) String tag,
             @ApiParam(value = "현재 X 좌표") @RequestParam(defaultValue = "127.0016985") Float mapX,
             @ApiParam(value = "현재 Y 좌표") @RequestParam(defaultValue = "37.5642135") Float mapY,
             @ApiParam(value = "정렬 방식 (rate, distance) 기본 값 distance") @RequestParam(defaultValue = "rate") String sort,
-
             HttpServletRequest request
             ) {
         String header = RequestUtil.getAuthorizationToken(request);
@@ -64,9 +63,11 @@ public class CampController {
     //camp 상세
     @ApiOperation(value = "캠핑장 상세 검색 API", notes = "경로 변수에 캠핑장의 ID 를 넣어 조회합니다.")
     @GetMapping("/{campId}")
-    public CampResponseDto campDetail(
-            @ApiParam(value = "캠핑장 ID", required = true) @PathVariable Long campId){
-        return new CampResponseDto(campService.getCampDetail(campId));
+    public ResponseEntity<CampResponseDto> campDetail(
+            @ApiParam(value = "캠핑장 ID", required = true) @PathVariable Long campId,
+            HttpServletRequest request ){
+        String header = RequestUtil.getAuthorizationToken(request);
+        return ResponseEntity.ok(campService.getCampDetail(campId, header));
     }
 
     //camp 좋아요
