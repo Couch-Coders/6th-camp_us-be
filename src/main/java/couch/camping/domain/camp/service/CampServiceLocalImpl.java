@@ -131,8 +131,8 @@ public class CampServiceLocalImpl implements CampService{
     }
 
     @Override
-    public Page<Camp> retrieveMemberLikeCamp(Long memberId, Pageable pageable) {
-        List<CampLike> campLikeList = campLikeRepository.findAllByMemberId(memberId);
-        return campRepository.findByMemberId(memberId, campLikeList ,pageable);
+    public Page<CampSearchResponseDto> getMemberLikeCamps(Long memberId, Pageable pageable) {
+        return campRepository.findMemberLikeCamp(memberId, pageable)
+                .map(camp -> new CampSearchResponseDto(camp));
     }
 }

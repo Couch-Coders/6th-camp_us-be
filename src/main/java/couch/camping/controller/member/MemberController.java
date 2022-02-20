@@ -1,9 +1,13 @@
 package couch.camping.controller.member;
 
 import com.google.firebase.auth.FirebaseToken;
+import couch.camping.controller.camp.dto.response.CampSearchResponseDto;
 import couch.camping.controller.member.dto.request.MemberRegisterRequestDto;
 import couch.camping.controller.member.dto.request.MemberSaveRequestDto;
-import couch.camping.controller.member.dto.response.*;
+import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
+import couch.camping.controller.member.dto.response.MemberRetrieveResponseDto;
+import couch.camping.controller.member.dto.response.MemberReviewsResponseDto;
+import couch.camping.controller.member.dto.response.NotificationRetrieveResponseDto;
 import couch.camping.domain.camp.service.CampService;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
@@ -99,16 +103,6 @@ public class MemberController {
         return ResponseEntity.ok(reviewService
                 .retrieveMemberReviews(memberId, pageable).map(review-> new MemberReviewsResponseDto(review)));
     }
-
-    //회원이 좋아요한 캠핑장 조회
-    @ApiOperation(value = "회원이 좋아요한 캠핑장 조회 API", notes = "Header 의 토큰에 해당하는 회원이 좋아요한 캠핑장을 조회합니다.")
-    @GetMapping("/me/camps/likes")
-    public ResponseEntity<Page<MemberLikeCampResponseDto>> getMemberLikeCamp(Pageable pageable, Authentication authentication) {
-        Long memberId = ((Member) authentication.getPrincipal()).getId();
-
-        return ResponseEntity.ok(campService
-                .retrieveMemberLikeCamp(memberId, pageable).map(camp -> new MemberLikeCampResponseDto(camp)));
-    }
     
     //회원 알림 조회
     @ApiOperation(value = "회원 알림 조회 API", notes = "Header 의 토큰에 해당하는 회원의 전체 알림을 조회합니다.")
@@ -139,4 +133,13 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    //회원이 좋아요한 캠핑장
+    @ApiOperation(value = "회원이 좋아요한 캠핑장 조회 API",
+            notes = "Header 의 토큰에 해당하는 회원이 좋아요한 캠핑장을 조회및 페이징. 쿼리스트링 예시(?page=0&size=10)")
+    @GetMapping("/me/camps")
+    public ResponseEntity<Page<CampSearchResponseDto>> MemberLikeCamps(Pageable pageable, Authentication authentication) {
+        Long memberId = ((Member) authentication.getPrincipal()).getId();
+
+        return ResponseEntity.ok(campService.getMemberLikeCamps(memberId, pageable));
+    }
 }

@@ -37,7 +37,6 @@ public class CampServiceImpl implements CampService{
 
     private final CampRepository campRepository;
     private final CampLikeRepository campLikeRepository;
-    private final ReviewRepository reviewRepository;
     private final UserDetailsService userDetailsService;
     private final FirebaseAuth firebaseAuth;
 
@@ -138,8 +137,8 @@ public class CampServiceImpl implements CampService{
     }
 
     @Override
-    public Page<Camp> retrieveMemberLikeCamp(Long memberId, Pageable pageable) {
-        List<CampLike> campLikeList = campLikeRepository.findAllByMemberId(memberId);
-        return campRepository.findByMemberId(memberId, campLikeList ,pageable);
+    public Page<CampSearchResponseDto> getMemberLikeCamps(Long memberId, Pageable pageable) {
+        return campRepository.findMemberLikeCamp(memberId, pageable)
+                .map(camp -> new CampSearchResponseDto(camp));
     }
 }

@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class CampController {
     private final CampService campService;
     private final ModelMapper modelMapper;
 
+    @Profile("local")
     @ApiOperation(value = "캠핑장 데이터 저장 API", notes = "배포용으로 쓰이지 않습니다. 로컬에서만 데이터를 집어넣을 수 있습니다.")
     @PostMapping("")
     public String save(@RequestBody CampListSaveRequestDto campListSaveRequestDto) {
@@ -45,14 +47,13 @@ public class CampController {
     @ApiOperation(value = "캠핑장 검색 API", notes = "이름, 시.군.구, 검색 태그, 현재 위치 등 캠핑장 검색")
     @GetMapping("")
     public ResponseEntity<Page<CampSearchResponseDto>> getCamps(
-
             @ApiParam(value = "페이징 모델", required = true) Pageable pageable,
             @ApiParam(value = "캠핑장 이름") @RequestParam(required = false) String name,
             @ApiParam(value = "캠핑장 시.군.구") @RequestParam(required = false) String sigunguNm,
             @ApiParam(value = "캠핑장 도.시") @RequestParam(required = false) String doNm,
             @ApiParam(value = "캠핑장 검색 태그") @RequestParam(required = false) String tag,
-            @ApiParam(value = "현재 X 좌표") @RequestParam(required = false) Float mapX,
-            @ApiParam(value = "현재 Y 좌표") @RequestParam(required = false) Float mapY,
+            @ApiParam(value = "현재 X 좌표") @RequestParam(defaultValue = "127.0016985") Float mapX,
+            @ApiParam(value = "현재 Y 좌표") @RequestParam(defaultValue = "37.5642135") Float mapY,
             @ApiParam(value = "정렬 방식 (rate, distance) 기본 값 distance") @RequestParam(defaultValue = "rate") String sort,
             HttpServletRequest request
             ) {

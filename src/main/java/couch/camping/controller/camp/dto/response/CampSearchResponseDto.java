@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ApiModel(description = "캠핑장 검색 응답 DTO")
+@ApiModel(description = "캠핑장 조회 응답 DTO")
 public class CampSearchResponseDto {
 
     @ApiModelProperty(required = true, value = "캠핑장 ID", example = "2598")

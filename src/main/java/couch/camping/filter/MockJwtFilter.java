@@ -20,7 +20,7 @@ import java.io.IOException;
 
 @Slf4j
 @RequiredArgsConstructor
-public class LocalJwtFilter extends OncePerRequestFilter{
+public class MockJwtFilter extends OncePerRequestFilter{
 
     private final UserDetailsService userDetailsService;
 

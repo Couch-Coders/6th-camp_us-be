@@ -1,11 +1,8 @@
 package couch.camping.config;
 
-import com.google.firebase.auth.FirebaseAuth;
-import couch.camping.domain.member.service.MemberService;
-import couch.camping.filter.JwtFilter;
+import couch.camping.config.auth.AuthFilterContainer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -14,13 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Profile("prod")
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final MemberService userDetailsService;
-    private final FirebaseAuth firebaseAuth;
+
+    private final AuthFilterContainer authFilterContainer;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -32,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests() // 요청에 대한 권한 지정
                 .anyRequest().authenticated() // 모든 요청이 인증되어야한다.
                 .and()
-                .addFilterBefore(new JwtFilter(userDetailsService, firebaseAuth),
+                .addFilterBefore(authFilterContainer.getFilter(),
                         UsernamePasswordAuthenticationFilter.class);
     }
 
@@ -40,11 +36,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         //인증 예외 URL 설정
         web.ignoring()
-                .antMatchers(HttpMethod.POST, "/members")
+                .antMatchers(HttpMethod.GET ,"/test")
+                .antMatchers(HttpMethod.POST ,"/members/local")//로컬용 회원가입
+                .antMatchers(HttpMethod.POST, "/members")//배포용 회원가입
+                .antMatchers(HttpMethod.POST, "/camps")
                 .antMatchers(HttpMethod.GET ,"/camps/**")
                 .antMatchers(HttpMethod.GET, "/reviews/**")
-                .antMatchers(HttpMethod.GET ,"/test")
-
                 .antMatchers("/css/**")
                 .antMatchers("/static/**")
                 .antMatchers("/js/**")
