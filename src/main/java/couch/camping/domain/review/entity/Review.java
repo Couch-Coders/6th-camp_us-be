@@ -3,6 +3,7 @@ package couch.camping.domain.review.entity;
 import couch.camping.domain.base.BaseEntity;
 import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.member.entity.Member;
+import couch.camping.domain.notification.entity.Notification;
 import couch.camping.domain.reviewlike.entity.ReviewLike;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -33,6 +34,9 @@ public class Review extends BaseEntity {
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ReviewLike> reviewLikeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Notification> notificationList = new ArrayList<>();
 
     private String imgUrl;
 

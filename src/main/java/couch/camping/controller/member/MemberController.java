@@ -117,9 +117,10 @@ public class MemberController {
     //알림 단건 읽음
     @ApiOperation(value = "회원 알림 조회 API", notes = "Header 의 토큰에 해당하는 회원의 전체 알림을 조회합니다.")
     @PatchMapping("/me/notifications/{notificationId}")
-    public ResponseEntity updateMemberNotification(
-            @ApiParam(value = "알림 ID", required = true) @PathVariable Long notificationId) {
-        notificationService.updateNotification(notificationId);
+    public ResponseEntity updateMemberNotification(@ApiParam(value = "알림 ID", required = true) @PathVariable Long notificationId,
+                                                   Authentication authentication) {
+        Member member = (Member) authentication.getPrincipal();
+        notificationService.updateNotification(member, notificationId);
 
         return ResponseEntity.noContent().build();
     }

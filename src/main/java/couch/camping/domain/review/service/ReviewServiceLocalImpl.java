@@ -93,12 +93,16 @@ public class ReviewServiceLocalImpl implements ReviewService {
     @Override
     @Transactional
     public void deleteReview(Long reviewId, Member member) {
-
         try {
             Review findReview = reviewRepository.findById(reviewId)
                     .orElseThrow(() -> {
                         throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
                     });
+
+            if (findReview.getMember() != member) {
+                throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 리뷰가 아닙니다.");
+            }
+
             findReview.getCamp().decreaseRate(findReview.getRate());
             reviewRepository.deleteById(reviewId);
         } catch (EmptyResultDataAccessException e) {
@@ -115,7 +119,7 @@ public class ReviewServiceLocalImpl implements ReviewService {
                     throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
                 });
 
-        if (findReview.getMember().getId() != member.getId()) {
+        if (findReview.getMember() != member) {
             throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 리뷰가 아닙니다.");
         }
 
