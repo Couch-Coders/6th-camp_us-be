@@ -12,4 +12,5 @@ public interface CampService {
     Camp getCampDetail(Long campId);
     Page<CampSearchResponseDto> getCampList(Pageable pageable, String name, String sigunguNm, String tag, String header, String sort, Float mapX, Float mapY);
     void likeCamp(Long campId, Member member);
+    Page<CampSearchResponseDto> getMemberLikeCamps(Long memberId, Pageable pageable);
 }

@@ -1,12 +1,14 @@
 package couch.camping.controller.member;
 
 import com.google.firebase.auth.FirebaseToken;
+import couch.camping.controller.camp.dto.response.CampSearchResponseDto;
 import couch.camping.controller.member.dto.request.MemberRegisterRequestDto;
 import couch.camping.controller.member.dto.request.MemberSaveRequestDto;
 import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
 import couch.camping.controller.member.dto.response.MemberRetrieveResponseDto;
 import couch.camping.controller.member.dto.response.MemberReviewsResponseDto;
 import couch.camping.controller.member.dto.response.NotificationRetrieveResponseDto;
+import couch.camping.domain.camp.service.CampService;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.service.MemberService;
 import couch.camping.domain.notification.service.NotificationService;
@@ -32,6 +34,7 @@ public class MemberController {
     private final MemberService memberService;
     private final ReviewService reviewService;
     private final NotificationService notificationService;
+    private final CampService campService;
 
     //로컬 회원 가입
     @ApiOperation(value = "로컬 회원 가입 API", notes = "로컬 개발 전용 회원 가입 API")
@@ -128,5 +131,15 @@ public class MemberController {
         Long memberId = ((Member) authentication.getPrincipal()).getId();
         notificationService.updateNotifications(memberId);
         return ResponseEntity.noContent().build();
+    }
+
+    //회원이 좋아요한 캠핑장
+    @ApiOperation(value = "회원이 좋아요한 캠핑장 조회 API",
+            notes = "Header 의 토큰에 해당하는 회원이 좋아요한 캠핑장을 조회및 페이징. 쿼리스트링 예시(?page=0&size=10)")
+    @GetMapping("/me/camps")
+    public ResponseEntity<Page<CampSearchResponseDto>> MemberLikeCamps(Pageable pageable, Authentication authentication) {
+        Long memberId = ((Member) authentication.getPrincipal()).getId();
+
+        return ResponseEntity.ok(campService.getMemberLikeCamps(memberId, pageable));
     }
 }

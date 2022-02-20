@@ -118,4 +118,10 @@ public class CampServiceImpl implements CampService{
             findCamp.getCampLikeList().add(saveCampLike);
         }
     }
+
+    @Override
+    public Page<CampSearchResponseDto> getMemberLikeCamps(Long memberId, Pageable pageable) {
+        return campRepository.findMemberLikeCamp(memberId, pageable)
+                .map(camp -> new CampSearchResponseDto(camp));
+    }
 }

@@ -1,10 +1,10 @@
 package couch.camping.domain.camp.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import couch.camping.domain.camp.entity.Camp;
-import couch.camping.domain.camp.entity.QCamp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static couch.camping.domain.camp.entity.QCamp.camp;
+import static couch.camping.domain.camplike.entity.QCampLike.campLike;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -84,5 +85,34 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
 
         return new PageImpl<>(content, pageable, total);
 
+    }
+
+    @Override
+    public Page<Camp> findMemberLikeCamp(Long memberId, Pageable pageable) {
+
+        JPAQuery<Camp> query = queryFactory
+                .selectFrom(camp)
+                .where(camp.id.in(
+                        JPAExpressions
+                                .select(campLike.camp.id)
+                                .from(campLike)
+                                .where(campLike.member.id.eq(memberId))
+                                .orderBy(campLike.createdDate.desc())))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
+        List<Camp> content = query.fetch();
+
+        Long total = queryFactory
+                .select(camp.count())
+                .from(camp)
+                .where(camp.id.in(
+                        JPAExpressions
+                                .select(campLike.camp.id)
+                                .from(campLike)
+                                .where(campLike.member.id.eq(memberId))))
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total);
     }
 }

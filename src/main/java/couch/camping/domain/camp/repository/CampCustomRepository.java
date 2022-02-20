@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CampCustomRepository {
     Page<Camp> findAllCampSearch(List<String> tagList, String name, String sigunguNm, String sort, Pageable pageable, Float mapX, Float mapY);
+
+    Page<Camp> findMemberLikeCamp(Long memberId, Pageable pageable);
 }
