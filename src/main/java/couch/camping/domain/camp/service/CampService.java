@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface CampService {
     void save(Camp camp);
     Camp getCampDetail(Long campId);
-    Page<CampSearchResponseDto> getCampList(Pageable pageable, String name, String sigunguNm, String tag, String header, String sort, Float mapX, Float mapY);
+    Page<CampSearchResponseDto> getCampList(Pageable pageable, String name, String doNm, String sigunguNm, String tag, String header, String sort, Float mapX, Float mapY);
     void likeCamp(Long campId, Member member);
     Page<CampSearchResponseDto> getMemberLikeCamps(Long memberId, Pageable pageable);
 }
