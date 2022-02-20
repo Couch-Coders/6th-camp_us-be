@@ -48,15 +48,17 @@ public class CampController {
             @ApiParam(value = "페이징 모델", required = true) Pageable pageable,
             @ApiParam(value = "캠핑장 이름") @RequestParam(required = false) String name,
             @ApiParam(value = "캠핑장 시.군.구") @RequestParam(required = false) String sigunguNm,
+            @ApiParam(value = "시.도") @RequestParam(required = false) String doNm,
             @ApiParam(value = "캠핑장 검색 태그") @RequestParam(required = false) String tag,
-            @ApiParam(value = "현재 X 좌표") @RequestParam(required = false) Float mapX,
-            @ApiParam(value = "현재 Y 좌표") @RequestParam(required = false) Float mapY,
+            @ApiParam(value = "현재 X 좌표") @RequestParam(defaultValue = "127.0016985") Float mapX,
+            @ApiParam(value = "현재 Y 좌표") @RequestParam(defaultValue = "37.5642135") Float mapY,
             @ApiParam(value = "정렬 방식 (rate, distance) 기본 값 distance") @RequestParam(defaultValue = "rate") String sort,
+
             HttpServletRequest request
             ) {
         String header = RequestUtil.getAuthorizationToken(request);
 
-        return ResponseEntity.ok(campService.getCampList(pageable, name, sigunguNm, tag, header, sort, mapX, mapY));
+        return ResponseEntity.ok(campService.getCampList(pageable, name, doNm, sigunguNm, tag, header, sort, mapX, mapY));
     }
 
     //camp 상세
