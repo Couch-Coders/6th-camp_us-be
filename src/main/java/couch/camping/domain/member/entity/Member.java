@@ -22,6 +22,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(name = "member_id")
     private Long id;
     //uid
+    @Column(unique = true)
     private String uid;
     private String email;
     private String name;

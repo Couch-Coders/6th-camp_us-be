@@ -6,7 +6,6 @@ import com.google.firebase.auth.FirebaseToken;
 import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.repository.MemberRepository;
-import couch.camping.domain.review.repository.ReviewRepository;
 import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
-    private final ReviewRepository reviewRepository;
     private final FirebaseAuth firebaseAuth;
     
     //스프링 시큐리티에서 DB 에서 uid 를 조회
