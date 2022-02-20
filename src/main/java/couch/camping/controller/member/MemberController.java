@@ -33,8 +33,8 @@ public class MemberController {
 
     private final MemberService memberService;
     private final ReviewService reviewService;
-    private final NotificationService notificationService;
     private final CampService campService;
+    private final NotificationService notificationService;
 
     //로컬 회원 가입
     @ApiOperation(value = "로컬 회원 가입 API", notes = "로컬 개발 전용 회원 가입 API")
@@ -101,7 +101,7 @@ public class MemberController {
         Long memberId = ((Member) authentication.getPrincipal()).getId();
 
         return ResponseEntity.ok(reviewService
-                .retrieveMemberReviews(memberId, pageable).map(review -> new MemberReviewsResponseDto(review)));
+                .retrieveMemberReviews(memberId, pageable).map(review-> new MemberReviewsResponseDto(review)));
     }
     
     //회원 알림 조회

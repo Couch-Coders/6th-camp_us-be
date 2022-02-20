@@ -20,11 +20,11 @@ public class Camp {
     @Column(name = "camp_id")
     private Long id;
 
-    private int likeCnt;
+    private int likeCnt; // 0
 
-    private int reviewCnt;
+    private int reviewCnt; // 0
 
-    private float avgRate;
+    private float avgRate; // 0
 
     @OneToMany(mappedBy = "camp")
     private List<CampLike> campLikeList = new ArrayList<>();
@@ -147,6 +147,7 @@ public class Camp {
     }
 
     public void decreaseRate(int rate) {
+
         float totalRate = this.avgRate * this.reviewCnt;
         totalRate -= (float)rate;
         --this.reviewCnt;
