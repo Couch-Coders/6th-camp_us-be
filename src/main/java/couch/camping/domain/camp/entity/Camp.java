@@ -1,7 +1,6 @@
 package couch.camping.domain.camp.entity;
 
 import couch.camping.domain.camplike.entity.CampLike;
-import couch.camping.domain.review.entity.Review;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,9 +28,6 @@ public class Camp {
 
     @OneToMany(mappedBy = "camp")
     private List<CampLike> campLikeList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "camp")
-    private List<Review> reviewList = new ArrayList<>();
 
     private String facltNm;
     private String lineIntro;
