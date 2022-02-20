@@ -8,6 +8,8 @@ import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.camp.service.CampService;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.util.RequestUtil;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,6 +30,7 @@ public class CampController {
     private final CampService campService;
     private final ModelMapper modelMapper;
 
+    @ApiOperation(value = "캠핑장 데이터 저장 API", notes = "배포용으로 쓰이지 않습니다. 로컬에서만 데이터를 집어넣을 수 있습니다.")
     @PostMapping("")
     public String save(@RequestBody CampListSaveRequestDto campListSaveRequestDto) {
 
@@ -39,17 +42,18 @@ public class CampController {
     }
 
     //camp 검색
-    //?rate=4.5&doNm=경상도&sigunguNm=창원군&name=달빛캠핑장&sort1=distance&sort2=like&tag=와이파이_전기_하수도_수영장&x=3.1423&y=3.141592
+    @ApiOperation(value = "캠핑장 검색 API", notes = "이름, 시.군.구, 검색 태그, 현재 위치 등 캠핑장 검색")
     @GetMapping("")
     public ResponseEntity<Page<CampSearchResponseDto>> getCamps(
-            Pageable pageable,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String sigunguNm,
-            @RequestParam(required = false) String doNm,
-            @RequestParam(required = false) String tag,
-            @RequestParam(required = false) Float mapX,
-            @RequestParam(required = false) Float mapY,
-            @RequestParam(defaultValue = "rate") String sort,
+
+            @ApiParam(value = "페이징 모델", required = true) Pageable pageable,
+            @ApiParam(value = "캠핑장 이름") @RequestParam(required = false) String name,
+            @ApiParam(value = "캠핑장 시.군.구") @RequestParam(required = false) String sigunguNm,
+            @ApiParam(value = "캠핑장 도.시") @RequestParam(required = false) String doNm,
+            @ApiParam(value = "캠핑장 검색 태그") @RequestParam(required = false) String tag,
+            @ApiParam(value = "현재 X 좌표") @RequestParam(required = false) Float mapX,
+            @ApiParam(value = "현재 Y 좌표") @RequestParam(required = false) Float mapY,
+            @ApiParam(value = "정렬 방식 (rate, distance) 기본 값 distance") @RequestParam(defaultValue = "rate") String sort,
             HttpServletRequest request
             ) {
         String header = RequestUtil.getAuthorizationToken(request);
@@ -58,14 +62,21 @@ public class CampController {
     }
 
     //camp 상세
+    @ApiOperation(value = "캠핑장 상세 검색 API", notes = "경로 변수에 캠핑장의 ID 를 넣어 조회합니다.")
     @GetMapping("/{campId}")
-    public CampResponseDto campDetail(@PathVariable Long campId){
-        return new CampResponseDto(campService.getCampDetail(campId));
+    public ResponseEntity<CampResponseDto> campDetail(
+            @ApiParam(value = "캠핑장 ID", required = true) @PathVariable Long campId,
+            HttpServletRequest request ){
+        String header = RequestUtil.getAuthorizationToken(request);
+        return ResponseEntity.ok(campService.getCampDetail(campId, header));
     }
 
     //camp 좋아요
+    @ApiOperation(value = "캠핑장 좋아요 API", notes = "경로 변수에 캠핑장의 ID 를 넣어 조회합니다.(로그인 후 이용 가능)")
     @PatchMapping("/{campId}/like")
-    public ResponseEntity likeCamp(@PathVariable Long campId, Authentication authentication) {
+    public ResponseEntity likeCamp(
+            @ApiParam(value = "캠핑장 ID", required = true) @PathVariable Long campId,
+            Authentication authentication) {
 
         campService.likeCamp(campId, (Member)authentication.getPrincipal());
 

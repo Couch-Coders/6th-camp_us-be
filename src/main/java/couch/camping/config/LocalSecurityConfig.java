@@ -41,7 +41,7 @@ public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST ,"/members/local")
                 .antMatchers(HttpMethod.POST ,"/camps")
                 .antMatchers(HttpMethod.GET ,"/camps/**")
-                .antMatchers(HttpMethod.POST ,"/camps")
+                .antMatchers(HttpMethod.GET ,"/camps")
                 .antMatchers(HttpMethod.GET, "/reviews/**")
                 .antMatchers(HttpMethod.GET ,"/test")
 
@@ -53,6 +53,6 @@ public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/vendor/**")
                 .antMatchers("/favicon.ico")
                 .antMatchers("/pages/**")
-        ;
+                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**");
     }
 }

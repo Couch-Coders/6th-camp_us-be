@@ -1,13 +1,10 @@
 package couch.camping.domain.camp.repository;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import couch.camping.domain.camp.entity.Camp;
-import couch.camping.exception.CustomException;
-import couch.camping.exception.ErrorCode;
+import couch.camping.domain.camplike.entity.CampLike;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -61,31 +58,43 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
                 .where(builder)
                 .fetchOne();
 
-        List<Camp> content = query.fetch();
 
+        List<Camp> content = null;
         if (sort.equals("rate")) {
             query.orderBy(camp.avgRate.desc());
+
+            content = query.fetch();
+
+        } else {
+//            query.orderBy(camp.mapX);
         }
-//        } else {
-//            List<Camp> content = query.fetch();
-//
-//            Collections.sort(content, (o1, o2) -> {
-//                double dis1 = Math.pow(o1.getMapX() - mapX, 2) + Math.pow(o1.getMapY() - mapY, 2);
-//                double sqrt1 = Math.sqrt(dis1);
-//
-//                double dis2 = Math.pow(o2.getMapX() - mapX, 2) + Math.pow(o2.getMapY() - mapY, 2);
-//                double sqrt2 = Math.sqrt(dis2);
-//
-//                if (sqrt1 > sqrt2) {
-//                    return 1;//
-//                } else {
-//                    return -1;
-//                }
-//            });
-//
-//            return new PageImpl<>(content, pageable, total);
-//        }
+
         return new PageImpl<>(content, pageable, total);
 
+    }
+
+    //
+    @Override
+    public Page<Camp> findByMemberId(Long memberId, List<CampLike> campLikeList, Pageable pageable) {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        for (CampLike campLike : campLikeList) {
+            Long campId = campLike.getCamp().getId();
+            builder.and(camp.id.eq(campId));
+        }
+
+        JPAQuery<Camp> query = queryFactory.selectFrom(camp)
+                .where(builder)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
+        List<Camp> content = query.fetch();
+
+        Long total = queryFactory.select(camp.count())
+                .from(camp)
+                .where(builder)
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total);
     }
 }

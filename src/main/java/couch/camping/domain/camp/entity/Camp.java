@@ -3,6 +3,7 @@ package couch.camping.domain.camp.entity;
 import couch.camping.domain.camplike.entity.CampLike;
 import couch.camping.domain.review.entity.Review;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,11 +21,11 @@ public class Camp {
     @Column(name = "camp_id")
     private Long id;
 
-    private Integer likeCnt;
+    private int likeCnt; // 0
 
-    private Integer reviewCnt;
+    private int reviewCnt; // 0
 
-    private Float avgRate;
+    private float avgRate; // 0
 
     @OneToMany(mappedBy = "camp")
     private List<CampLike> campLikeList = new ArrayList<>();
@@ -102,6 +103,7 @@ public class Camp {
     }
 
     public void decreaseRate(int rate) {
+
         float totalRate = this.avgRate * this.reviewCnt;
         totalRate -= (float)rate;
         --this.reviewCnt;
