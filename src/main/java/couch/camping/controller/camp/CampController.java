@@ -49,8 +49,8 @@ public class CampController {
             @ApiParam(value = "캠핑장 이름") @RequestParam(required = false) String name,
             @ApiParam(value = "캠핑장 시.군.구") @RequestParam(required = false) String sigunguNm,
             @ApiParam(value = "캠핑장 검색 태그") @RequestParam(required = false) String tag,
-            @ApiParam(value = "현재 X 좌표") @RequestParam(required = false) Float mapX,
-            @ApiParam(value = "현재 Y 좌표") @RequestParam(required = false) Float mapY,
+            @ApiParam(value = "현재 X 좌표") @RequestParam(defaultValue = "127.0016985") Float mapX,
+            @ApiParam(value = "현재 Y 좌표") @RequestParam(defaultValue = "37.5642135") Float mapY,
             @ApiParam(value = "정렬 방식 (rate, distance) 기본 값 distance") @RequestParam(defaultValue = "rate") String sort,
             HttpServletRequest request
             ) {
