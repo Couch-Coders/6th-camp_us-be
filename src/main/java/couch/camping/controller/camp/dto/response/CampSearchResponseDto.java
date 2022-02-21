@@ -24,7 +24,7 @@ public class CampSearchResponseDto {
     @ApiModelProperty(required = true, value = "캠핑장 한줄 소개", example = "자연 경관이 좋아요")
     private String lineIntro;
     @ApiModelProperty(required = true, value = "캠핑장 좋아요 수", example = "28")
-    private int like;
+    private Integer like;
     @ApiModelProperty(required = true, value = "캠핑장 평균 평점", example = "4.35")
     private float rate;
     @ApiModelProperty(required = true, value = "X 좌표", example = "128.1423")

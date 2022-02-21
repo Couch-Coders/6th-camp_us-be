@@ -6,6 +6,8 @@ import com.google.firebase.auth.FirebaseToken;
 import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.repository.MemberRepository;
+import couch.camping.exception.CustomException;
+import couch.camping.exception.ErrorCode;
 import couch.camping.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +42,11 @@ public class MemberService implements UserDetailsService {
     //회원 등록
     @Transactional
     public MemberRegisterResponseDto register(String uid, String name, String email, String nickname, String imgUrl) {
+
+        Optional<Member> optionalMember = memberRepository.findByUid(uid);
+        if (optionalMember.isPresent()) {
+            throw new CustomException(ErrorCode.EXIST_MEMBER, "해당 계정으로 이미 회원가입을 했습니다.");
+        }
         Member member = Member.builder()
                 .uid(uid)
                 .name(name)

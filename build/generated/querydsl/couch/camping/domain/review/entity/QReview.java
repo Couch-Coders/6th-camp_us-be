@@ -48,6 +48,8 @@ public class QReview extends EntityPathBase<Review> {
 
     public final couch.camping.domain.member.entity.QMember member;
 
+    public final ListPath<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification> notificationList = this.<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification>createList("notificationList", couch.camping.domain.notification.entity.Notification.class, couch.camping.domain.notification.entity.QNotification.class, PathInits.DIRECT2);
+
     public final NumberPath<Integer> rate = createNumber("rate", Integer.class);
 
     public final ListPath<couch.camping.domain.reviewlike.entity.ReviewLike, couch.camping.domain.reviewlike.entity.QReviewLike> reviewLikeList = this.<couch.camping.domain.reviewlike.entity.ReviewLike, couch.camping.domain.reviewlike.entity.QReviewLike>createList("reviewLikeList", couch.camping.domain.reviewlike.entity.ReviewLike.class, couch.camping.domain.reviewlike.entity.QReviewLike.class, PathInits.DIRECT2);

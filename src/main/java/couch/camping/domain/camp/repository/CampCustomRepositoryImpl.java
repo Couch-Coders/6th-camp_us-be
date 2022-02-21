@@ -28,35 +28,29 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
     @Override
     public Page<Camp> findAllCampSearch(List<String> tagList, String name, String doNm, String sigunguNm, String sort, Pageable pageable, Float mapX, Float mapY) {
 
-        BooleanBuilder builder = new BooleanBuilder();
-
-        for (String s : tagList) {
-            if (s.equals("애견동반")) {
-                builder.and(camp.animalCmgCl.like("가능%"));
-                continue;
-            }
-            builder.and(camp.sbrsCl.contains(s));
-        }
-
-        if (name != null) {
-            builder.and(camp.facltNm.contains(name));
-        }
-
-        if (sigunguNm != null){
-            builder.and(camp.sigunguNm.contains(sigunguNm));
-        }
-
-        if (doNm != null){
-            builder.and(camp.addr1.contains(doNm));
-        }
-
-        long total = queryFactory
-                .select(camp.count())
-                .from(camp)
-                .where(builder)
-                .fetchOne();
-
         if (sort.equals("rate")) {
+
+            BooleanBuilder builder = new BooleanBuilder();
+
+            for (String s : tagList) {
+                if (s.equals("애견동반")) {
+                    builder.and(camp.animalCmgCl.like("가능%"));
+                } else {
+                    builder.and(camp.sbrsCl.contains(s));
+                }
+            }
+
+            if (name != null) {
+                builder.and(camp.facltNm.contains(name));
+            }
+
+            if (sigunguNm != null){
+                builder.and(camp.sigunguNm.contains(sigunguNm));
+            }
+
+            if (doNm != null){
+                builder.and(camp.addr1.contains(doNm));
+            }
 
             List<Camp> content = queryFactory
                     .selectFrom(camp)
@@ -66,8 +60,40 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
                     .orderBy(camp.avgRate.desc(), camp.id.asc())
                     .fetch();
 
+            long total = queryFactory
+                    .select(camp.count())
+                    .from(camp)
+                    .where(builder)
+                    .fetchOne();
+
             return new PageImpl<>(content, pageable, total);
         } else {
+
+            StringBuilder sb = new StringBuilder();
+        
+            if (!tagList.isEmpty() || name != null) {//태그가 있거나 이름이 null 아니면 where 을 달아준다.
+                sb.append("where ");
+            }
+
+            for (int i = 0; i < tagList.size(); i++) {
+                if (tagList.get(i).equals("애견동반")) {
+                    sb.append("animal_cmg_cl like \"%가능%\" ");
+                } else {
+                    sb.append("sbrs_cl like \"%" + tagList.get(i) +"%\" ");
+                }
+
+                if (i < tagList.size() - 1) {
+                    sb.append("and ");
+                }
+            }
+
+            if (name != null) {
+                if (tagList.isEmpty())
+                    sb.append("faclt_nm like \"%"+ name +"%\" ");
+                else
+                    sb.append("and faclt_nm like \"%"+ name +"%\" ");
+            }
+
             int offset = (int) pageable.getOffset();
             int pageSize = pageable.getPageSize();
             String sql = "SELECT *,\n" +
@@ -80,7 +106,7 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
                     "      * sin( radians( :mapY ) )\n" +
                     "    )\n" +
                     ") AS distance\n" +
-                    "FROM camp ORDER BY distance asc";
+                    "FROM camp " + sb +" ORDER BY distance asc";
 
             Query nativeQuery = em.createNativeQuery(sql);
             nativeQuery.setParameter("mapX", mapX);
@@ -94,8 +120,7 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
                 content.add(new Camp(o));
             }
 
-            return new PageImpl<>(content, pageable, total);
-
+            return new PageImpl<>(content, pageable, 0);
         }
     }
 

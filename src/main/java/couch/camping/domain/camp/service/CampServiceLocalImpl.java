@@ -1,7 +1,10 @@
 package couch.camping.domain.camp.service;
 
+import couch.camping.controller.camp.dto.response.CampLoginResponseDto;
+import couch.camping.controller.camp.dto.response.CampResponseDto;
 import couch.camping.controller.camp.dto.response.CampSearchLoginResponse;
 import couch.camping.controller.camp.dto.response.CampSearchResponseDto;
+import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
 import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.camp.repository.CampRepository;
 import couch.camping.domain.camplike.entity.CampLike;
@@ -13,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -41,12 +45,27 @@ public class CampServiceLocalImpl implements CampService{
 
     //캠핑장 단건 조회
     @Override
-    public Camp getCampDetail(Long campId) {
-        Camp findCamp = campRepository.findById(campId)
-                .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.NOT_FOUND_CAMP, "campId 에 맞는 캠핑장이 없습니다.");
-                });
-        return findCamp;
+    public CampResponseDto getCampDetail(Long campId, String header) {
+
+        if (header == null) {
+            Camp campById = campRepository.findCampById(campId);
+            return new CampResponseDto(campById);
+        } else {
+            Member member;
+            try {
+                member = (Member) userDetailsService.loadUserByUsername(header);
+            } catch (UsernameNotFoundException e) {
+                throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
+            }
+            Camp campById = campRepository.findCampById(campId);
+            List<CampLike> campLikeList = campById.getCampLikeList();
+            for (CampLike campLike : campLikeList) {
+                if (campLike.getMember() == member) {
+                    return new CampLoginResponseDto(campById, true);
+                }
+            }
+            return new CampLoginResponseDto(campById, false);
+        }
     }
 
     //캠핑장 조건 다중 조회
@@ -77,11 +96,11 @@ public class CampServiceLocalImpl implements CampService{
                         List<CampLike> campLikeList = camp.getCampLikeList();
 
                         for (CampLike campLike : campLikeList) {
-                            if (campLike.getMember() != member){
-                                return new CampSearchLoginResponse(camp, false);
+                            if (campLike.getMember() == member){
+                                return new CampSearchLoginResponse(camp, true);
                             }
                         }
-                        return new CampSearchLoginResponse(camp, true);
+                        return new CampSearchLoginResponse(camp, false);
                     });
         }
 
