@@ -102,6 +102,11 @@ public class ReviewServiceImpl implements ReviewService {
                     .orElseThrow(() -> {
                         throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
                     });
+
+            if (findReview.getMember() != member) {
+                throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 리뷰가 아닙니다.");
+            }
+
             findReview.getCamp().decreaseRate(findReview.getRate());
             reviewRepository.deleteById(reviewId);
         } catch (EmptyResultDataAccessException e) {

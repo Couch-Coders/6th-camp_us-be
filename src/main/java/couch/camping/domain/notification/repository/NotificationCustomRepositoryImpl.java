@@ -1,16 +1,11 @@
 package couch.camping.domain.notification.repository;
 
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.PathBuilder;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import couch.camping.domain.notification.entity.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -36,22 +31,15 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
 
     @Override
     public Page<Notification> findByOwnerMemberId(Pageable pageable, Long memberId) {
-        JPAQuery<Notification> query = queryFactory
+
+        List<Notification> content = queryFactory
                 .selectFrom(notification)
                 .join(notification.member).fetchJoin()
                 .join(notification.review).fetchJoin()
                 .where(notification.ownerMember.id.eq(memberId))
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize());
-
-        for (Sort.Order o : pageable.getSort()) {
-            PathBuilder pathBuilder = new PathBuilder(notification.getType(), notification.getMetadata());
-            query.orderBy(
-                    new OrderSpecifier<>(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(o.getProperty()))
-            );
-        }
-
-        List<Notification> content = query.fetch();
+                .limit(pageable.getPageSize())
+                .orderBy(notification.createdDate.desc()).fetch();
 
         Long total = queryFactory
                 .select(notification.count())
