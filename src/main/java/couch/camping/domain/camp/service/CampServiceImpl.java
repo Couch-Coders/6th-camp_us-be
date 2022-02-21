@@ -12,7 +12,6 @@ import couch.camping.domain.camp.repository.CampRepository;
 import couch.camping.domain.camplike.entity.CampLike;
 import couch.camping.domain.camplike.repository.CampLikeRepository;
 import couch.camping.domain.member.entity.Member;
-import couch.camping.domain.review.repository.ReviewRepository;
 import couch.camping.exception.CustomException;
 import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +74,7 @@ public class CampServiceImpl implements CampService{
     //캠핑장 조건 다중 조회
     @Override
     public Page<CampSearchResponseDto> getCampList(
-            Pageable pageable, String doNm, String name, String sigunguNm, String tag, String header, String sort, Float mapX, Float mapY) {
+            Pageable pageable, String name, String doNm, String sigunguNm, String tag, String header, String sort, Float mapX, Float mapY) {
         List<String> tagList = new ArrayList<>();
         if (tag!= null)
             tagList = Arrays.asList(tag.split("_"));
