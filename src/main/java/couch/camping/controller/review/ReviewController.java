@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/reviews")
@@ -26,7 +28,7 @@ public class ReviewController {
     @PutMapping("/{reviewId}")
     public ResponseEntity editReview(
             @ApiParam(value = "리뷰 ID", required = true) @PathVariable Long reviewId,
-            @ApiParam(value = "리뷰 수정 (요청 바디)", required = true) @RequestBody ReviewWriteRequestDto reviewWriteRequestDto,
+            @ApiParam(value = "리뷰 수정 (요청 바디)", required = true) @RequestBody @Valid ReviewWriteRequestDto reviewWriteRequestDto,
             Authentication authentication) {
 
         Member member = (Member) authentication.getPrincipal();

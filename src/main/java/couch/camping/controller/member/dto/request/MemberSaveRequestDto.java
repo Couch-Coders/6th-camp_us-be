@@ -3,6 +3,7 @@ package couch.camping.controller.member.dto.request;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 @Getter @Setter
 @NoArgsConstructor
@@ -18,6 +19,7 @@ public class MemberSaveRequestDto {
     @ApiModelProperty(required = true, value = "회원 닉네임", example = "김상운")
     private String name;
     @ApiModelProperty(required = true, value = "회원 닉네임", example = "abcd")
+    @Length(min = 3)
     private String nickname;
     @ApiModelProperty(required = true, value = "회원 닉네임", example = "www.img.com")
     private String imgUrl;

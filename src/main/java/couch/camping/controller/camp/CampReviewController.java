@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
@@ -32,7 +33,7 @@ public class CampReviewController {
     @PostMapping("/{campId}/reviews")
     public ResponseEntity<ReviewWriteResponseDto> writeReview(
             @ApiParam(value = "리뷰 ID", required = true) @PathVariable Long campId,
-            @ApiParam(value = "리뷰 작성 (요청 바디)", required = true) @RequestBody ReviewWriteRequestDto reviewWriteRequestDto,
+            @ApiParam(value = "리뷰 작성 (요청 바디)", required = true) @RequestBody @Valid ReviewWriteRequestDto reviewWriteRequestDto,
             Authentication authentication) {
 
         Member member = (Member) authentication.getPrincipal();
