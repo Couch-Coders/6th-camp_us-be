@@ -80,8 +80,8 @@ jobs:
           aws-secret-access-key: $
           aws-region: $
 
-        - name: S3 업로드
-          run: aws s3 cp --region ap-northeast-2 ./build-fe.zip s3://codesquad-deploy/client/build-fe.zip
+      - name: S3 업로드
+        run: aws s3 cp --region ap-northeast-2 ./build-fe.zip s3://codesquad-deploy/client/build-fe.zip
 
-        - name: Code Deploy
-          run: aws deploy create-deployment --application-name EC2-S3-Deploy-FE --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name dev-FE --s3-location bucket=codesquad-deploy,bundleType=zip,key=client/build-fe.zip
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name EC2-S3-Deploy-FE --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name dev-FE --s3-location bucket=codesquad-deploy,bundleType=zip,key=client/build-fe.zip
