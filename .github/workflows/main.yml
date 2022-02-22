@@ -30,7 +30,7 @@ jobs:
         with:
           aws-access-key-id: $
           aws-secret-access-key: $
-          aws-region: $
+          aws-region: ap-northeast-2
 
       - name: S3 업로드
         run: aws deploy push --application-name EC2-S3-Deploy --description "This is a revision for the application airbnb_App" --s3-location s3://codesquad-deploy/server/build.zip --source .
