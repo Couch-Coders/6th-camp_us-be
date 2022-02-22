@@ -3,9 +3,9 @@ os: linux
 
 files:
   - source: /
-    destination: /opt/testapp
+    destination: /home/ubuntu/testapp
 permissions:
-  - object: /opt/testapp/
+  - object: /home/ubuntu/testapp/
     owner: ubuntu
     group: ubuntu
     mode: 755
