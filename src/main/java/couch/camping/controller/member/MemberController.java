@@ -137,6 +137,14 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value = "회원의 모든 알림 삭제 API", notes = "회원의 모든 알림을 삭제합니다.")
+    @DeleteMapping("/me/notifications")
+    public ResponseEntity deleteAllNotification(Authentication authentication) {
+        Long memberId = ((Member) authentication.getPrincipal()).getId();
+        notificationService.deleteAllNotification(memberId);
+        return ResponseEntity.noContent().build();
+    }
+
     //회원이 좋아요한 캠핑장
     @ApiOperation(value = "회원이 좋아요한 캠핑장 조회 API",
             notes = "Header 의 토큰에 해당하는 회원이 좋아요한 캠핑장을 조회및 페이징. 쿼리스트링 예시(?page=0&size=10)")

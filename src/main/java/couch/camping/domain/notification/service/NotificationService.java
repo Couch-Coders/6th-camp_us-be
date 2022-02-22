@@ -42,4 +42,22 @@ public class NotificationService {
         return notificationRepository.findByOwnerMemberId(pageable, memberId)
                 .map(notification -> new NotificationRetrieveResponseDto(notification));
     }
+
+    @Transactional
+    public void deleteNotification(Long notificationId, Member member) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_NOTIFICATION, "알림 ID 에 맞는 알림이 없습니다.");
+                });
+
+        if (notification.getOwnerMember() != member)
+            throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "해당 회원의 알림이 아닙니다.");
+
+        notificationRepository.deleteById(notificationId);
+    }
+
+    @Transactional
+    public void deleteAllNotification(Long memberId) {
+        notificationRepository.deleteByOwnerMemberId(memberId);
+    }
 }

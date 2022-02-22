@@ -50,6 +50,7 @@ public class CampController {
             @ApiParam(value = "캠핑장 시.군.구") @RequestParam(required = false) String sigunguNm,
             @ApiParam(value = "캠핑장 도.시") @RequestParam(required = false) String doNm,
             @ApiParam(value = "캠핑장 검색 태그") @RequestParam(required = false) String tag,
+            @ApiParam(value = "캠핑장 평점") @RequestParam(defaultValue = "0") int rate,
             @ApiParam(value = "현재 X 좌표") @RequestParam(defaultValue = "127.0016985") Float mapX,
             @ApiParam(value = "현재 Y 좌표") @RequestParam(defaultValue = "37.5642135") Float mapY,
             @ApiParam(value = "정렬 방식 (rate, distance) 기본 값 distance") @RequestParam(defaultValue = "rate") String sort,
@@ -57,7 +58,7 @@ public class CampController {
             ) {
         String header = RequestUtil.getAuthorizationToken(request);
 
-        return ResponseEntity.ok(campService.getCampList(pageable, name, doNm, sigunguNm, tag, header, sort, mapX, mapY));
+        return ResponseEntity.ok(campService.getCampList(pageable, name, doNm, sigunguNm, tag, rate, header, sort, mapX, mapY));
     }
 
     //camp 상세

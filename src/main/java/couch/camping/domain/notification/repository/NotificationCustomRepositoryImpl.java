@@ -11,7 +11,10 @@ import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
+import static couch.camping.domain.camp.entity.QCamp.camp;
+import static couch.camping.domain.member.entity.QMember.member;
 import static couch.camping.domain.notification.entity.QNotification.notification;
+import static couch.camping.domain.review.entity.QReview.review;
 
 @RequiredArgsConstructor
 public class NotificationCustomRepositoryImpl implements NotificationCustomRepository {
@@ -34,8 +37,8 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
 
         List<Notification> content = queryFactory
                 .selectFrom(notification)
-                .join(notification.member).fetchJoin()
-                .join(notification.review).fetchJoin()
+                .join(notification.member, member).fetchJoin()
+                .join(notification.review, review).fetchJoin()
                 .where(notification.ownerMember.id.eq(memberId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

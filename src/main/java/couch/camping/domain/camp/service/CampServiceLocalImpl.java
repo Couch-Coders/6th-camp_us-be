@@ -4,7 +4,6 @@ import couch.camping.controller.camp.dto.response.CampLoginResponseDto;
 import couch.camping.controller.camp.dto.response.CampResponseDto;
 import couch.camping.controller.camp.dto.response.CampSearchLoginResponse;
 import couch.camping.controller.camp.dto.response.CampSearchResponseDto;
-import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
 import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.camp.repository.CampRepository;
 import couch.camping.domain.camplike.entity.CampLike;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -71,7 +69,7 @@ public class CampServiceLocalImpl implements CampService{
     //캠핑장 조건 다중 조회
     @Override
     public Page<CampSearchResponseDto> getCampList(
-            Pageable pageable, String name, String doNm, String sigunguNm, String tag, String header, String sort, Float mapX, Float mapY) {
+            Pageable pageable, String name, String doNm, String sigunguNm, String tag, int rate, String header, String sort, Float mapX, Float mapY) {
         List<String> tagList = new ArrayList<>();
         if (tag!= null)
             tagList = Arrays.asList(tag.split("_"));
@@ -81,7 +79,7 @@ public class CampServiceLocalImpl implements CampService{
         }
 
         if (header == null) {
-            return campRepository.findAllCampSearch(tagList, name, doNm, sigunguNm, sort, pageable, mapX, mapY)
+            return campRepository.findAllCampSearch(tagList, name, doNm, sigunguNm, rate, sort, pageable, mapX, mapY)
                     .map(camp -> new CampSearchResponseDto(camp));
         }
         else {
@@ -91,7 +89,7 @@ public class CampServiceLocalImpl implements CampService{
             } catch (UsernameNotFoundException e) {
                 throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
             }
-            return campRepository.findAllCampSearch(tagList, name, doNm, sigunguNm, sort, pageable, mapX, mapY)
+            return campRepository.findAllCampSearch(tagList, name, doNm, sigunguNm, rate, sort, pageable, mapX, mapY)
                     .map(camp -> {
                         List<CampLike> campLikeList = camp.getCampLikeList();
 
