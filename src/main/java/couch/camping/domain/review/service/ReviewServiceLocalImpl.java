@@ -123,6 +123,8 @@ public class ReviewServiceLocalImpl implements ReviewService {
             throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 리뷰가 아닙니다.");
         }
 
+        findReview.getCamp().editDate(findReview.getRate(), reviewWriteRequestDto.getRate());
+
         Review editReview = findReview.changeReview(
                 reviewWriteRequestDto.getContent(),
                 reviewWriteRequestDto.getRate(),

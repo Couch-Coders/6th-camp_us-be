@@ -24,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 
 @RestController
 @RequestMapping("/members")
@@ -39,7 +41,7 @@ public class MemberController {
     //로컬 회원 가입
     @ApiOperation(value = "로컬 회원 가입 API", notes = "로컬 개발 전용 회원 가입 API")
     @PostMapping("/local")
-    public ResponseEntity<MemberRegisterResponseDto> registerLocalMember(@RequestBody MemberSaveRequestDto memberSaveRequestDto) {
+    public ResponseEntity<MemberRegisterResponseDto> registerLocalMember(@RequestBody @Valid MemberSaveRequestDto memberSaveRequestDto) {
         MemberRegisterResponseDto responseDto = memberService.register(
                 memberSaveRequestDto.getUid(), memberSaveRequestDto.getName()
                 , memberSaveRequestDto.getEmail(), memberSaveRequestDto.getNickname(), memberSaveRequestDto.getImgUrl());
@@ -54,7 +56,7 @@ public class MemberController {
     @PostMapping("")
     public ResponseEntity<MemberRegisterResponseDto> registerMember(
             @ApiParam(value = "파이어베이스 인증 토큰", required = true) @RequestHeader("Authorization") String header,
-            @ApiParam(value = "회원 닉네임 (요청 바디)", required = true) @RequestBody MemberRegisterRequestDto memberRegisterRequestDto) {
+            @ApiParam(value = "회원 닉네임 (요청 바디)", required = true) @RequestBody @Valid MemberRegisterRequestDto memberRegisterRequestDto) {
         // TOKEN을 가져온다.
         FirebaseToken decodedToken = memberService.decodeToken(header);
         // 사용자를 등록한다.
@@ -79,7 +81,8 @@ public class MemberController {
     @ApiOperation(value = "닉네임 수정 API", notes = "수정하고자 하는 회원의 토큰을 Header 에 넣고, 변경하고자 하는 nickname 을 요청 바디에 넣어주세요")
     @PatchMapping("/me")
     public ResponseEntity editMemberNickname(Authentication authentication, 
-                                             @ApiParam(value = "수정하고자 하는 닉네임 (요청바디)", required = true) @RequestBody MemberRegisterRequestDto memberRegisterRequestDto) {
+                                             @ApiParam(value = "수정하고자 하는 닉네임 (요청바디)", required = true)
+                                             @RequestBody @Valid MemberRegisterRequestDto memberRegisterRequestDto) {
         memberService.editMemberNickName(((Member) authentication.getPrincipal()), memberRegisterRequestDto.getNickname());
 
         return ResponseEntity.noContent().build();
