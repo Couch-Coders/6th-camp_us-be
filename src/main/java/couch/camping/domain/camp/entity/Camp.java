@@ -154,4 +154,11 @@ public class Camp {
         if (totalRate == 0) this.avgRate = 0;
         else this.avgRate = totalRate / reviewCnt;
     }
+
+    public void editDate(int beforeRate, int afterRate) {
+        float totalRate = this.avgRate * this.reviewCnt;
+        totalRate -= beforeRate;
+        totalRate += afterRate;
+        this.avgRate = totalRate / reviewCnt;
+    }
 }
