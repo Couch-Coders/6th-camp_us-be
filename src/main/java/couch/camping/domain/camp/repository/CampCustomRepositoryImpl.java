@@ -49,7 +49,7 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
             }
 
             if (doNm != null){
-                builder.and(camp.addr1.contains(doNm));
+                builder.and(camp.doNm.contains(doNm));
             }
 
             List<Camp> content = queryFactory
