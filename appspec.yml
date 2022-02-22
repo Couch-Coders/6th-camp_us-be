@@ -5,7 +5,7 @@ files:
   - source: /
     destination: /home/ubuntu/camp_us
 permissions:
-  - object: /home/ubuntu/camp_us/
+  - object: /home/ubuntu/camp_us
     owner: ubuntu
     group: ubuntu
     mode: 755
