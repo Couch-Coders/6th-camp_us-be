@@ -9,10 +9,6 @@ jobs:
   backend:
     name: CI with Gradle
     runs-on: ubuntu-18.04
-    defaults:
-      run:
-        shell: bash
-        working-directory: Couch-Coders/6th-camp_us-be
 
     steps:
       - name: 체크아웃 Github-Action
