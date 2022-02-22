@@ -25,6 +25,10 @@ jobs:
       - name: Gradle 빌드
         run: ./gradlew build
 
+      - name: Make zip file
+        run: zip -qq -r ./$GITHUB_SHA.zip
+        shell: bash
+
       - name: AWS 설정
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -32,11 +36,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: S3 업로드
-        run: aws deploy push --application-name EC2-S3-Deploy --description "This is a revision for the application airbnb_App" --s3-location s3://codesquad-deploy/server/build.zip --source .
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://camp-us/server/$GITHUB_SHA.zip
 
       - name: Code Deploy
-        run: aws deploy create-deployment --application-name EC2-S3-Deploy --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name dev --s3-location bucket=codesquad-deploy,bundleType=zip,key=server/build.zip
+        run: aws deploy create-deployment --application-name camp-deploy-app-new --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name dev --s3-location bucket=camp-us,bundleType=zip,key=server/build.zip
 
 #
 #  frontend:
