@@ -63,7 +63,9 @@ public class ReviewServiceImpl implements ReviewService {
                 .rate(reviewWriteRequestDto.getRate())
                 .build();
 
-        return new ReviewWriteResponseDto(reviewRepository.save(review));
+        Review saveReview = reviewRepository.save(review);
+        findCamp.increaseRate(reviewWriteRequestDto.getRate());
+        return new ReviewWriteResponseDto(saveReview);
     }
 
     @Override
@@ -126,6 +128,8 @@ public class ReviewServiceImpl implements ReviewService {
         if (findReview.getMember().getId() != member.getId()) {
             throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 리뷰가 아닙니다.");
         }
+
+        findReview.getCamp().editDate(findReview.getRate(), reviewWriteRequestDto.getRate());
 
         Review editReview = findReview.changeReview(
                 reviewWriteRequestDto.getContent(),
