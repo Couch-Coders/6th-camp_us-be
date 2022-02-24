@@ -30,6 +30,10 @@ public class ReviewRetrieveResponseDto {
     private int rate;
     @ApiModelProperty(required = true, value = "리뷰 좋아요 개수", example = "10")
     private int likeCnt;
+    @ApiModelProperty(required = true, value = "회원 닉네임", example = "test")
+    private String nickname;
+    @ApiModelProperty(required = true, value = "캠핑장 이름", example = "달빛캠핑장")
+    private String facltNm;
     @ApiModelProperty(required = true, value = "작성 날짜", example = "2022-02-18T18:26:23.9592352")
     private LocalDateTime createdDate;
     @ApiModelProperty(required = true, value = "수정 날짜", example = "2022-02-19T18:26:23.9592352")
@@ -43,6 +47,8 @@ public class ReviewRetrieveResponseDto {
         this.content = r.getContent();
         this.rate = r.getRate();
         this.likeCnt =r.getLikeCnt();
+        this.nickname = r.getMember().getNickname();
+        this.facltNm = r.getCamp().getFacltNm();
         this.createdDate = r.getCreatedDate();
         this.lastModifiedDate = r.getLastModifiedDate();
     }

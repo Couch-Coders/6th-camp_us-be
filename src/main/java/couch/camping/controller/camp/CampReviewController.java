@@ -2,6 +2,7 @@ package couch.camping.controller.camp;
 
 
 import com.google.firebase.auth.FirebaseAuthException;
+import couch.camping.controller.review.dto.response.ReviewImageUrlResponseDto;
 import couch.camping.controller.review.dto.request.ReviewWriteRequestDto;
 import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
 import couch.camping.controller.review.dto.response.ReviewWriteResponseDto;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -43,7 +45,7 @@ public class CampReviewController {
     }
 
     //리뷰 조회
-    @ApiOperation(value = "리뷰 조회 API", notes = "캠핑장 ID 에 해당하는 리뷰 조회 및 페이징. 쿼리스트링 예시(?page=0&size=10&sort=createdDate,desc)")
+    @ApiOperation(value = "리뷰 조회 API", notes = "캠핑장 ID 에 해당하는 리뷰 조회 및 페이징. 쿼리스트링 예시(?page=0&size=10")
     @GetMapping("/{campId}/reviews")
     public ResponseEntity<Page<ReviewRetrieveResponseDto>> getReviewList(Pageable pageable,
                                                                          @ApiParam(value = "캠핑장 ID", required = true) @PathVariable Long campId,
@@ -52,4 +54,10 @@ public class CampReviewController {
         return ResponseEntity.ok(reviewService.retrieveAll(campId, pageable, header));
     }
 
+    //캠핑장의 리뷰 이미지 조회
+    @ApiOperation(value = "캠핑장의 리뷰 이미지 조회 API", notes = "캠핑장 ID 에 해당하는 리뷰 이미지 조회 및 페이징. 쿼리스트링 예시(?page=0&size=10")
+    @GetMapping("/{campId}/reviews/images")
+    public ResponseEntity<List<ReviewImageUrlResponseDto>> getReviewImageUrlList(@PathVariable Long campId) {
+        return ResponseEntity.ok(reviewService.retrieveAllImageUrl(campId));
+    }
 }
