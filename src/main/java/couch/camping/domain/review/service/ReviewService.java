@@ -1,6 +1,7 @@
 package couch.camping.domain.review.service;
 
 import com.google.firebase.auth.FirebaseAuthException;
+import couch.camping.controller.review.dto.response.ReviewImageUrlResponseDto;
 import couch.camping.controller.review.dto.request.ReviewWriteRequestDto;
 import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
 import couch.camping.controller.review.dto.response.ReviewWriteResponseDto;
@@ -8,6 +9,8 @@ import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.review.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface ReviewService {
 
@@ -20,4 +23,5 @@ public interface ReviewService {
     Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable);
     long countMemberReviews(Long memberId);
     Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable);
+    List<ReviewImageUrlResponseDto> retrieveAllImageUrl(Long campId);
 }

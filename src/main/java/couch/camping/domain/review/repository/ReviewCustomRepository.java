@@ -4,6 +4,8 @@ import couch.camping.domain.review.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface ReviewCustomRepository {
 
     Page<Review> findAllByLikeCntGreaterThan(Pageable pageable);
@@ -14,5 +16,5 @@ public interface ReviewCustomRepository {
 
     Long countByMemberId(Long memberId);
 
-    Double avgByRateOfReview(Long CampId);
+    List<Review> findImageUrlByCampId(Long campId);
 }

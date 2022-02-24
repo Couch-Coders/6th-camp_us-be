@@ -3,6 +3,7 @@ package couch.camping.domain.review.service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import couch.camping.controller.review.dto.response.ReviewImageUrlResponseDto;
 import couch.camping.controller.review.dto.request.ReviewWriteRequestDto;
 import couch.camping.controller.review.dto.response.ReviewRetrieveLoginResponse;
 import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
@@ -29,6 +30,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -184,7 +186,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable) {
-        return reviewRepository.findAllByLikeCntGreaterThan(pageable).map(review -> new ReviewRetrieveResponseDto(review));
+        return reviewRepository.findAllByLikeCntGreaterThan(pageable)
+                .map(review -> new ReviewRetrieveResponseDto(review));
     }
 
     @Override
@@ -195,5 +198,16 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable) {
         return reviewRepository.findByMemberId(pageable, memberId);
+    }
+
+    @Override
+    public List<ReviewImageUrlResponseDto> retrieveAllImageUrl(Long campId) {
+        List<Review> reviews = reviewRepository.findImageUrlByCampId(campId);
+        List<ReviewImageUrlResponseDto> list = new ArrayList<>();
+
+        for (Review r : reviews) {
+            list.add(new ReviewImageUrlResponseDto(r));
+        }
+        return list;
     }
 }
