@@ -30,6 +30,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -200,8 +201,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<ReviewImageUrlResponseDto> retrieveAllImageUrl(Long campId, Pageable pageable) {
-        return reviewRepository.findImageUrlByCampId(campId, pageable)
-                .map(review -> new ReviewImageUrlResponseDto(review));
+    public List<ReviewImageUrlResponseDto> retrieveAllImageUrl(Long campId) {
+        List<Review> reviews = reviewRepository.findImageUrlByCampId(campId);
+        List<ReviewImageUrlResponseDto> list = new ArrayList<>();
+
+        for (Review r : reviews) {
+            list.add(new ReviewImageUrlResponseDto(r));
+        }
+        return list;
     }
 }

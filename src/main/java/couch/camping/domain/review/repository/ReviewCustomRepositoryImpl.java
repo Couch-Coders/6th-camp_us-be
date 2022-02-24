@@ -89,7 +89,7 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
     }
 
     @Override
-    public Page<Review> findImageUrlByCampId(Long campId, Pageable pageable) {
+    public List<Review> findImageUrlByCampId(Long campId) {
         List<Review> content = queryFactory
                 .select(review)
                 .from(review)
@@ -98,12 +98,6 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
                 .orderBy(review.createdDate.desc())
                 .fetch();
 
-        Long total = queryFactory
-                .select(review.count())
-                .from(review)
-                .where(review.imgUrl.length().goe(1), review.camp.id.eq(campId))
-                .fetchOne();
-
-        return new PageImpl<>(content, pageable, total);
+        return content;
     }
 }

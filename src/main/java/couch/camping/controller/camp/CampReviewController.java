@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -56,7 +57,7 @@ public class CampReviewController {
     //캠핑장의 리뷰 이미지 조회
     @ApiOperation(value = "캠핑장의 리뷰 이미지 조회 API", notes = "캠핑장 ID 에 해당하는 리뷰 이미지 조회 및 페이징. 쿼리스트링 예시(?page=0&size=10")
     @GetMapping("/{campId}/reviews/images")
-    public ResponseEntity<Page<ReviewImageUrlResponseDto>> getReviewImageUrlList(@PathVariable Long campId, Pageable pageable) {
-        return ResponseEntity.ok(reviewService.retrieveAllImageUrl(campId, pageable));
+    public ResponseEntity<List<ReviewImageUrlResponseDto>> getReviewImageUrlList(@PathVariable Long campId) {
+        return ResponseEntity.ok(reviewService.retrieveAllImageUrl(campId));
     }
 }

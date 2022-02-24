@@ -10,6 +10,8 @@ import couch.camping.domain.review.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface ReviewService {
 
 
@@ -21,5 +23,5 @@ public interface ReviewService {
     Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable);
     long countMemberReviews(Long memberId);
     Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable);
-    Page<ReviewImageUrlResponseDto> retrieveAllImageUrl(Long campId, Pageable pageable);
+    List<ReviewImageUrlResponseDto> retrieveAllImageUrl(Long campId);
 }
