@@ -17,6 +17,7 @@ import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -72,41 +73,79 @@ public class CampServiceImpl implements CampService{
     }
 
     //캠핑장 조건 다중 조회
+    @Transactional
     @Override
     public Page<CampSearchResponseDto> getCampList(
             Pageable pageable, String name, String doNm, String sigunguNm, String tag, int rate, String header, String sort, Float mapX, Float mapY) {
-        List<String> tagList = new ArrayList<>();
-        if (tag!= null)
-            tagList = Arrays.asList(tag.split("_"));
-
-        if (!sort.equals("distance") && !sort.equals("rate")) {
-            throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "sort 의 값을 distance 또는 rate 만 입력가능합니다.");
-        }
+        List<String> tagList = getTagList(tag);
+        ValidateSortCondition(sort);
 
         if (header == null) {
             return campRepository.findAllCampSearch(tagList, name, doNm, sigunguNm, rate, sort, pageable, mapX, mapY)
                     .map(camp -> new CampSearchResponseDto(camp));
-        }
-        else {
+        } else {
             Member member;
             try {
-                FirebaseToken decodedToken = firebaseAuth.verifyIdToken(header);
-                member = (Member)userDetailsService.loadUserByUsername(decodedToken.getUid());
-            } catch (UsernameNotFoundException | FirebaseAuthException | IllegalArgumentException e) {
+                member = (Member) userDetailsService.loadUserByUsername(header);
+            } catch (UsernameNotFoundException e) {
                 throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
             }
-            return campRepository.findAllCampSearch(tagList, name, doNm, sigunguNm, rate, sort, pageable, mapX, mapY)
-                    .map(camp -> {
-                        List<CampLike> campLikeList = camp.getCampLikeList();
 
-                        for (CampLike campLike : campLikeList) {
-                            if (campLike.getMember() == member){
-                                return new CampSearchLoginResponse(camp, true);
-                            }
+            Page<Camp> page = campRepository.findAllCampSearch(tagList, name, doNm, sigunguNm, rate, sort, pageable, mapX, mapY);
+            if (sort.equals("distance")) {
+                List<Long> campIds = new ArrayList<>();
+                for (Camp c : page.getContent()) {
+                    campIds.add(c.getId());
+                }
+
+                List<Camp> campList = campRepository.findAllByCampId(campIds);
+                List<CampSearchLoginResponse> dtoList = campToCampLoginResponseDto(member, campList);
+                return new PageImpl(dtoList, pageable, page.getTotalElements());
+
+            } else {
+                return page.map(camp -> {
+                    List<CampLike> campLikeList = camp.getCampLikeList();
+
+                    for (CampLike campLike : campLikeList) {
+                        if (campLike.getMember() == member){
+                            return new CampSearchLoginResponse(camp, true);
                         }
-                        return new CampSearchLoginResponse(camp, false);
-                    });
+                    }
+                    return new CampSearchLoginResponse(camp, false);
+                });
+            }
         }
+
+    }
+
+    private void ValidateSortCondition(String sort) {
+        if (!sort.equals("distance") && !sort.equals("rate")) {
+            throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "sort 의 값을 distance 또는 rate 만 입력가능합니다.");
+        }
+    }
+
+    private List<String> getTagList(String tag) {
+        List<String> tagList = new ArrayList<>();
+        if (tag != null)
+            tagList = Arrays.asList(tag.split("_"));
+        return tagList;
+    }
+
+    private List<CampSearchLoginResponse> campToCampLoginResponseDto(Member member, List<Camp> campList) {
+        List<CampSearchLoginResponse> list = new ArrayList<>();
+
+        for (Camp camp : campList) {
+            boolean flag = false;
+            for (CampLike campLike : camp.getCampLikeList()) {
+                if (campLike.getMember() == member){
+                    flag = true;
+                    break;
+                }
+            }
+            if (flag) list.add(new CampSearchLoginResponse(camp, true));
+            else list.add(new CampSearchLoginResponse(camp, false));
+        }
+        return list;
     }
 
     //캠핑장 좋아요
