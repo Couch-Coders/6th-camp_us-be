@@ -14,5 +14,5 @@ public interface ReviewCustomRepository {
 
     Long countByMemberId(Long memberId);
 
-    Double avgByRateOfReview(Long CampId);
+    Page<Review> findImageUrlByCampId(Long campId, Pageable pageable);
 }

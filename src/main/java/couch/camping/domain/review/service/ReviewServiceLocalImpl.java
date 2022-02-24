@@ -1,5 +1,6 @@
 package couch.camping.domain.review.service;
 
+import couch.camping.controller.review.dto.response.ReviewImageUrlResponseDto;
 import couch.camping.controller.review.dto.request.ReviewWriteRequestDto;
 import couch.camping.controller.review.dto.response.ReviewRetrieveLoginResponse;
 import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
@@ -189,5 +190,11 @@ public class ReviewServiceLocalImpl implements ReviewService {
     @Override
     public Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable) {
         return reviewRepository.findByMemberId(pageable, memberId);
+    }
+
+    @Override
+    public Page<ReviewImageUrlResponseDto> retrieveAllImageUrl(Long campId, Pageable pageable) {
+        return reviewRepository.findImageUrlByCampId(campId, pageable)
+                .map(review -> new ReviewImageUrlResponseDto(review));
     }
 }

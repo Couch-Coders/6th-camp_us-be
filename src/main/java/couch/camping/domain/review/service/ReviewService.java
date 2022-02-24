@@ -1,6 +1,7 @@
 package couch.camping.domain.review.service;
 
 import com.google.firebase.auth.FirebaseAuthException;
+import couch.camping.controller.review.dto.response.ReviewImageUrlResponseDto;
 import couch.camping.controller.review.dto.request.ReviewWriteRequestDto;
 import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
 import couch.camping.controller.review.dto.response.ReviewWriteResponseDto;
@@ -20,4 +21,5 @@ public interface ReviewService {
     Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable);
     long countMemberReviews(Long memberId);
     Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable);
+    Page<ReviewImageUrlResponseDto> retrieveAllImageUrl(Long campId, Pageable pageable);
 }

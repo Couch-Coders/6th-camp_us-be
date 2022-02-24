@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+import static couch.camping.domain.member.entity.QMember.member;
 import static couch.camping.domain.review.entity.QReview.review;
 
 @Slf4j
@@ -88,11 +89,21 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
     }
 
     @Override
-    public Double avgByRateOfReview(Long CampId) {
-        return queryFactory
-                .select(review.rate.avg())
+    public Page<Review> findImageUrlByCampId(Long campId, Pageable pageable) {
+        List<Review> content = queryFactory
+                .select(review)
                 .from(review)
-                .where(review.camp.id.eq(CampId))
+                .join(review.member, member).fetchJoin()
+                .where(review.imgUrl.length().goe(1), review.camp.id.eq(campId))
+                .orderBy(review.createdDate.desc())
+                .fetch();
+
+        Long total = queryFactory
+                .select(review.count())
+                .from(review)
+                .where(review.imgUrl.length().goe(1), review.camp.id.eq(campId))
                 .fetchOne();
+
+        return new PageImpl<>(content, pageable, total);
     }
 }

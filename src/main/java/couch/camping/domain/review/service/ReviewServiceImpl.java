@@ -3,6 +3,7 @@ package couch.camping.domain.review.service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import couch.camping.controller.review.dto.response.ReviewImageUrlResponseDto;
 import couch.camping.controller.review.dto.request.ReviewWriteRequestDto;
 import couch.camping.controller.review.dto.response.ReviewRetrieveLoginResponse;
 import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
@@ -184,7 +185,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable) {
-        return reviewRepository.findAllByLikeCntGreaterThan(pageable).map(review -> new ReviewRetrieveResponseDto(review));
+        return reviewRepository.findAllByLikeCntGreaterThan(pageable)
+                .map(review -> new ReviewRetrieveResponseDto(review));
     }
 
     @Override
@@ -195,5 +197,11 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Page<Review> retrieveMemberReviews(Long memberId, Pageable pageable) {
         return reviewRepository.findByMemberId(pageable, memberId);
+    }
+
+    @Override
+    public Page<ReviewImageUrlResponseDto> retrieveAllImageUrl(Long campId, Pageable pageable) {
+        return reviewRepository.findImageUrlByCampId(campId, pageable)
+                .map(review -> new ReviewImageUrlResponseDto(review));
     }
 }
