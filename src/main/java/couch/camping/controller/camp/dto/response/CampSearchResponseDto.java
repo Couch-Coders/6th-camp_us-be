@@ -31,6 +31,8 @@ public class CampSearchResponseDto {
     private float mapX;
     @ApiModelProperty(required = true, value = "Y 좌표", example = "37.141592")
     private float mapY;
+    @ApiModelProperty(required = true, value = "태그 문자열", example = "전기, 난로, 운동 시설")
+    private String sbrsCl;
 
     public CampSearchResponseDto(Camp camp) {
         this.campId = camp.getId();
@@ -42,5 +44,6 @@ public class CampSearchResponseDto {
         this.like = camp.getLikeCnt();
         this.mapX = camp.getMapX();
         this.mapY = camp.getMapY();
+        this.sbrsCl = camp.getSbrsCl();
     }
 }

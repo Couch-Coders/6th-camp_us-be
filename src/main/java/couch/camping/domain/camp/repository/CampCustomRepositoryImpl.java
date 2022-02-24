@@ -157,4 +157,13 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
 
         return new PageImpl<>(content, pageable, total);
     }
+
+    @Override
+    public List<Camp> findAllByCampId(List<Long> campIds) {
+        return queryFactory
+                .select(camp)
+                .from(camp)
+                .where(camp.id.in(campIds))
+                .fetch();
+    }
 }
