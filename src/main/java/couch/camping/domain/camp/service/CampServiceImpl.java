@@ -86,8 +86,9 @@ public class CampServiceImpl implements CampService{
         } else {
             Member member;
             try {
-                member = (Member) userDetailsService.loadUserByUsername(header);
-            } catch (UsernameNotFoundException e) {
+                FirebaseToken decodedToken = firebaseAuth.verifyIdToken(header);
+                member = (Member)userDetailsService.loadUserByUsername(decodedToken.getUid());
+            } catch (UsernameNotFoundException | FirebaseAuthException | IllegalArgumentException e) {
                 throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
             }
 
