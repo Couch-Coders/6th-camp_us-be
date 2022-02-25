@@ -5,10 +5,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
@@ -23,6 +20,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
     private Long id;
     //uid
     @Column(unique = true)
+    @Lob
     private String uid;
     private String email;
     private String name;

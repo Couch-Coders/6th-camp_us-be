@@ -63,7 +63,7 @@ public class ReviewController {
     }
     
     //bset 리뷰
-    @ApiOperation(value = "베스트 리뷰 좋아요 API", notes = "좋아요 개수가 1 이상인 리뷰를 좋아요 순으로 조회 및 페이징. 쿼리스트링 예시(?page=0&size=10)")
+    @ApiOperation(value = "베스트 리뷰 조회 API", notes = "좋아요 개수가 1 이상인 리뷰를 좋아요 순으로 조회 및 페이징. 쿼리스트링 예시(?page=0&size=10)")
     @GetMapping("/best")
     public ResponseEntity getBestReviews(Pageable pageable) {
         Page<ReviewRetrieveResponseDto> responseDto = reviewService.getBestReviews(pageable);

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-REPOSITORY=/home/ubuntu/testapp
+REPOSITORY=/home/ubuntu/camp_us
 cd $REPOSITORY
 
-APP_NAME=camp_us
+APP_NAME=camping
 JAR_NAME=$(ls $REPOSITORY/build/libs/ | grep '.jar' | tail -n 1)
 JAR_PATH=$REPOSITORY/build/libs/$JAR_NAME
 
@@ -19,4 +19,6 @@ else
 fi
 
 echo "> $JAR_PATH 배포"
-nohup java -jar $JAR_PATH > /dev/null 2> /dev/null < /dev/null &
+nohup java -jar $JAR_PATH -Dspring.profiles.active=prod  > /dev/null 2> /dev/null < /dev/null &
+
+#23412
