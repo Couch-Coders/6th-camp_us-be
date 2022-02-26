@@ -13,4 +13,6 @@ public interface NotificationCustomRepository {
     Page<Notification> findByOwnerMemberId(Pageable pageable, Long memberId);
 
     void changeNotifications(Long ownerMemberId);
+
+    long countUnReadMemberNotifications(Long memberId);
 }

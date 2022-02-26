@@ -29,6 +29,8 @@ public class MemberReviewsResponseDto {
     private int rate;
     @ApiModelProperty(required = true, value = "리뷰 좋아요 수", example = "2")
     private int likeCnt;
+    @ApiModelProperty(required = true, value = "캠핑장 이름", example = "달빛캠핑장")
+    private String facltNm;
     @ApiModelProperty(required = true, value = "작성 날짜", example = "2022-02-18T18:26:23.9592352")
     private LocalDateTime createdDate;
     @ApiModelProperty(required = true, value = "수정 날짜", example = "2022-02-19T18:26:23.9592352")
@@ -42,6 +44,7 @@ public class MemberReviewsResponseDto {
         this.content = review.getContent();
         this.rate = review.getRate();
         this.likeCnt = review.getLikeCnt();
+        this.facltNm = review.getCamp().getFacltNm();
         this.createdDate = review.getCreatedDate();
         this.lastModifiedDate = review.getLastModifiedDate();
     }

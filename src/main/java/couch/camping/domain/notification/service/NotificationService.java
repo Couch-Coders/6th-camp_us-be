@@ -60,4 +60,8 @@ public class NotificationService {
     public void deleteAllNotification(Long memberId) {
         notificationRepository.deleteByOwnerMemberId(memberId);
     }
+
+    public long countMemberNotReadNotifications(Long memberId) {
+        return notificationRepository.countUnReadMemberNotifications(memberId);
+    }
 }

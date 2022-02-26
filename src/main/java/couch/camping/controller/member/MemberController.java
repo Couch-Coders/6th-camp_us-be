@@ -128,6 +128,16 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
     
+    //회원의 안읽은 알림 개수
+    @ApiOperation(value = "회원의 안읽은 알림 개수 API", notes = "Header 의 토큰에 해당하는 회원의 읽지 않은 알림을 조회합니다.")
+    @GetMapping("/me/notifications/count")
+    public ResponseEntity countMemberNotReadNotification(Authentication authentication) {
+        Long memberId = ((Member) authentication.getPrincipal()).getId();
+        return ResponseEntity.ok(notificationService.countMemberNotReadNotifications(memberId));
+
+
+    }
+    
     //알림 전체 읽음
     @ApiOperation(value = "회원 알림 전체 갱신 API", notes = "Header 의 토큰에 해당하는 회원의 전체 알림을 읽음으로 갱신합니다.")
     @PatchMapping("/me/notifications")
