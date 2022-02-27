@@ -78,9 +78,8 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
     }
 
     @Override
-    public Page<Camp> findAllCampSearch(List<String> tagList, String name, String doNm, String sigunguNm, int rate, String sort, Pageable pageable, Float mapX, Float mapY) {
+    public Page<Camp> findAllCampBySearchCondOrderByRate(List<String> tagList, String name, String doNm, String sigunguNm, int rate, Pageable pageable) {
 
-        if (sort.equals("rate")) {
             List<Camp> content = queryFactory
                     .selectFrom(camp)
                     .where(tagContain(tagList), nameContain(name), doNmContain(doNm), sigunguNmContain(sigunguNm), camp.avgRate.goe(rate))
@@ -96,44 +95,45 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
                     .fetchOne();
 
             return new PageImpl<>(content, pageable, total);
-        } else {
+    }
 
-            String condition = getStringBuilder(tagList, name).toString();
+    @Override
+    public Page<Camp> findAllCampBySearchCondOrderByDistanceNativeQuery(List<String> tagList, String name, Pageable pageable, Float mapX, Float mapY) {
+        String condition = getStringBuilder(tagList, name).toString();
 
-            int offset = (int) pageable.getOffset();
-            int pageSize = pageable.getPageSize();
-            String sql = "SELECT *,\n" +
-                    "    (\n" +
-                    "      6371 * acos (\n" +
-                    "      cos ( radians(camp.mapy) )\n" +
-                    "      * cos( radians( :mapY ) )\n" +
-                    "      * cos( radians( :mapX ) - radians(camp.mapx) )\n" +
-                    "      + sin ( radians(camp.mapy) )\n" +
-                    "      * sin( radians( :mapY ) )\n" +
-                    "    )\n" +
-                    ") AS distance\n" +
-                    "FROM camp " + condition +" ORDER BY distance asc";
+        int offset = (int) pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+        String sql = "SELECT *,\n" +
+                "    (\n" +
+                "      6371 * acos (\n" +
+                "      cos ( radians(camp.mapy) )\n" +
+                "      * cos( radians( :mapY ) )\n" +
+                "      * cos( radians( :mapX ) - radians(camp.mapx) )\n" +
+                "      + sin ( radians(camp.mapy) )\n" +
+                "      * sin( radians( :mapY ) )\n" +
+                "    )\n" +
+                ") AS distance\n" +
+                "FROM camp " + condition + " ORDER BY distance asc";
 
-            Long total = queryFactory
-                    .select(camp.count())
-                    .from(camp)
-                    .where(tagContain(tagList), nameContain(name))
-                    .fetchOne();
+        Long total = queryFactory
+                .select(camp.count())
+                .from(camp)
+                .where(tagContain(tagList), nameContain(name))
+                .fetchOne();
 
-            Query nativeQuery = em.createNativeQuery(sql);
-            nativeQuery.setParameter("mapX", mapX);
-            nativeQuery.setParameter("mapY", mapY);
-            nativeQuery.setFirstResult(offset);
-            nativeQuery.setMaxResults(pageSize);
+        Query nativeQuery = em.createNativeQuery(sql);
+        nativeQuery.setParameter("mapX", mapX);
+        nativeQuery.setParameter("mapY", mapY);
+        nativeQuery.setFirstResult(offset);
+        nativeQuery.setMaxResults(pageSize);
 
-            List<Object[]> resultList = nativeQuery.getResultList();
-            List<Camp> content = new ArrayList<>();
-            for (Object[] o : resultList) {
-                content.add(new Camp(o));
-            }
-
-            return new PageImpl<>(content, pageable, total);
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Camp> content = new ArrayList<>();
+        for (Object[] o : resultList) {
+            content.add(new Camp(o));
         }
+
+        return new PageImpl<>(content, pageable, total);
     }
 
     @Override

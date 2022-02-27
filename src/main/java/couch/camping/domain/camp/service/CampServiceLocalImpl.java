@@ -22,7 +22,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +38,6 @@ public class CampServiceLocalImpl implements CampService{
     private final CampRepository campRepository;
     private final CampLikeRepository campLikeRepository;
     private final UserDetailsService userDetailsService;
-    private final EntityManager em;
 
     @Transactional
     public void save(Camp camp) {
@@ -71,51 +69,107 @@ public class CampServiceLocalImpl implements CampService{
         }
     }
 
-    //캠핑장 조건 다중 조회
-    @Transactional
+    //캠핑장 다중 조건 조회-비로그인
     @Override
     public Page<CampSearchResponseDto> getCampList(
+            Pageable pageable, String name, String doNm, String sigunguNm, String tag, int rate, String sort, Float mapX, Float mapY) {
+        List<String> tagList = getTagList(tag);
+        ValidateSortCondition(sort);
+
+        if (sort.equals("rate"))
+        return campRepository.findAllCampBySearchCondOrderByRate(tagList, name, doNm, sigunguNm, rate, pageable)
+                .map(camp -> new CampSearchResponseDto(camp));
+        else {
+            return campRepository.findAllCampBySearchCondOrderByDistanceNativeQuery(tagList, name, pageable, mapX, mapY)
+                    .map(camp -> new CampSearchResponseDto(camp));
+        }
+    }
+
+    //캠핑장 다중 조건 조회-로그인
+    @Override
+    public Page<CampSearchResponseDto> getLoginCampList(
             Pageable pageable, String name, String doNm, String sigunguNm, String tag, int rate, String header, String sort, Float mapX, Float mapY) {
         List<String> tagList = getTagList(tag);
         ValidateSortCondition(sort);
 
-        if (header == null) {
-            return campRepository.findAllCampSearch(tagList, name, doNm, sigunguNm, rate, sort, pageable, mapX, mapY)
-                    .map(camp -> new CampSearchResponseDto(camp));
-        } else {
-            Member member;
-            try {
-                member = (Member) userDetailsService.loadUserByUsername(header);
-            } catch (UsernameNotFoundException e) {
-                throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
-            }
-
-            Page<Camp> page = campRepository.findAllCampSearch(tagList, name, doNm, sigunguNm, rate, sort, pageable, mapX, mapY);
-            if (sort.equals("distance")) {
-                List<Long> campIds = new ArrayList<>();
-                for (Camp c : page.getContent()) {
-                    campIds.add(c.getId());
-                }
-
-                List<Camp> campList = campRepository.findAllByCampId(campIds);
-                List<CampSearchLoginResponse> dtoList = campToCampLoginResponseDto(member, campList);
-
-                return new PageImpl(dtoList, pageable, page.getTotalElements());
-
-            } else {
-                return page.map(camp -> {
-                    List<CampLike> campLikeList = camp.getCampLikeList();
-
-                    for (CampLike campLike : campLikeList) {
-                        if (campLike.getMember() == member){
-                            return new CampSearchLoginResponse(camp, true);
-                        }
-                    }
-                    return new CampSearchLoginResponse(camp, false);
-                });
-            }
+        Member member;
+        try {
+            member = (Member) userDetailsService.loadUserByUsername(header);
+        } catch (UsernameNotFoundException e) {
+            throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
         }
 
+        if (sort.equals("rate")) {
+            Page<Camp> page = campRepository.findAllCampBySearchCondOrderByRate(tagList, name, doNm, sigunguNm, rate, pageable);
+
+            return page.map(camp -> {
+                List<CampLike> campLikeList = camp.getCampLikeList();
+
+                for (CampLike campLike : campLikeList) {
+                    if (campLike.getMember() == member) {
+                        return new CampSearchLoginResponse(camp, true);
+                    }
+                }
+                return new CampSearchLoginResponse(camp, false);
+            });
+        } else {
+            Page<Camp> page = campRepository.findAllCampBySearchCondOrderByDistanceNativeQuery(tagList, name, pageable, mapX, mapY);
+
+            List<Long> campIds = new ArrayList<>();
+            for (Camp c : page.getContent()) {
+                campIds.add(c.getId());
+            }
+            
+            List<Camp> campList = campRepository.findAllByCampId(campIds);
+            List<Camp> SortedCampList = getSortedCampList(campIds, campList);
+            List<CampSearchLoginResponse> dtoList = campToCampLoginResponseDto(member, SortedCampList);
+
+            return new PageImpl(dtoList, pageable, page.getTotalElements());
+        }
+    }
+
+    //캠핑장 좋아요
+    @Transactional
+    @Override
+    public void likeCamp(Long campId, Member member) {
+        Camp findCamp = campRepository.findById(campId)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_CAMP, "캠핑장 ID 에 맞는 캠핑장이 없습니다.");
+                });
+
+        Optional<CampLike> campLike = campLikeRepository.findByCampIdAndMemberId(campId, member.getId());
+
+        if (campLike.isPresent()) {
+            findCamp.decreaseCampLikeCnt();
+            campLikeRepository.deleteById(campLike.get().getId());
+        } else{
+            findCamp.increaseCampLikeCnt();
+            CampLike saveCampLike = campLikeRepository.save(CampLike.builder()
+                    .member(member)
+                    .camp(findCamp)
+                    .build());
+
+            findCamp.getCampLikeList().add(saveCampLike);
+        }
+    }
+
+    @Override
+    public Page<CampSearchResponseDto> getMemberLikeCamps(Long memberId, Pageable pageable) {
+        return campRepository.findMemberLikeCamp(memberId, pageable)
+                .map(camp -> new CampSearchResponseDto(camp));
+    }
+
+    private List<Camp> getSortedCampList(List<Long> campIds, List<Camp> campList) {
+        List<Camp> SortedCampList = new ArrayList<>();
+        for (Long id : campIds) {
+            for (Camp camp : campList) {
+                if (id.equals(camp.getId())) {
+                    SortedCampList.add(camp);
+                    break;
+                }
+            }
+        }
+        return SortedCampList;
     }
 
     private void ValidateSortCondition(String sort) {
@@ -146,35 +200,5 @@ public class CampServiceLocalImpl implements CampService{
             else list.add(new CampSearchLoginResponse(camp, false));
         }
         return list;
-    }
-
-    @Transactional
-    @Override
-    public void likeCamp(Long campId, Member member) {
-        Camp findCamp = campRepository.findById(campId)
-                .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.NOT_FOUND_CAMP, "캠핑장 ID 에 맞는 캠핑장이 없습니다.");
-                });
-
-        Optional<CampLike> campLike = campLikeRepository.findByCampIdAndMemberId(campId, member.getId());
-
-        if (campLike.isPresent()) {
-            findCamp.decreaseCampLikeCnt();
-            campLikeRepository.deleteById(campLike.get().getId());
-        } else{
-            findCamp.increaseCampLikeCnt();
-            CampLike saveCampLike = campLikeRepository.save(CampLike.builder()
-                    .member(member)
-                    .camp(findCamp)
-                    .build());
-
-            findCamp.getCampLikeList().add(saveCampLike);
-        }
-    }
-
-    @Override
-    public Page<CampSearchResponseDto> getMemberLikeCamps(Long memberId, Pageable pageable) {
-        return campRepository.findMemberLikeCamp(memberId, pageable)
-                .map(camp -> new CampSearchResponseDto(camp));
     }
 }

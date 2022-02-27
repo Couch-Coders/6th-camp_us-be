@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 public interface CampService {
     void save(Camp camp);
     CampResponseDto getCampDetail(Long campId, String header);
-    Page<CampSearchResponseDto> getCampList(Pageable pageable, String name, String doNm, String sigunguNm, String tag, int rate, String header, String sort, Float mapX, Float mapY);
+    Page<CampSearchResponseDto> getLoginCampList(Pageable pageable, String name, String doNm, String sigunguNm, String tag, int rate, String header, String sort, Float mapX, Float mapY);
     void likeCamp(Long campId, Member member);
     Page<CampSearchResponseDto> getMemberLikeCamps(Long memberId, Pageable pageable);
+    Page<CampSearchResponseDto> getCampList(Pageable pageable, String name, String doNm, String sigunguNm, String tag, int rate, String sort, Float mapX, Float mapY);
+
 }

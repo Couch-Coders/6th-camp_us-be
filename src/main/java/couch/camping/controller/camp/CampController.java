@@ -42,7 +42,7 @@ public class CampController {
     }
 
     //camp 검색
-    @ApiOperation(value = "캠핑장 검색 API", notes = "이름, 시.군.구, 검색 태그, 현재 위치 등 캠핑장 검색")
+    @ApiOperation(value = "캠핑장 검색 API@@@", notes = "이름, 시.군.구, 검색 태그, 현재 위치 등 캠핑장 검색")
     @GetMapping("")
     public ResponseEntity<Page<CampSearchResponseDto>> getCamps(
             @ApiParam(value = "페이징 모델", required = true) Pageable pageable,
@@ -57,8 +57,11 @@ public class CampController {
             HttpServletRequest request
             ) {
         String header = RequestUtil.getAuthorizationToken(request);
-
-        return ResponseEntity.ok(campService.getCampList(pageable, name, doNm, sigunguNm, tag, rate, header, sort, mapX, mapY));
+        if (header == null) {//비로그인
+            return ResponseEntity.ok(campService.getCampList(pageable, name, doNm, sigunguNm, tag, rate, sort, mapX, mapY));
+        } else {//로그인
+            return ResponseEntity.ok(campService.getLoginCampList(pageable, name, doNm, sigunguNm, tag, rate, header, sort, mapX, mapY));
+        }
     }
 
     //camp 상세
