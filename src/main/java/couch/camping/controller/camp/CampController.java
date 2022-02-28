@@ -42,7 +42,7 @@ public class CampController {
     }
 
     //camp 검색
-    @ApiOperation(value = "캠핑장 검색 API@@@", notes = "이름, 시.군.구, 검색 태그, 현재 위치 등 캠핑장 검색")
+    @ApiOperation(value = "캠핑장 검색 API", notes = "이름, 시.군.구, 검색 태그, 현재 위치 등 캠핑장 검색")
     @GetMapping("")
     public ResponseEntity<Page<CampSearchResponseDto>> getCamps(
             @ApiParam(value = "페이징 모델", required = true) Pageable pageable,
