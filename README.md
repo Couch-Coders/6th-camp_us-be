@@ -146,6 +146,6 @@
 
 <br>
 
-## 백엔드 깃 레포
+## 프론트 깃 레포
 
 [**CampUs** Front Git Repository](https://github.com/Couch-Coders/6th-camp_us-fe)
