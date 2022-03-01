@@ -26,6 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .httpBasic().disable() // rest api 만을 고려하여 기본 설정은 해제
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .csrf().disable() // csrf 보안 토큰 disable 처리.
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
