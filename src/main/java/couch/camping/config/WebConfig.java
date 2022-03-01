@@ -19,7 +19,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("/http://www.camp-us.ga/")
+                .allowedOrigins("http://www.camp-us.ga/")
+                .allowedOrigins("http://d1118ln26hba5x.cloudfront.net//")
+                .allowedOrigins("https://www.camp-us.ga/")
+                .allowedOrigins("https://d1118ln26hba5x.cloudfront.net//")
+                .allowedOrigins("http://localhost:8080")
                 .allowedHeaders("*") // 어떤 헤더들을 허용할 것인지
                 .allowedMethods("*") // 어떤 메서드를 허용할 것인지 (GET, POST...)
                 .allowCredentials(true)
