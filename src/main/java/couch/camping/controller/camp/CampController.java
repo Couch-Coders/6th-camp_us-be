@@ -57,8 +57,11 @@ public class CampController {
             HttpServletRequest request
             ) {
         String header = RequestUtil.getAuthorizationToken(request);
-
-        return ResponseEntity.ok(campService.getCampList(pageable, name, doNm, sigunguNm, tag, rate, header, sort, mapX, mapY));
+        if (header == null) {//비로그인
+            return ResponseEntity.ok(campService.getCampList(pageable, name, doNm, sigunguNm, tag, rate, sort, mapX, mapY));
+        } else {//로그인
+            return ResponseEntity.ok(campService.getLoginCampList(pageable, name, doNm, sigunguNm, tag, rate, header, sort, mapX, mapY));
+        }
     }
 
     //camp 상세

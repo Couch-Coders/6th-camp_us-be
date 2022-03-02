@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+import static couch.camping.domain.camp.entity.QCamp.camp;
 import static couch.camping.domain.member.entity.QMember.member;
 import static couch.camping.domain.review.entity.QReview.review;
 
@@ -64,6 +65,8 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
 
         List<Review> content = queryFactory
                 .selectFrom(review)
+                .join(review.member, member).fetchJoin()
+                .join(review.camp, camp).fetchJoin()
                 .where(review.member.id.eq(memberId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

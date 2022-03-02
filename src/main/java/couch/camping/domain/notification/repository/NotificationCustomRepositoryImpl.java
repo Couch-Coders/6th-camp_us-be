@@ -11,7 +11,6 @@ import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-import static couch.camping.domain.camp.entity.QCamp.camp;
 import static couch.camping.domain.member.entity.QMember.member;
 import static couch.camping.domain.notification.entity.QNotification.notification;
 import static couch.camping.domain.review.entity.QReview.review;
@@ -63,5 +62,14 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
 
         em.flush();
         em.clear();
+    }
+
+    @Override
+    public long countUnReadMemberNotifications(Long memberId) {
+        return queryFactory
+                .select(notification.count())
+                .from(notification)
+                .where(notification.ownerMember.id.eq(memberId), notification.isChecked.eq(false))
+                .fetchOne();
     }
 }

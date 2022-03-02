@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface CampCustomRepository {
     Page<Camp> findMemberLikeCamp(Long memberId, Pageable pageable);
-    Page<Camp> findAllCampSearch(List<String> tagList, String name, String doNm, String sigunguNm, int rate, String sort, Pageable pageable, Float mapX, Float mapY);
+    Page<Camp> findAllCampBySearchCondOrderByRate(List<String> tagList, String name, String doNm, String sigunguNm, int rate, Pageable pageable);
     List<Camp> findAllByCampId(List<Long> campIds);
+    Page<Camp> findAllCampBySearchCondOrderByDistanceNativeQuery(List<String> tagList, String name, Pageable pageable, Float mapX, Float mapY);
 }
