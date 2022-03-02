@@ -21,10 +21,12 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Review> findAllByLikeCntGreaterThan(Pageable pageable) {
+    public Page<Review> findAllBestReview(Pageable pageable) {
 
         List<Review> content = queryFactory
                 .selectFrom(review)
+                .join(review.camp, camp).fetchJoin()
+                .join(review.member, member).fetchJoin()
                 .where(review.likeCnt.goe(1))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -45,6 +47,8 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
 
         List<Review> content = queryFactory
                 .selectFrom(review)
+                .join(review.camp, camp).fetchJoin()
+                .join(review.member, member).fetchJoin()
                 .where(review.camp.id.eq(campId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
