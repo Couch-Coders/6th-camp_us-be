@@ -112,9 +112,7 @@
 <br>
 
 ## ⚙️ 시스템 아키텍처
-
-<!-- ![아키텍쳐](https://user-images.githubusercontent.com/55528172/147193318-77fd4086-33a1-4e71-aa46-2f36a474eff1.png) -->
-![](../../system.png)
+![아키텍쳐](https://user-images.githubusercontent.com/69510442/156531407-a34580ee-7774-4f6d-89c4-75b4f0f0e10c.png)
 <br>
 <br>
 
