@@ -39,7 +39,7 @@
 
 |                                    [송창엽](https://github.com/Songchangyeop)                                    |                                                                         [김선희](https://github.com/hagaaDev)                                                                          |                                       [김상운](https://github.com/issiscv)                                       |                                     [장대영](https://github.com/Longstick0)                                      |
 | :--------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------: |
-| <img src="https://res.cloudinary.com/divncmfka/image/upload/v1645906082/me_bvddac.jpg" width="150" height="150"> | <img src="https://res.cloudinary.com/divncmfka/image/upload/v1645950212/%E1%84%89%E1%85%A5%E1%86%AB%E1%84%92%E1%85%B4%E1%84%82%E1%85%B5%E1%86%B7_yr5abm.jpg" width="150" height="150"> | <img src="https://res.cloudinary.com/divncmfka/image/upload/v1645906082/me_bvddac.jpg" width="150" height="150"> | <img src="https://res.cloudinary.com/divncmfka/image/upload/v1645906082/me_bvddac.jpg" width="150" height="150"> |
+| <img src="https://res.cloudinary.com/divncmfka/image/upload/v1645906082/me_bvddac.jpg" width="150" height="150"> | <img src="https://res.cloudinary.com/divncmfka/image/upload/v1645950212/%E1%84%89%E1%85%A5%E1%86%AB%E1%84%92%E1%85%B4%E1%84%82%E1%85%B5%E1%86%B7_yr5abm.jpg" width="150" height="150"> | <img src="https://user-images.githubusercontent.com/69510442/156530657-0bf8a79c-232b-4fd4-b10b-1f2c080d2aa3.png" width="150" height="150"> | <img src="https://user-images.githubusercontent.com/69510442/156530666-6ba71623-01c9-4c05-b907-886b6aa51b70.png" width="150" height="150"> |
 |                                                     FrontEnd                                                     |                                                                                        FrontEnd                                                                                        |                                                     BackEnd                                                      |                                                     BackEnd                                                      |
 
 <br>
@@ -114,9 +114,7 @@
 ## ⚙️ 시스템 아키텍처
 
 <!-- ![아키텍쳐](https://user-images.githubusercontent.com/55528172/147193318-77fd4086-33a1-4e71-aa46-2f36a474eff1.png) -->
-추가예정
-....
-
+![](../../system.png)
 <br>
 <br>
 
