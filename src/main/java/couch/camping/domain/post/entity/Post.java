@@ -1,12 +1,10 @@
 package couch.camping.domain.post.entity;
 
+import couch.camping.controller.post.dto.request.PostWriteRequestDto;
 import couch.camping.domain.base.BaseEntity;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
@@ -15,7 +13,7 @@ import javax.persistence.Lob;
 @Getter
 public class Post extends BaseEntity {
 
-    @Id @Generated
+    @Id @GeneratedValue
     @Column(name = "post_id")
     private Long id;
 
@@ -27,4 +25,9 @@ public class Post extends BaseEntity {
     private int likeCnt;
 
     private int commentCnt;
+
+    public Post(PostWriteRequestDto postWriteRequestDto) {
+        this.content = postWriteRequestDto.getContent();
+        this.hashTag = postWriteRequestDto.getHashTag();
+    }
 }

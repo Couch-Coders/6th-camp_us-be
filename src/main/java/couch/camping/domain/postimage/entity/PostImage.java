@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 public class PostImage extends BaseEntity {
 
-    @Id @Generated
+    @Id @GeneratedValue
     @Column(name = "Post_image")
     private Long id;
 
@@ -22,4 +22,9 @@ public class PostImage extends BaseEntity {
     private Post post;
 
     private String imgUrl;
+
+    public PostImage(Post post, String imgUrl) {
+        this.post = post;
+        this.imgUrl = imgUrl;
+    }
 }
