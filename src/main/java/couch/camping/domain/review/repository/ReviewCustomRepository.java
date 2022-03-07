@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ReviewCustomRepository {
 
-    Page<Review> findAllByLikeCntGreaterThan(Pageable pageable);
+    Page<Review> findAllBestReview(Pageable pageable);
 
     Page<Review> findByCampId(Pageable pageable, Long campId);
 

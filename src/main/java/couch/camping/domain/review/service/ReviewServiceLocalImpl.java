@@ -179,7 +179,7 @@ public class ReviewServiceLocalImpl implements ReviewService {
     }
 
     public Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable) {
-        return reviewRepository.findAllByLikeCntGreaterThan(pageable)
+        return reviewRepository.findAllBestReview(pageable)
                 .map(review -> new ReviewRetrieveResponseDto(review));
     }
 
