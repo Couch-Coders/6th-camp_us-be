@@ -38,4 +38,12 @@ public class Post extends BaseEntity {
         this.hashTag = hashTag;
     }
 
+    public void increaseLikeCnt() {
+        this.likeCnt = likeCnt+1;
+    }
+
+    public void decreaseLikeCnt() {
+        this.likeCnt = likeCnt - 1;
+    }
+
 }
