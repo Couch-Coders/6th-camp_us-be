@@ -9,6 +9,8 @@ import couch.camping.domain.post.entity.Post;
 import couch.camping.domain.post.repository.PostRepository;
 import couch.camping.domain.postimage.entity.PostImage;
 import couch.camping.domain.postimage.repository.PostImageRepository;
+import couch.camping.domain.postlike.entity.PostLike;
+import couch.camping.domain.postlike.repository.PostLikeRepository;
 import couch.camping.exception.CustomException;
 import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
+    private final PostLikeRepository postLikeRepository;
 
     @Transactional
     public PostWriteResponseDto writePost(PostWriteRequestDto postWriteRequestDto, Member member) {
@@ -79,5 +83,29 @@ public class PostService {
 
         return new PostEditResponseDto(findPost, postImageList);
 
+    }
+
+    @Transactional
+    public void likePost(Long postId, Member member) {
+        Post findPost = postRepository.findById(postId)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
+                });
+
+        Optional<PostLike> optionalPostLike = postLikeRepository.findByMemberIdAndPostId(member.getId(), postId);
+        
+        
+        if (optionalPostLike.isPresent()) {//좋아요를 눌렀을 때
+            findPost.decreaseLikeCnt();
+            postLikeRepository.deleteById(optionalPostLike.get().getId());
+        } else {//좋아요를 누르지 않았을 때
+            findPost.increaseLikeCnt();
+            PostLike postLike = PostLike.builder()
+                    .post(findPost)
+                    .member(member)
+                    .build();
+
+            postLikeRepository.save(postLike);
+        }
     }
 }

@@ -19,18 +19,29 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     
     private final PostService postService;
-
+    
+    //게시글 작성
     @PostMapping("")
     public ResponseEntity<PostWriteResponseDto> writePost(@RequestBody PostWriteRequestDto postWriteRequestDto, Authentication authentication) {
         Member member = (Member) authentication.getPrincipal();
 
         return new ResponseEntity(postService.writePost(postWriteRequestDto, member), HttpStatus.CREATED);
     }
-
+    
+    //게시글 수정
     @PutMapping("/{postId}")
     public ResponseEntity<PostEditResponseDto> editPost(@PathVariable Long postId, @RequestBody PostEditRequestDto postEditRequestDto,
                                                         Authentication authentication) {
         Member member = (Member) authentication.getPrincipal();
         return new ResponseEntity(postService.editPost(postId, member, postEditRequestDto), HttpStatus.OK);
     }
+    
+    //게시글 좋아요
+    @PatchMapping("/{postId}")
+    public ResponseEntity likePost(@PathVariable Long postId, Authentication authentication) {
+        Member member = (Member) authentication.getPrincipal();
+        postService.likePost(postId, member);
+        return ResponseEntity.noContent().build();
+    }
 }
+
