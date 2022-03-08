@@ -27,13 +27,5 @@ public class CampLike extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    public void setTeam(Camp camp) {
-        if (this.camp != null) { // 기존에 이미 팀이 존재한다면
-            this.camp.getCampLikeList().remove(this); // 관계를 끊는다.
-        }
-        this.camp = camp;
-        camp.getCampLikeList().add(this);
-    }
 }
 
