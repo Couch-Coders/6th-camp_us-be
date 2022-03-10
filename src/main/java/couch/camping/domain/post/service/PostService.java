@@ -3,6 +3,7 @@ package couch.camping.domain.post.service;
 import couch.camping.controller.post.dto.request.PostEditRequestDto;
 import couch.camping.controller.post.dto.request.PostWriteRequestDto;
 import couch.camping.controller.post.dto.response.PostEditResponseDto;
+import couch.camping.controller.post.dto.response.PostRetrieveResponseDto;
 import couch.camping.controller.post.dto.response.PostWriteResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.post.entity.Post;
@@ -48,8 +49,8 @@ public class PostService {
                     .imgUrl(imgUrl)
                     .build();
             postImageList.add(postImage);
-            postImageRepository.save(postImage);
         }
+        postImageRepository.saveAll(postImageList);
 
         return new PostWriteResponseDto(savePost, postImageList);
     }
@@ -78,8 +79,8 @@ public class PostService {
                     .imgUrl(imgUrl)
                     .build();
             postImageList.add(postImage);
-            postImageRepository.save(postImage);
         }
+        postImageRepository.saveAll(postImageList);
 
         return new PostEditResponseDto(findPost, postImageList);
 
@@ -107,5 +108,25 @@ public class PostService {
 
             postLikeRepository.save(postLike);
         }
+    }
+
+    /**
+     * comment 필요
+     */
+    public PostRetrieveResponseDto retrievePost(Long postId, Member member) {
+
+        Post findPost = postRepository.findById(postId)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
+                });
+
+        List<PostImage> postImageList = postImageRepository.findByPostId(postId);
+
+        return new PostRetrieveResponseDto(findPost.getId(), member.getId(), findPost.getContent(),
+                findPost.getHashTag(), findPost.getLikeCnt(), 0, postImageList);
+    }
+
+    public Object retrieveAllPost(String postType, Member member) {
+        return null;
     }
 }

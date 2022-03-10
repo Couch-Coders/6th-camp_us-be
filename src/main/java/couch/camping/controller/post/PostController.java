@@ -24,8 +24,21 @@ public class PostController {
     @PostMapping("")
     public ResponseEntity<PostWriteResponseDto> writePost(@RequestBody PostWriteRequestDto postWriteRequestDto, Authentication authentication) {
         Member member = (Member) authentication.getPrincipal();
-
         return new ResponseEntity(postService.writePost(postWriteRequestDto, member), HttpStatus.CREATED);
+    }
+
+    //게시글 단건 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity retrievePost(@PathVariable Long postId, Authentication authentication) {
+        Member member = (Member) authentication.getPrincipal();
+        return ResponseEntity.ok(postService.retrievePost(postId, member));
+    }
+
+    //게시글 전체 조회
+    @GetMapping("")
+    public ResponseEntity retrieveAllPost(@RequestParam String postType, Authentication authentication) {
+        Member member = (Member) authentication.getPrincipal();
+        return ResponseEntity.ok(postService.retrieveAllPost(postType, member));
     }
     
     //게시글 수정

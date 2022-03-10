@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class PostImage extends BaseEntity {
 
     @Id @GeneratedValue
-    @Column(name = "Post_image")
+    @Column(name = "post_image_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
