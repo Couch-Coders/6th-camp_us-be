@@ -30,16 +30,14 @@ public class PostController {
 
     //게시글 단건 조회
     @GetMapping("/{postId}")
-    public ResponseEntity retrievePost(@PathVariable Long postId, Authentication authentication) {
-        Member member = (Member) authentication.getPrincipal();
-        return ResponseEntity.ok(postService.retrievePost(postId, member));
+    public ResponseEntity retrievePost(@PathVariable Long postId) {
+        return ResponseEntity.ok(postService.retrievePost(postId));
     }
 
     //게시글 전체 조회
     @GetMapping("")
-    public ResponseEntity retrieveAllPost(Pageable pageable, @RequestParam String postType, Authentication authentication) {
-        Member member = (Member) authentication.getPrincipal();
-        return ResponseEntity.ok(postService.retrieveAllPost(postType, member, pageable));
+    public ResponseEntity retrieveAllPost(Pageable pageable, @RequestParam(defaultValue = "all") String postType) {
+        return ResponseEntity.ok(postService.retrieveAllPost(postType, pageable));
     }
     
     //게시글 수정

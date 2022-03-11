@@ -64,7 +64,7 @@ public class PostService {
         }
 
         findPost.editPost(postEditRequestDto.getContent(), postEditRequestDto.getPostType());
-        
+
         //벌크 연산, 영속성 컨텍스트 초기화
         postImageRepository.deleteByPostId(postId);
 
@@ -91,8 +91,7 @@ public class PostService {
                 });
 
         Optional<PostLike> optionalPostLike = postLikeRepository.findByMemberIdAndPostId(member.getId(), postId);
-        
-        
+
         if (optionalPostLike.isPresent()) {//좋아요를 눌렀을 때
             findPost.decreaseLikeCnt();
             postLikeRepository.deleteById(optionalPostLike.get().getId());
@@ -110,20 +109,18 @@ public class PostService {
     /**
      * comment 필요
      */
-    public PostRetrieveResponseDto retrievePost(Long postId, Member member) {
-
+    public PostRetrieveResponseDto retrievePost(Long postId) {
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
                 });
 
-        List<PostImage> postImageList = postImageRepository.findByPostId(postId);
-
-        return new PostRetrieveResponseDto(findPost, 0, postImageList);
+        return new PostRetrieveResponseDto(findPost, 0, findPost.getPostImageList());
     }
 
-    public Page<PostRetrieveResponseDto> retrieveAllPost(String postType, Member member, Pageable pageable) {
+    public Page<PostRetrieveResponseDto> retrieveAllPost(String postType, Pageable pageable) {
         List<String> postTypeList = Arrays.asList("all", "free", "picture", "question");
+
         if (!postTypeList.contains(postType)) {
             throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "쿼리스트링 postType 의 값은 all, free, picture, question 만 가능합니다.");
         }

@@ -28,7 +28,7 @@ public class Post extends BaseEntity {
     private Member member;
 
     @Builder.Default
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> postImageList = new ArrayList<>();
 
     @Lob

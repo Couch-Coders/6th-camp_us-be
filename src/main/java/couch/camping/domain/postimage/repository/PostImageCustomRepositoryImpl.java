@@ -1,11 +1,9 @@
 package couch.camping.domain.postimage.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import couch.camping.domain.postimage.entity.PostImage;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 
 import static couch.camping.domain.postimage.entity.QPostImage.postImage;
 
@@ -24,13 +22,5 @@ public class PostImageCustomRepositoryImpl implements PostImageCustomRepository{
 
         em.flush();
         em.clear();
-    }
-
-    @Override
-    public List<PostImage> findByPostId(Long postId) {
-        return queryFactory
-                .selectFrom(postImage)
-                .where(postImage.post.id.eq(postId))
-                .fetch();
     }
 }

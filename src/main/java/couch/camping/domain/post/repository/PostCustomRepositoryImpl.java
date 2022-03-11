@@ -1,5 +1,6 @@
 package couch.camping.domain.post.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import couch.camping.domain.post.entity.Post;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +18,13 @@ import static couch.camping.domain.post.entity.QPost.post;
 public class PostCustomRepositoryImpl implements PostCustomRepository{
 
     private final JPAQueryFactory queryFactory;
-    private final EntityManager em;
 
     @Override
     public Page<Post> findAllByIdWithPaging(String postType, Pageable pageable) {
         List<Post> content = queryFactory
                 .select(post)
                 .from(post)
-                .where(post.postType.eq(postType))
+                .where(getEq(postType))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(post.createdDate.desc())
@@ -33,9 +33,16 @@ public class PostCustomRepositoryImpl implements PostCustomRepository{
         Long total = queryFactory
                 .select(post.count())
                 .from(post)
-                .where(post.postType.eq(postType))
+                .where(getEq(postType))
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
+    }
+
+    private BooleanExpression getEq(String postType) {
+        if (postType.equals("all"))
+            return null;
+        else
+            return post.postType.eq(postType);
     }
 }
