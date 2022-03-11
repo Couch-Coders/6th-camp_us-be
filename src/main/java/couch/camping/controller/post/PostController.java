@@ -7,6 +7,7 @@ import couch.camping.controller.post.dto.response.PostWriteResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,9 +37,9 @@ public class PostController {
 
     //게시글 전체 조회
     @GetMapping("")
-    public ResponseEntity retrieveAllPost(@RequestParam String postType, Authentication authentication) {
+    public ResponseEntity retrieveAllPost(Pageable pageable, @RequestParam String postType, Authentication authentication) {
         Member member = (Member) authentication.getPrincipal();
-        return ResponseEntity.ok(postService.retrieveAllPost(postType, member));
+        return ResponseEntity.ok(postService.retrieveAllPost(postType, member, pageable));
     }
     
     //게시글 수정

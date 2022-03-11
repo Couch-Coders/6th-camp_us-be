@@ -15,10 +15,13 @@ import couch.camping.domain.postlike.repository.PostLikeRepository;
 import couch.camping.exception.CustomException;
 import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,24 +38,18 @@ public class PostService {
     public PostWriteResponseDto writePost(PostWriteRequestDto postWriteRequestDto, Member member) {
         Post post = Post.builder()
                 .content(postWriteRequestDto.getContent())
-                .hashTag(postWriteRequestDto.getHashTag())
+                .postType(postWriteRequestDto.getPostType())
                 .member(member)
                 .build();
 
-        Post savePost = postRepository.save(post);
-        
-        List<PostImage> postImageList = new ArrayList<>();
         for (String imgUrl : postWriteRequestDto.getImgUrlList()) {
-            PostImage postImage = PostImage.builder()
-                    .post(savePost)
-                    .member(member)
-                    .imgUrl(imgUrl)
-                    .build();
-            postImageList.add(postImage);
+            PostImage postImage = new PostImage(member, post, imgUrl);
+            post.getPostImageList().add(postImage);
         }
-        postImageRepository.saveAll(postImageList);
 
-        return new PostWriteResponseDto(savePost, postImageList);
+        Post savePost = postRepository.save(post);
+
+        return new PostWriteResponseDto(savePost, savePost.getPostImageList());
     }
 
     @Transactional
@@ -66,7 +63,7 @@ public class PostService {
             throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 리뷰가 아닙니다.");
         }
 
-        findPost.editPost(postEditRequestDto.getContent(), postEditRequestDto.getHashTag());
+        findPost.editPost(postEditRequestDto.getContent(), postEditRequestDto.getPostType());
         
         //벌크 연산, 영속성 컨텍스트 초기화
         postImageRepository.deleteByPostId(postId);
@@ -122,11 +119,16 @@ public class PostService {
 
         List<PostImage> postImageList = postImageRepository.findByPostId(postId);
 
-        return new PostRetrieveResponseDto(findPost.getId(), member.getId(), findPost.getContent(),
-                findPost.getHashTag(), findPost.getLikeCnt(), 0, postImageList);
+        return new PostRetrieveResponseDto(findPost, 0, postImageList);
     }
 
-    public Object retrieveAllPost(String postType, Member member) {
-        return null;
+    public Page<PostRetrieveResponseDto> retrieveAllPost(String postType, Member member, Pageable pageable) {
+        List<String> postTypeList = Arrays.asList("all", "free", "picture", "question");
+        if (!postTypeList.contains(postType)) {
+            throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "쿼리스트링 postType 의 값은 all, free, picture, question 만 가능합니다.");
+        }
+
+        return postRepository.findAllByIdWithPaging(postType, pageable)
+                .map(post -> new PostRetrieveResponseDto(post, 0, post.getPostImageList()));
     }
 }

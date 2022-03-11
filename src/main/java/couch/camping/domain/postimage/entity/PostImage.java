@@ -27,4 +27,10 @@ public class PostImage extends BaseEntity {
     private Post post;
 
     private String imgUrl;
+
+    public PostImage(Member member, Post post, String imgUrl) {
+        this.member = member;
+        this.post = post;
+        this.imgUrl = imgUrl;
+    }
 }

@@ -1,5 +1,6 @@
 package couch.camping.controller.post.dto.response;
 
+import couch.camping.domain.post.entity.Post;
 import couch.camping.domain.postimage.entity.PostImage;
 import lombok.*;
 
@@ -16,7 +17,7 @@ public class PostRetrieveResponseDto {
 
     private String content;
 
-    private String hashTag;
+    private String postType;
 
     private int likeCnt;
 
@@ -24,13 +25,12 @@ public class PostRetrieveResponseDto {
 
     private List<String> imgUrlList = new ArrayList<>();
 
-
-    public PostRetrieveResponseDto(Long postId, Long memberId, String content, String hashTag, int likeCnt, int commentCnt, List<PostImage> postImageList) {
-        this.postId = postId;
-        this.memberId = memberId;
-        this.content = content;
-        this.hashTag = hashTag;
-        this.likeCnt = likeCnt;
+    public PostRetrieveResponseDto(Post findPost, int commentCnt, List<PostImage> postImageList) {
+        this.postId = findPost.getId();
+        this.memberId = findPost.getMember().getId();
+        this.content = findPost.getContent();
+        this.postType = findPost.getPostType();
+        this.likeCnt = findPost.getLikeCnt();
         this.commentCnt = commentCnt;
         for (PostImage postImage : postImageList) {
             imgUrlList.add(postImage.getImgUrl());
