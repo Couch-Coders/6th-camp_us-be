@@ -13,7 +13,7 @@ import java.util.List;
 public class PostEditRequestDto {
     private String content;
 
-    private String hashTag;
+    private String postType;
 
     private List<String> imgUrlList = new ArrayList<>();
 }

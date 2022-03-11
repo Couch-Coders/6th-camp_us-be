@@ -3,6 +3,7 @@ package couch.camping.domain.post.service;
 import couch.camping.controller.post.dto.request.PostEditRequestDto;
 import couch.camping.controller.post.dto.request.PostWriteRequestDto;
 import couch.camping.controller.post.dto.response.PostEditResponseDto;
+import couch.camping.controller.post.dto.response.PostRetrieveResponseDto;
 import couch.camping.controller.post.dto.response.PostWriteResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.post.entity.Post;
@@ -14,10 +15,13 @@ import couch.camping.domain.postlike.repository.PostLikeRepository;
 import couch.camping.exception.CustomException;
 import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,24 +38,18 @@ public class PostService {
     public PostWriteResponseDto writePost(PostWriteRequestDto postWriteRequestDto, Member member) {
         Post post = Post.builder()
                 .content(postWriteRequestDto.getContent())
-                .hashTag(postWriteRequestDto.getHashTag())
+                .postType(postWriteRequestDto.getPostType())
                 .member(member)
                 .build();
 
-        Post savePost = postRepository.save(post);
-        
-        List<PostImage> postImageList = new ArrayList<>();
         for (String imgUrl : postWriteRequestDto.getImgUrlList()) {
-            PostImage postImage = PostImage.builder()
-                    .post(savePost)
-                    .member(member)
-                    .imgUrl(imgUrl)
-                    .build();
-            postImageList.add(postImage);
-            postImageRepository.save(postImage);
+            PostImage postImage = new PostImage(member, post, imgUrl);
+            post.getPostImageList().add(postImage);
         }
 
-        return new PostWriteResponseDto(savePost, postImageList);
+        Post savePost = postRepository.save(post);
+
+        return new PostWriteResponseDto(savePost, savePost.getPostImageList());
     }
 
     @Transactional
@@ -65,8 +63,8 @@ public class PostService {
             throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 리뷰가 아닙니다.");
         }
 
-        findPost.editPost(postEditRequestDto.getContent(), postEditRequestDto.getHashTag());
-        
+        findPost.editPost(postEditRequestDto.getContent(), postEditRequestDto.getPostType());
+
         //벌크 연산, 영속성 컨텍스트 초기화
         postImageRepository.deleteByPostId(postId);
 
@@ -78,8 +76,8 @@ public class PostService {
                     .imgUrl(imgUrl)
                     .build();
             postImageList.add(postImage);
-            postImageRepository.save(postImage);
         }
+        postImageRepository.saveAll(postImageList);
 
         return new PostEditResponseDto(findPost, postImageList);
 
@@ -93,8 +91,7 @@ public class PostService {
                 });
 
         Optional<PostLike> optionalPostLike = postLikeRepository.findByMemberIdAndPostId(member.getId(), postId);
-        
-        
+
         if (optionalPostLike.isPresent()) {//좋아요를 눌렀을 때
             findPost.decreaseLikeCnt();
             postLikeRepository.deleteById(optionalPostLike.get().getId());
@@ -107,5 +104,28 @@ public class PostService {
 
             postLikeRepository.save(postLike);
         }
+    }
+
+    /**
+     * comment 필요
+     */
+    public PostRetrieveResponseDto retrievePost(Long postId) {
+        Post findPost = postRepository.findById(postId)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
+                });
+
+        return new PostRetrieveResponseDto(findPost, 0, findPost.getPostImageList());
+    }
+
+    public Page<PostRetrieveResponseDto> retrieveAllPost(String postType, Pageable pageable) {
+        List<String> postTypeList = Arrays.asList("all", "free", "picture", "question");
+
+        if (!postTypeList.contains(postType)) {
+            throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "쿼리스트링 postType 의 값은 all, free, picture, question 만 가능합니다.");
+        }
+
+        return postRepository.findAllByIdWithPaging(postType, pageable)
+                .map(post -> new PostRetrieveResponseDto(post, 0, post.getPostImageList()));
     }
 }
