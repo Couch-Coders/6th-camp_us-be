@@ -7,4 +7,5 @@ import org.springframework.data.domain.Pageable;
 public interface PostCustomRepository {
 
     Page<Post> findAllByIdWithPaging(String postType, Pageable pageable);
+    Page<Post> findAllBestPost(Pageable pageable);
 }

@@ -128,4 +128,9 @@ public class PostService {
         return postRepository.findAllByIdWithPaging(postType, pageable)
                 .map(post -> new PostRetrieveResponseDto(post, 0, post.getPostImageList()));
     }
+
+    public Page<PostRetrieveResponseDto> retrieveAllBestPost(Pageable pageable) {
+        return postRepository.findAllBestPost(pageable)
+                .map(post -> new PostRetrieveResponseDto(post, 0, post.getPostImageList()));
+    }
 }

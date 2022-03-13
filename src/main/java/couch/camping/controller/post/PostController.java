@@ -55,5 +55,10 @@ public class PostController {
         postService.likePost(postId, member);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/best")
+    public ResponseEntity retrieveAllBestPost(Pageable pageable) {
+        return ResponseEntity.ok(postService.retrieveAllBestPost(pageable));
+    }
 }
 
