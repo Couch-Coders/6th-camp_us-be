@@ -3,6 +3,7 @@ package couch.camping.domain.post.service;
 import couch.camping.controller.post.dto.request.PostEditRequestDto;
 import couch.camping.controller.post.dto.request.PostWriteRequestDto;
 import couch.camping.controller.post.dto.response.PostEditResponseDto;
+import couch.camping.controller.post.dto.response.PostRetrieveLoginResponseDto;
 import couch.camping.controller.post.dto.response.PostRetrieveResponseDto;
 import couch.camping.controller.post.dto.response.PostWriteResponseDto;
 import couch.camping.domain.member.entity.Member;
@@ -17,6 +18,8 @@ import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
     private final PostLikeRepository postLikeRepository;
+    private final UserDetailsService userDetailsService;
 
     @Transactional
     public PostWriteResponseDto writePost(PostWriteRequestDto postWriteRequestDto, Member member) {
@@ -109,24 +113,54 @@ public class PostService {
     /**
      * comment 필요
      */
-    public PostRetrieveResponseDto retrievePost(Long postId) {
+    public PostRetrieveResponseDto retrievePost(Long postId, String header) {
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
                 });
 
-        return new PostRetrieveResponseDto(findPost, 0, findPost.getPostImageList());
+        if (header == null) {//비로그인
+            return new PostRetrieveResponseDto(findPost, 0, findPost.getPostImageList());
+        } else {//로그인
+            Member member;
+            try {
+                member = (Member)userDetailsService.loadUserByUsername(header);
+            } catch (UsernameNotFoundException e) {
+                throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
+            }
+            Optional<PostLike> optionalPostLike = postLikeRepository.findByMemberIdAndPostId(member.getId(), postId);
+            return new PostRetrieveLoginResponseDto(findPost, 0, findPost.getPostImageList(), optionalPostLike.isPresent());
+        }
     }
 
-    public Page<PostRetrieveResponseDto> retrieveAllPost(String postType, Pageable pageable) {
+    public Page<PostRetrieveResponseDto> retrieveAllPost(String postType, Pageable pageable, String header) {
         List<String> postTypeList = Arrays.asList("all", "free", "picture", "question");
 
         if (!postTypeList.contains(postType)) {
             throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "쿼리스트링 postType 의 값은 all, free, picture, question 만 가능합니다.");
         }
+        if (header == null) {
+            return postRepository.findAllByIdWithPaging(postType, pageable)
+                    .map(post -> new PostRetrieveResponseDto(post, 0, post.getPostImageList()));
+        } else {
+            Member member;
+            try {
+                member = (Member)userDetailsService.loadUserByUsername(header);
+            } catch (UsernameNotFoundException e) {
+                throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
+            }
 
-        return postRepository.findAllByIdWithPaging(postType, pageable)
-                .map(post -> new PostRetrieveResponseDto(post, 0, post.getPostImageList()));
+            return postRepository.findAllByIdWithPaging(postType, pageable)
+                    .map(post -> {
+                        List<PostLike> postLikeList = post.getPostLikeList();
+                        for (PostLike postLike : postLikeList) {
+                            if (postLike.getMember() == member) {
+                                return new PostRetrieveLoginResponseDto(post, 0, post.getPostImageList(), true);
+                            }
+                        }
+                        return new PostRetrieveLoginResponseDto(post, 0, post.getPostImageList(), false);
+                    });
+        }
     }
 
     public Page<PostRetrieveResponseDto> retrieveAllBestPost(Pageable pageable) {

@@ -4,6 +4,7 @@
 <br>
 <br>
 
+### **🏠 _배포 주소_** [https://www.camp-us.ga](https://www.camp-us.ga)
 # **전국 캠핑장 추천 플랫폼 - **CampUs -** ⛺️ (BE)**
 
 ### "열심히 일한 당신, 어디론가 떠나고 싶으신가요?"
@@ -44,9 +45,6 @@
 
 <br>
 
-<br>
-
-## 📚 [Github WIKI.](https://github.com/Couch-Coders/6th-camp_us-be/wiki)
 
 <br>
 
@@ -99,11 +97,12 @@
 ### **Infra**
 
 <p>
-<img src="https://img.shields.io/badge/AWS EC2 -232F3E?style=flat-square&logo=Amazon AWS&logoColor=white"/>
+<img src="https://img.shields.io/badge/AWS EC2 -E85C33?style=flat-square&logo=Amazon AWS&logoColor=white"/>
 <img src="https://img.shields.io/badge/AWS S3 -569A31?style=flat-square&logo=Amazon S3&logoColor=white"/>
-<img src="https://img.shields.io/badge/AWS  CodeDeploy -569A31?style=flat-square&logo=Amazon AWS&logoColor=white"/>
+<img src="https://img.shields.io/badge/AWS CodeDeploy -569A31?style=flat-square&logo=Amazon AWS&logoColor=white"/>
 <img src="https://img.shields.io/badge/AWS RDS -4285F4?style=flat-square&logo=Amazon AWS&logoColor=white"/>
 <img src="https://img.shields.io/badge/AWS IAM -569A31?style=flat-square&logo=Amazon AWS&logoColor=white"/>
+<img src="https://img.shields.io/badge/AWS Load Balancer -E85C33?style=flat-square&logo=Amazon AWS&logoColor=white"/>
 <img src="https://img.shields.io/badge/GitHub Actions -2088FF?style=flat-square&logo=GitHub Actions&logoColor=white"/>
 
 </p>
@@ -138,7 +137,7 @@
 [API 명세서](https://pyrite-player-22d.notion.site/API-Camp_us-5127263de2f84dd49c62af6a6617a052)
 <br>
 
-[Swagger API 문서](http://54.180.29.177:8080/swagger-ui/#/camp-controller/getCampsUsingGET) <br>
+[Swagger API 문서](https://www.camp-us.link/swagger-ui/#/) <br>
 
 <br>
 
