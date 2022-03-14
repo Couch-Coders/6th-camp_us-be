@@ -31,4 +31,16 @@ public class Comment extends BaseEntity {
 
     private int likeCnt;
 
+    public void editComment(String content){
+        this.content = content;
+    }
+
+    public void increaseLikeCnt() {
+        this.likeCnt = likeCnt+1;
+    }
+
+    public void decreaseLikeCnt() {
+        this.likeCnt = likeCnt - 1;
+    }
+
 }

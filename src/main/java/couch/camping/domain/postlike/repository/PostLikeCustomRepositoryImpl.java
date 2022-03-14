@@ -12,8 +12,6 @@ import java.util.Optional;
 public class PostLikeCustomRepositoryImpl implements PostLikeCustomRepository{
 
     private final JPAQueryFactory queryFactory;
-    private final EntityManager entityManager;
-
 
     @Override
     public Optional<PostLike> findByMemberIdAndPostId(Long memberId, Long postId) {

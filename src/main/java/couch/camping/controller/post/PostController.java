@@ -51,6 +51,7 @@ public class PostController {
     public ResponseEntity<PostEditResponseDto> editPost(@PathVariable Long postId, @RequestBody PostEditRequestDto postEditRequestDto,
                                                         Authentication authentication) {
         Member member = (Member) authentication.getPrincipal();
+
         return new ResponseEntity(postService.editPost(postId, member, postEditRequestDto), HttpStatus.OK);
     }
     
