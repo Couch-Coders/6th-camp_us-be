@@ -13,7 +13,7 @@ public class PostWriteRequestDto {
 
     private String content;
 
-    private String hashTag;
+    private String postType;
 
     private List<String> imgUrlList = new ArrayList<>();
 

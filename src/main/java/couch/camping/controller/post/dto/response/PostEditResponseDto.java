@@ -17,14 +17,14 @@ public class PostEditResponseDto {
 
     private String content;
 
-    private String hashTag;
+    private String postType;
 
     private List<String> imgUrlList = new ArrayList<>();
 
     public PostEditResponseDto(Post savePost, List<PostImage> postImageList) {
         this.postId = savePost.getId();
         this.content = savePost.getContent();
-        this.hashTag = savePost.getHashTag();
+        this.postType = savePost.getPostType();
         for (PostImage postImage : postImageList) {
             imgUrlList.add(postImage.getImgUrl());
         }
