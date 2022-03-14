@@ -62,7 +62,7 @@ public class PostService {
                 });
 
         if (findPost.getMember() != member) {
-            throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 리뷰가 아닙니다.");
+            throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 게시글이 아닙니다.");
         }
 
         findPost.editPost(postEditRequestDto.getContent(), postEditRequestDto.getHashTag());
