@@ -17,7 +17,7 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Comment> findAllById(Long postId, Pageable pageable) {
+    public Page<Comment> findAllByIdWithPaging(Long postId, Pageable pageable) {
         List<Comment> commentList = queryFactory.selectFrom(comment)
                 .where(comment.post.id.eq(postId))
                 .fetch();

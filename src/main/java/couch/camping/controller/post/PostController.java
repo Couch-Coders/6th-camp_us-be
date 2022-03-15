@@ -62,10 +62,19 @@ public class PostController {
         postService.likePost(postId, member);
         return ResponseEntity.noContent().build();
     }
-
+    
+    //베스트 게시글 조회
     @GetMapping("/best")
     public ResponseEntity retrieveAllBestPost(Pageable pageable) {
         return ResponseEntity.ok(postService.retrieveAllBestPost(pageable));
+    }
+    
+    //게시글 삭제
+    @DeleteMapping("/{postId}")
+    public ResponseEntity deletePost(@PathVariable Long postId, Authentication authentication) {
+        Member member = (Member) authentication.getPrincipal();
+        postService.deletePost(postId, member);
+        return ResponseEntity.noContent().build();
     }
 }
 

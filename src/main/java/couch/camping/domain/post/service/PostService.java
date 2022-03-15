@@ -174,4 +174,18 @@ public class PostService {
         return postRepository.findAllBestPost(pageable)
                 .map(post -> new PostRetrieveResponseDto(post, post.getCommentList().size(), post.getPostImageList()));
     }
+
+    @Transactional
+    public void deletePost(Long postId, Member member) {
+        Post findPost = postRepository.findById(postId)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
+                });
+        
+        if (findPost.getMember() == member) {
+            throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 게시글이 아닙니다.");
+        }
+
+        postRepository.deleteById(postId);
+    }
 }
