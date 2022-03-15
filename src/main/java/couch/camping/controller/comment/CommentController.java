@@ -69,4 +69,13 @@ public class CommentController {
         commentService.likeComment(commentId, member);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity deleteComment(@PathVariable Long commentId,
+                                        Authentication authentication) {
+        Member member = (Member) authentication.getPrincipal();
+        commentService.deleteComment(commentId, member);
+        return ResponseEntity.noContent().build();
+    }
+
 }

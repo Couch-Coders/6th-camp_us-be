@@ -143,4 +143,18 @@ public class CommentService {
                     });
         }
     }
+
+    public void deleteComment(Long commentId, Member member) {
+
+        Comment findComment = commentRepository
+                .findById(commentId)
+                .orElseThrow(() -> {throw new CustomException(ErrorCode.NOT_FOUND_COMMENT, "댓글 ID에 맞는 댓글이 없습니다.");
+                });
+
+        if (findComment.getMember() != member){
+            throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 댓글이 아닙니다.");
+        }
+
+        commentRepository.deleteById(commentId);
+    }
 }
