@@ -1,9 +1,7 @@
 package couch.camping.domain.comment.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import couch.camping.controller.comment.dto.response.CommentRetrieveAllResponseDto;
 import couch.camping.domain.comment.entity.Comment;
-import couch.camping.domain.comment.entity.QComment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

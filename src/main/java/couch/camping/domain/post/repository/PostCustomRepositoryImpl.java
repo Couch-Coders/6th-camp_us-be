@@ -8,8 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.EntityManager;
-
 import java.util.List;
 
 import static couch.camping.domain.post.entity.QPost.post;
@@ -44,5 +42,24 @@ public class PostCustomRepositoryImpl implements PostCustomRepository{
             return null;
         else
             return post.postType.eq(postType);
+    }
+
+    @Override
+    public Page<Post> findAllBestPost(Pageable pageable) {
+        List<Post> content = queryFactory
+                .selectFrom(post)
+                .where(post.likeCnt.goe(1))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(post.likeCnt.desc(), post.createdDate.desc())
+                .fetch();
+
+        Long total = queryFactory
+                .select(post.count())
+                .from(post)
+                .where(post.likeCnt.goe(1))
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total);
     }
 }
