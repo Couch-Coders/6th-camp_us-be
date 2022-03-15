@@ -1,6 +1,7 @@
 package couch.camping.domain.post.entity;
 
 import couch.camping.domain.base.BaseEntity;
+import couch.camping.domain.comment.entity.Comment;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.postimage.entity.PostImage;
 import couch.camping.domain.postlike.entity.PostLike;
@@ -28,12 +29,15 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
+
     @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> postImageList = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PostLike> postLikeList = new ArrayList<>();
 
     @Lob

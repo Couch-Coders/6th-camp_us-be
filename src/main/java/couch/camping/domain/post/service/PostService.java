@@ -6,6 +6,7 @@ import couch.camping.controller.post.dto.response.PostEditResponseDto;
 import couch.camping.controller.post.dto.response.PostRetrieveLoginResponseDto;
 import couch.camping.controller.post.dto.response.PostRetrieveResponseDto;
 import couch.camping.controller.post.dto.response.PostWriteResponseDto;
+import couch.camping.domain.comment.repository.CommentRepository;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.post.entity.Post;
 import couch.camping.domain.post.repository.PostRepository;
@@ -37,9 +38,15 @@ public class PostService {
     private final PostImageRepository postImageRepository;
     private final PostLikeRepository postLikeRepository;
     private final UserDetailsService userDetailsService;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public PostWriteResponseDto writePost(PostWriteRequestDto postWriteRequestDto, Member member) {
+        List<String> postTypeList = Arrays.asList("free", "picture", "question");
+
+        if (!postTypeList.contains(postWriteRequestDto.getPostType()))
+            throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "postType 의 값은 free, picture, question 만 가능합니다.");
+
         Post post = Post.builder()
                 .content(postWriteRequestDto.getContent())
                 .postType(postWriteRequestDto.getPostType())
@@ -120,7 +127,7 @@ public class PostService {
                 });
 
         if (header == null) {//비로그인
-            return new PostRetrieveResponseDto(findPost, 0, findPost.getPostImageList());
+            return new PostRetrieveResponseDto(findPost, findPost.getCommentList().size(), findPost.getPostImageList());
         } else {//로그인
             Member member;
             try {
@@ -129,7 +136,7 @@ public class PostService {
                 throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
             }
             Optional<PostLike> optionalPostLike = postLikeRepository.findByMemberIdAndPostId(member.getId(), postId);
-            return new PostRetrieveLoginResponseDto(findPost, 0, findPost.getPostImageList(), optionalPostLike.isPresent());
+            return new PostRetrieveLoginResponseDto(findPost, findPost.getCommentList().size(), findPost.getPostImageList(), optionalPostLike.isPresent());
         }
     }
 
@@ -141,7 +148,7 @@ public class PostService {
         }
         if (header == null) {
             return postRepository.findAllByIdWithPaging(postType, pageable)
-                    .map(post -> new PostRetrieveResponseDto(post, 0, post.getPostImageList()));
+                    .map(post -> new PostRetrieveResponseDto(post, post.getCommentList().size(), post.getPostImageList()));
         } else {
             Member member;
             try {
@@ -155,16 +162,16 @@ public class PostService {
                         List<PostLike> postLikeList = post.getPostLikeList();
                         for (PostLike postLike : postLikeList) {
                             if (postLike.getMember() == member) {
-                                return new PostRetrieveLoginResponseDto(post, 0, post.getPostImageList(), true);
+                                return new PostRetrieveLoginResponseDto(post, post.getCommentList().size(), post.getPostImageList(), true);
                             }
                         }
-                        return new PostRetrieveLoginResponseDto(post, 0, post.getPostImageList(), false);
+                        return new PostRetrieveLoginResponseDto(post, post.getCommentList().size(), post.getPostImageList(), false);
                     });
         }
     }
 
     public Page<PostRetrieveResponseDto> retrieveAllBestPost(Pageable pageable) {
         return postRepository.findAllBestPost(pageable)
-                .map(post -> new PostRetrieveResponseDto(post, 0, post.getPostImageList()));
+                .map(post -> new PostRetrieveResponseDto(post, post.getCommentList().size(), post.getPostImageList()));
     }
 }
