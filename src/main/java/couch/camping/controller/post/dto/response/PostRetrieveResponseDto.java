@@ -28,8 +28,6 @@ public class PostRetrieveResponseDto {
 
     private LocalDateTime createdDate;
 
-    private LocalDateTime lastModifiedDate;
-
     public PostRetrieveResponseDto(Post findPost, int commentCnt, List<PostImage> postImageList) {
         this.postId = findPost.getId();
         this.memberId = findPost.getMember().getId();
@@ -41,6 +39,5 @@ public class PostRetrieveResponseDto {
             imgUrlList.add(postImage.getImgUrl());
         }
         this.createdDate = findPost.getCreatedDate();
-        this.lastModifiedDate = findPost.getLastModifiedDate();
     }
 }

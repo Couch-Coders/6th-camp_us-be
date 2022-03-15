@@ -9,7 +9,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class CommentEditRequestDto {
 
-    private Long commentId;
-
     private String content;
 }

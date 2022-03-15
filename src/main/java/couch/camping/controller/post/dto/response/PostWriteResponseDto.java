@@ -4,6 +4,7 @@ import couch.camping.domain.post.entity.Post;
 import couch.camping.domain.postimage.entity.PostImage;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class PostWriteResponseDto {
 
     private List<String> imgUrlList = new ArrayList<>();
 
+    private LocalDateTime createdDate;
+
     public PostWriteResponseDto(Post savePost, List<PostImage> postImageList) {
         this.postId = savePost.getId();
         this.content = savePost.getContent();
@@ -28,5 +31,6 @@ public class PostWriteResponseDto {
         for (PostImage postImage : postImageList) {
             imgUrlList.add(postImage.getImgUrl());
         }
+        this.createdDate = savePost.getCreatedDate();
     }
 }

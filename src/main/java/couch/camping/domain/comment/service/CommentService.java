@@ -1,10 +1,9 @@
 package couch.camping.domain.comment.service;
 
-import com.google.api.gax.rpc.NotFoundException;
 import couch.camping.controller.comment.dto.request.CommentEditRequestDto;
 import couch.camping.controller.comment.dto.request.CommentWriteRequestDto;
 import couch.camping.controller.comment.dto.response.CommentEditResponseDto;
-import couch.camping.controller.comment.dto.response.CommentRetrieveAllResponseDto;
+import couch.camping.controller.comment.dto.response.CommentRetrieveLoginResponseDto;
 import couch.camping.controller.comment.dto.response.CommentRetrieveResponseDto;
 import couch.camping.controller.comment.dto.response.CommentWriteResponseDto;
 import couch.camping.domain.comment.entity.Comment;
@@ -19,9 +18,12 @@ import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,13 +33,14 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
     private final PostRepository postRepository;
+    private final UserDetailsService userDetailsService;
 
     @Transactional
     public CommentWriteResponseDto writeComment(CommentWriteRequestDto commentWriteRequestDto, Member member, Long postId) {
 
-        Post post = postRepository
-                .findById(postId)
-                .orElseThrow(() -> {throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
                 });
 
         Comment comment = Comment.builder()
@@ -90,19 +93,54 @@ public class CommentService {
         }
     }
 
-    public CommentRetrieveResponseDto retrieveComment(Long commentId, Member member) {
+    public CommentRetrieveResponseDto retrieveComment(Long commentId, String header) {
         Comment findComment = commentRepository.findById(commentId)
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_COMMENT, "댓글 ID에 맞는 댓글이 없습니다.");
                 });
 
-        return new CommentRetrieveResponseDto(findComment.getContent(), findComment.getId(), findComment.getMember().getId(), findComment.getLikeCnt());
+        if (header == null) {
+            return new CommentRetrieveResponseDto(findComment);
+        } else {
+            Member member;
+            try {
+                member = (Member)userDetailsService.loadUserByUsername(header);
+            } catch (UsernameNotFoundException e) {
+                throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
+            }
+
+            List<CommentLike> commentLikeList = findComment.getCommentLikeList();
+            for (CommentLike commentLike : commentLikeList) {
+                if (commentLike.getMember() == member)
+                    return new CommentRetrieveLoginResponseDto(findComment, true);
+            }
+            return new CommentRetrieveLoginResponseDto(findComment, false);
+        }
     }
 
 
-    public Page<CommentRetrieveAllResponseDto> retrieveAllComment(Long postId, Pageable pageable) {
+    public Page<CommentRetrieveResponseDto> retrieveAllComment(Long postId, String header, Pageable pageable) {
 
-        return commentRepository.findAllById(postId, pageable)
-                .map(comment -> new CommentRetrieveAllResponseDto(comment));
+        if (header == null) {
+            return commentRepository.findAllById(postId, pageable)
+                    .map(comment -> new CommentRetrieveResponseDto(comment));
+        } else {
+            Member member;
+            try {
+                member = (Member)userDetailsService.loadUserByUsername(header);
+            } catch (UsernameNotFoundException e) {
+                throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
+            }
+
+            return commentRepository.findAllById(postId, pageable)
+                    .map(comment -> {
+                        List<CommentLike> commentLikeList = comment.getCommentLikeList();
+                        for (CommentLike commentLike : commentLikeList) {
+                            if (commentLike.getMember() == member)
+                                return new CommentRetrieveLoginResponseDto(comment, true);
+                        }
+                        return new CommentRetrieveLoginResponseDto(comment, false);
+                    });
+        }
     }
 }

@@ -29,6 +29,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
