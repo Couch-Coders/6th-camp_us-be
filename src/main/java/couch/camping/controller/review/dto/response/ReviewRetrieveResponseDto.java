@@ -34,6 +34,8 @@ public class ReviewRetrieveResponseDto {
     private String nickname;
     @ApiModelProperty(required = true, value = "캠핑장 이름", example = "달빛캠핑장")
     private String facltNm;
+    @ApiModelProperty(required = true, value = "회원 이미지", example = "www.pic.com")
+    private String memberImg;
     @ApiModelProperty(required = true, value = "작성 날짜", example = "2022-02-18T18:26:23.9592352")
     private LocalDateTime createdDate;
     @ApiModelProperty(required = true, value = "수정 날짜", example = "2022-02-19T18:26:23.9592352")
@@ -51,5 +53,6 @@ public class ReviewRetrieveResponseDto {
         this.facltNm = r.getCamp().getFacltNm();
         this.createdDate = r.getCreatedDate();
         this.lastModifiedDate = r.getLastModifiedDate();
+        this.memberImg = r.getMember().getImgUrl();
     }
 }

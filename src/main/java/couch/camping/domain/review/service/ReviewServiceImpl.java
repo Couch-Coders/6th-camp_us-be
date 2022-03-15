@@ -186,7 +186,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable) {
-        return reviewRepository.findAllByLikeCntGreaterThan(pageable)
+        return reviewRepository.findAllBestReview(pageable)
                 .map(review -> new ReviewRetrieveResponseDto(review));
     }
 

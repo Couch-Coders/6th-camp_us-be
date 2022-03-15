@@ -112,10 +112,10 @@
 <br>
 
 ## ⚙️ 시스템 아키텍처
-![아키텍쳐](https://user-images.githubusercontent.com/69510442/156531407-a34580ee-7774-4f6d-89c4-75b4f0f0e10c.png)
+![아키텍쳐](https://user-images.githubusercontent.com/69510442/158359605-d6a3d6c4-0831-4715-ab1f-95b53139e1d9.png)
 <br>
 <br>
-
+![](../../system.png)
 ### ERD 설계
 
 ![campus](https://user-images.githubusercontent.com/66157892/155998638-1f2c40f0-d644-44a5-84e9-ff9d8ad3f458.png)
