@@ -122,7 +122,7 @@ public class CommentService {
     public Page<CommentRetrieveResponseDto> retrieveAllComment(Long postId, String header, Pageable pageable) {
 
         if (header == null) {
-            return commentRepository.findAllById(postId, pageable)
+            return commentRepository.findAllByIdWithPaging(postId, pageable)
                     .map(comment -> new CommentRetrieveResponseDto(comment));
         } else {
             Member member;
@@ -132,7 +132,7 @@ public class CommentService {
                 throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
             }
 
-            return commentRepository.findAllById(postId, pageable)
+            return commentRepository.findAllByIdWithPaging(postId, pageable)
                     .map(comment -> {
                         List<CommentLike> commentLikeList = comment.getCommentLikeList();
                         for (CommentLike commentLike : commentLikeList) {
@@ -144,6 +144,7 @@ public class CommentService {
         }
     }
 
+    @Transactional
     public void deleteComment(Long commentId, Member member) {
 
         Comment findComment = commentRepository

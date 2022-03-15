@@ -69,7 +69,8 @@ public class CommentController {
         commentService.likeComment(commentId, member);
         return ResponseEntity.noContent().build();
     }
-
+    
+    //댓글 삭제
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity deleteComment(@PathVariable Long commentId,
                                         Authentication authentication) {
