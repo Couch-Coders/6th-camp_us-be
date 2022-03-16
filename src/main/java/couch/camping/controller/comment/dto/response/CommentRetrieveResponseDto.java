@@ -2,6 +2,7 @@ package couch.camping.controller.comment.dto.response;
 
 
 import couch.camping.domain.comment.entity.Comment;
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(description = "로그인 전 댓글 조회 응답 DTO")
 public class CommentRetrieveResponseDto {
 
     private Long commentId;
