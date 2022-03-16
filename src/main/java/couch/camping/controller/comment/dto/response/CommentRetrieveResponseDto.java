@@ -28,6 +28,10 @@ public class CommentRetrieveResponseDto {
 
     private LocalDateTime createdDate;
 
+    private String nickname;
+
+    private String memberImgUrl;
+
     public CommentRetrieveResponseDto(Comment comment) {
         this.content = comment.getContent();
         this.commentId = comment.getId();
@@ -35,5 +39,7 @@ public class CommentRetrieveResponseDto {
         this.likeCnt = comment.getLikeCnt();
         this.postId = comment.getPost().getId();
         this.createdDate = comment.getCreatedDate();
+        this.nickname = comment.getMember().getNickname();
+        this.memberImgUrl = comment.getMember().getImgUrl();
     }
 }

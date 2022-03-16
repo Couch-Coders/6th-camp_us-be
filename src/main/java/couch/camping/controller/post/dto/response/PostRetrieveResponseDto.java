@@ -29,17 +29,23 @@ public class PostRetrieveResponseDto {
     private List<String> imgUrlList = new ArrayList<>();
 
     private LocalDateTime createdDate;
+    
+    private String memberImgUrl;
 
-    public PostRetrieveResponseDto(Post findPost, int commentCnt, List<PostImage> postImageList) {
-        this.postId = findPost.getId();
-        this.memberId = findPost.getMember().getId();
-        this.content = findPost.getContent();
-        this.postType = findPost.getPostType();
-        this.likeCnt = findPost.getLikeCnt();
+    private String nickname;
+
+    public PostRetrieveResponseDto(Post post, int commentCnt, List<PostImage> postImageList) {
+        this.postId = post.getId();
+        this.memberId = post.getMember().getId();
+        this.content = post.getContent();
+        this.postType = post.getPostType();
+        this.likeCnt = post.getLikeCnt();
         this.commentCnt = commentCnt;
         for (PostImage postImage : postImageList) {
             imgUrlList.add(postImage.getImgUrl());
         }
-        this.createdDate = findPost.getCreatedDate();
+        this.createdDate = post.getCreatedDate();
+        this.memberImgUrl = post.getMember().getImgUrl();
+        this.nickname = post.getMember().getNickname();
     }
 }
