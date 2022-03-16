@@ -2,6 +2,7 @@ package couch.camping.controller.post.dto.response;
 
 import couch.camping.domain.post.entity.Post;
 import couch.camping.domain.postimage.entity.PostImage;
+import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Getter @Setter
 @NoArgsConstructor
+@ApiModel(description = "커뮤니티 게시글 조회 응답 DTO")
 public class PostRetrieveResponseDto {
 
     private Long postId;

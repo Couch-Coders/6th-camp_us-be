@@ -8,6 +8,8 @@ import couch.camping.controller.comment.dto.response.CommentWriteResponseDto;
 import couch.camping.domain.comment.service.CommentService;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.util.RequestUtil;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,16 +28,18 @@ public class CommentController {
     private final CommentService commentService;
 
     //댓글 단건 조회
+    @ApiOperation(value = "커뮤니티 댓글 조회 API", notes = "댓글 ID를 통해 댓글을 조회합니다.")
     @GetMapping("/comments/{commentId}")
-    public ResponseEntity<CommentRetrieveResponseDto> retrieveComment(@PathVariable Long commentId,
+    public ResponseEntity<CommentRetrieveResponseDto> retrieveComment(@ApiParam(value = "댓글 ID", required = true) @PathVariable Long commentId,
                                                                       HttpServletRequest request){
         String header = RequestUtil.getAuthorizationToken(request);
         return ResponseEntity.ok(commentService.retrieveComment(commentId, header));
     }
 
     //게시글의 댓글 전체 조회
+    @ApiOperation(value = "커뮤니티 댓글 전체 조회 API", notes = "게시글 ID를 통해 댓글 전체를 조회합니다.")
     @GetMapping("posts/{postId}/comment")
-    public ResponseEntity<Page<CommentRetrieveResponseDto>> retrieveAllComment(@PathVariable Long postId,
+    public ResponseEntity<Page<CommentRetrieveResponseDto>> retrieveAllComment(@ApiParam(value = "게시글 ID", required = true) @PathVariable Long postId,
                                                                                HttpServletRequest request,
                                                                                Pageable pageable){
         String header = RequestUtil.getAuthorizationToken(request);
@@ -44,7 +48,8 @@ public class CommentController {
 
     //댓글 작성
     @PostMapping("/posts/{postId}/comment") //이게 코멘트 컨트롤러에 있는 게 맞나?
-    public ResponseEntity<CommentWriteResponseDto> writeComment(@RequestBody CommentWriteRequestDto commentWriteRequestDto,
+    @ApiOperation(value = "커뮤니티 댓글 작성 API", notes = "게시글 ID를 통해 해당 게시글에 댓글을 작성합니다.")
+    public ResponseEntity<CommentWriteResponseDto> writeComment(@ApiParam(value = "게시글 ID", required = true) @RequestBody CommentWriteRequestDto commentWriteRequestDto,
                                                                 @PathVariable Long postId,
                                                                 Authentication authentication){
         Member member = (Member) authentication.getPrincipal();
@@ -53,8 +58,9 @@ public class CommentController {
 
     //댓글 수정
     @PutMapping("/comments/{commentId}")
+    @ApiOperation(value = "커뮤니티 댓글 수정 API", notes = "댯글 ID를 통해 작성된 댓글을 수정합니다.")
     public ResponseEntity<CommentEditResponseDto> editComment(@RequestBody CommentEditRequestDto commentEditRequestDto,
-                                                              @PathVariable Long commentId,
+                                                              @ApiParam(value = "댓글 ID", required = true) @PathVariable Long commentId,
                                                               Authentication authentication) {
         Member member = (Member) authentication.getPrincipal();
         return new ResponseEntity(commentService.editComment(commentEditRequestDto, member, commentId), HttpStatus.OK);
@@ -62,7 +68,8 @@ public class CommentController {
 
     //댓글 좋아요
     @PatchMapping("/comments/{commentId}")
-    public ResponseEntity likeComment(@PathVariable Long commentId,
+    @ApiOperation(value = "커뮤니티 댓글 좋아요 API", notes = "댓글 ID를 통해 해당 댓글에 좋아요를 합니다.")
+    public ResponseEntity likeComment(@ApiParam(value = "댓글 ID", required = true) @PathVariable Long commentId,
                                       Authentication authentication){
 
         Member member = (Member) authentication.getPrincipal();
@@ -72,7 +79,8 @@ public class CommentController {
     
     //댓글 삭제
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity deleteComment(@PathVariable Long commentId,
+    @ApiOperation(value = "커뮤니티 댓글 삭제 API", notes = "댓글 ID를 통해 해당 댓글을 삭제합니다.")
+    public ResponseEntity deleteComment(@ApiParam(value = "댓글 ID", required = true) @PathVariable Long commentId,
                                         Authentication authentication) {
         Member member = (Member) authentication.getPrincipal();
         commentService.deleteComment(commentId, member);
