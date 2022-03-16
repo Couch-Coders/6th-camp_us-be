@@ -26,6 +26,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final NumberPath<Integer> commentCnt = createNumber("commentCnt", Integer.class);
 
+    public final ListPath<couch.camping.domain.comment.entity.Comment, couch.camping.domain.comment.entity.QComment> commentList = this.<couch.camping.domain.comment.entity.Comment, couch.camping.domain.comment.entity.QComment>createList("commentList", couch.camping.domain.comment.entity.Comment.class, couch.camping.domain.comment.entity.QComment.class, PathInits.DIRECT2);
+
     public final StringPath content = createString("content");
 
     //inherited
@@ -47,6 +49,8 @@ public class QPost extends EntityPathBase<Post> {
     public final couch.camping.domain.member.entity.QMember member;
 
     public final ListPath<couch.camping.domain.postimage.entity.PostImage, couch.camping.domain.postimage.entity.QPostImage> postImageList = this.<couch.camping.domain.postimage.entity.PostImage, couch.camping.domain.postimage.entity.QPostImage>createList("postImageList", couch.camping.domain.postimage.entity.PostImage.class, couch.camping.domain.postimage.entity.QPostImage.class, PathInits.DIRECT2);
+
+    public final ListPath<couch.camping.domain.postlike.entity.PostLike, couch.camping.domain.postlike.entity.QPostLike> postLikeList = this.<couch.camping.domain.postlike.entity.PostLike, couch.camping.domain.postlike.entity.QPostLike>createList("postLikeList", couch.camping.domain.postlike.entity.PostLike.class, couch.camping.domain.postlike.entity.QPostLike.class, PathInits.DIRECT2);
 
     public final StringPath postType = createString("postType");
 
