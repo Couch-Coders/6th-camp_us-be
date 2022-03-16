@@ -117,11 +117,8 @@ public class PostService {
         }
     }
 
-    /**
-     * comment 필요
-     */
     public PostRetrieveResponseDto retrievePost(Long postId, String header) {
-        Post findPost = postRepository.findById(postId)
+        Post findPost = postRepository.findByIdWithFetchJoinMember(postId)
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
                 });
@@ -147,7 +144,7 @@ public class PostService {
             throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "쿼리스트링 postType 의 값은 all, free, picture, question 만 가능합니다.");
         }
         if (header == null) {
-            return postRepository.findAllByIdWithPaging(postType, pageable)
+            return postRepository.findAllByIdWithFetchJoinMemberPaging(postType, pageable)
                     .map(post -> new PostRetrieveResponseDto(post, post.getCommentList().size(), post.getPostImageList()));
         } else {
             Member member;
@@ -157,7 +154,7 @@ public class PostService {
                 throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
             }
 
-            return postRepository.findAllByIdWithPaging(postType, pageable)
+            return postRepository.findAllByIdWithFetchJoinMemberPaging(postType, pageable)
                     .map(post -> {
                         List<PostLike> postLikeList = post.getPostLikeList();
                         for (PostLike postLike : postLikeList) {
