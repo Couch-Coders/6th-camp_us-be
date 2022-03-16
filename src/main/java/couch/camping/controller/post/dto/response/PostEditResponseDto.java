@@ -2,6 +2,7 @@ package couch.camping.controller.post.dto.response;
 
 import couch.camping.domain.post.entity.Post;
 import couch.camping.domain.postimage.entity.PostImage;
+import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter @Setter
 @Builder
+@ApiModel(description = "커뮤니티 게시글 수정 응답 DTO")
 public class PostEditResponseDto {
 
     private Long postId;
