@@ -10,9 +10,12 @@ import lombok.Setter;
 @Setter @AllArgsConstructor
 public class CommentEditResponseDto {
 
+    private Long commentId;
+
     private String content;
 
     public CommentEditResponseDto(Comment comment) {
+        this.commentId = comment.getId();
         this.content = comment.getContent();
     }
 }

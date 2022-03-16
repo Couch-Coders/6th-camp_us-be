@@ -1,7 +1,7 @@
 package couch.camping.domain.review.service;
 
-import couch.camping.controller.review.dto.response.ReviewImageUrlResponseDto;
 import couch.camping.controller.review.dto.request.ReviewWriteRequestDto;
+import couch.camping.controller.review.dto.response.ReviewImageUrlResponseDto;
 import couch.camping.controller.review.dto.response.ReviewRetrieveLoginResponse;
 import couch.camping.controller.review.dto.response.ReviewRetrieveResponseDto;
 import couch.camping.controller.review.dto.response.ReviewWriteResponseDto;
@@ -19,7 +19,6 @@ import couch.camping.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -95,21 +94,17 @@ public class ReviewServiceLocalImpl implements ReviewService {
     @Override
     @Transactional
     public void deleteReview(Long reviewId, Member member) {
-        try {
-            Review findReview = reviewRepository.findById(reviewId)
-                    .orElseThrow(() -> {
-                        throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
-                    });
+        Review findReview = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
+                });
 
-            if (findReview.getMember() != member) {
-                throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 리뷰가 아닙니다.");
-            }
-
-            findReview.getCamp().decreaseRate(findReview.getRate());
-            reviewRepository.deleteById(reviewId);
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다.");
+        if (findReview.getMember() != member) {
+            throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 리뷰가 아닙니다.");
         }
+
+        findReview.getCamp().decreaseRate(findReview.getRate());
+        reviewRepository.deleteById(reviewId);
     }
 
     @Override

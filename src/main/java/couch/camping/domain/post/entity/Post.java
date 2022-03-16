@@ -1,8 +1,10 @@
 package couch.camping.domain.post.entity;
 
 import couch.camping.domain.base.BaseEntity;
+import couch.camping.domain.comment.entity.Comment;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.postimage.entity.PostImage;
+import couch.camping.domain.postlike.entity.PostLike;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,8 +30,16 @@ public class Post extends BaseEntity {
     private Member member;
 
     @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
+
+    @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> postImageList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PostLike> postLikeList = new ArrayList<>();
 
     @Lob
     private String content;

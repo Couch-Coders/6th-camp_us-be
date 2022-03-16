@@ -24,6 +24,8 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final couch.camping.domain.base.QBaseEntity _super = new couch.camping.domain.base.QBaseEntity(this);
 
+    public final ListPath<couch.camping.domain.commentlike.entity.CommentLike, couch.camping.domain.commentlike.entity.QCommentLike> commentLikeList = this.<couch.camping.domain.commentlike.entity.CommentLike, couch.camping.domain.commentlike.entity.QCommentLike>createList("commentLikeList", couch.camping.domain.commentlike.entity.CommentLike.class, couch.camping.domain.commentlike.entity.QCommentLike.class, PathInits.DIRECT2);
+
     public final StringPath content = createString("content");
 
     //inherited

@@ -4,7 +4,10 @@ import couch.camping.domain.post.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface PostCustomRepository {
+import java.util.Optional;
 
-    Page<Post> findAllByIdWithPaging(String postType, Pageable pageable);
+public interface PostCustomRepository {
+    Optional<Post> findByIdWithFetchJoinMember(Long postId);
+    Page<Post> findAllByIdWithFetchJoinMemberPaging(String postType, Pageable pageable);
+    Page<Post> findAllBestPost(Pageable pageable);
 }
