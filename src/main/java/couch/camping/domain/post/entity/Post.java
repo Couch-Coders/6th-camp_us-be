@@ -41,6 +41,8 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PostLike> postLikeList = new ArrayList<>();
 
+    private String title;
+
     @Lob
     private String content;
 
@@ -50,7 +52,8 @@ public class Post extends BaseEntity {
 
     private int commentCnt;
 
-    public void editPost(String content, String hashTag) {
+    public void editPost(String title, String content, String hashTag) {
+        this.title = title;
         this.content = content;
         this.postType = hashTag;
     }

@@ -17,16 +17,19 @@ public class PostEditResponseDto {
 
     private Long postId;
 
+    private String title;
+
     private String content;
 
     private String postType;
 
     private List<String> imgUrlList = new ArrayList<>();
 
-    public PostEditResponseDto(Post savePost, List<PostImage> postImageList) {
-        this.postId = savePost.getId();
-        this.content = savePost.getContent();
-        this.postType = savePost.getPostType();
+    public PostEditResponseDto(Post post, List<PostImage> postImageList) {
+        this.postId = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.postType = post.getPostType();
         for (PostImage postImage : postImageList) {
             imgUrlList.add(postImage.getImgUrl());
         }
