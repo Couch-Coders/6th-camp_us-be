@@ -23,7 +23,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Gradle 빌드
-        run: ./gradlew build
+        run: ./gradlew build --exclude-task test
         shell: bash
 
       - name: Make zip file
