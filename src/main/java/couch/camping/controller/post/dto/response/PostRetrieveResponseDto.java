@@ -21,6 +21,9 @@ public class PostRetrieveResponseDto {
     @ApiModelProperty(required = true, value = "회원 ID", example = "7108")
     private Long memberId;
 
+    @ApiModelProperty(required = true, value = "게시글 제목", example = "질문있습니다!")
+    private String title;
+
     @ApiModelProperty(required = true, value = "게시글 내용", example = "안녕하세용")
     private String content;
 
@@ -49,6 +52,7 @@ public class PostRetrieveResponseDto {
     public PostRetrieveResponseDto(Post post, int commentCnt, List<PostImage> postImageList) {
         this.postId = post.getId();
         this.memberId = post.getMember().getId();
+        this.title = post.getTitle();
         this.content = post.getContent();
         this.postType = post.getPostType();
         this.likeCnt = post.getLikeCnt();

@@ -19,6 +19,9 @@ public class PostEditResponseDto {
     @ApiModelProperty(required = true, value = "게시글 ID", example = "2821")
     private Long postId;
 
+    @ApiModelProperty(required = true, value = "게시글 제목", example = "질문있습니다!")
+    private String title;
+
     @ApiModelProperty(required = true, value = "게시글 내용", example = "안녕하세용")
     private String content;
 
@@ -28,10 +31,11 @@ public class PostEditResponseDto {
     @ApiModelProperty(required = true, value = "이미지 URL", example = "http:www.balladang.com")
     private List<String> imgUrlList = new ArrayList<>();
 
-    public PostEditResponseDto(Post savePost, List<PostImage> postImageList) {
-        this.postId = savePost.getId();
-        this.content = savePost.getContent();
-        this.postType = savePost.getPostType();
+    public PostEditResponseDto(Post post, List<PostImage> postImageList) {
+        this.postId = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.postType = post.getPostType();
         for (PostImage postImage : postImageList) {
             imgUrlList.add(postImage.getImgUrl());
         }

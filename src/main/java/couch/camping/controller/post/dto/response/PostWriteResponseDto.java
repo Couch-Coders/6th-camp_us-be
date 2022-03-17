@@ -20,6 +20,9 @@ public class PostWriteResponseDto {
     @ApiModelProperty(required = true, value = "게시글 ID", example = "2716")
     private Long postId;
 
+    @ApiModelProperty(required = true, value = "게시글 제목", example = "질문있습니다!")
+    private String title;
+
     @ApiModelProperty(required = true, value = "게시글 내용", example = "안녕하세용")
     private String content;
 
@@ -32,13 +35,14 @@ public class PostWriteResponseDto {
     @ApiModelProperty(required = true, value = "댓글 생성 날짜", example = "2022-03-15 00:05:57")
     private LocalDateTime createdDate;
 
-    public PostWriteResponseDto(Post savePost, List<PostImage> postImageList) {
-        this.postId = savePost.getId();
-        this.content = savePost.getContent();
-        this.postType = savePost.getPostType();
+    public PostWriteResponseDto(Post post, List<PostImage> postImageList) {
+        this.postId = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.postType = post.getPostType();
         for (PostImage postImage : postImageList) {
             imgUrlList.add(postImage.getImgUrl());
         }
-        this.createdDate = savePost.getCreatedDate();
+        this.createdDate = post.getCreatedDate();
     }
 }
