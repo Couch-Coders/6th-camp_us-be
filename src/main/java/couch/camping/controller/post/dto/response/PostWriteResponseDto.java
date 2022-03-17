@@ -18,6 +18,8 @@ public class PostWriteResponseDto {
 
     private Long postId;
 
+    private String title;
+
     private String content;
 
     private String postType;
@@ -26,13 +28,14 @@ public class PostWriteResponseDto {
 
     private LocalDateTime createdDate;
 
-    public PostWriteResponseDto(Post savePost, List<PostImage> postImageList) {
-        this.postId = savePost.getId();
-        this.content = savePost.getContent();
-        this.postType = savePost.getPostType();
+    public PostWriteResponseDto(Post post, List<PostImage> postImageList) {
+        this.postId = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.postType = post.getPostType();
         for (PostImage postImage : postImageList) {
             imgUrlList.add(postImage.getImgUrl());
         }
-        this.createdDate = savePost.getCreatedDate();
+        this.createdDate = post.getCreatedDate();
     }
 }

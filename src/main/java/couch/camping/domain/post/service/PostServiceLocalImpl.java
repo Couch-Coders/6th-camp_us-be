@@ -49,6 +49,7 @@ public class PostServiceLocalImpl implements PostService {
             throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, "postType 의 값은 free, picture, question 만 가능합니다.");
 
         Post post = Post.builder()
+                .title(postWriteRequestDto.getTitle())
                 .content(postWriteRequestDto.getContent())
                 .postType(postWriteRequestDto.getPostType())
                 .member(member)
@@ -76,7 +77,7 @@ public class PostServiceLocalImpl implements PostService {
             throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 게시글이 아닙니다.");
         }
 
-        findPost.editPost(postEditRequestDto.getContent(), postEditRequestDto.getPostType());
+        findPost.editPost(postEditRequestDto.getTitle(), postEditRequestDto.getContent(), postEditRequestDto.getPostType());
 
         //벌크 연산, 영속성 컨텍스트 초기화
         postImageRepository.deleteByPostId(postId);
