@@ -11,6 +11,8 @@ import java.util.List;
 @Builder
 public class PostWriteRequestDto {
 
+    private String title;
+
     private String content;
 
     private String postType;
