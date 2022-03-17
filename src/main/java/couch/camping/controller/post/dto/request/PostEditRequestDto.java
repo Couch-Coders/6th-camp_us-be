@@ -11,6 +11,9 @@ import java.util.List;
 @Setter
 @Builder
 public class PostEditRequestDto {
+
+    private String title;
+
     private String content;
 
     private String postType;

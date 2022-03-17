@@ -18,6 +18,8 @@ public class PostRetrieveResponseDto {
 
     private Long memberId;
 
+    private String title;
+
     private String content;
 
     private String postType;
@@ -37,6 +39,7 @@ public class PostRetrieveResponseDto {
     public PostRetrieveResponseDto(Post post, int commentCnt, List<PostImage> postImageList) {
         this.postId = post.getId();
         this.memberId = post.getMember().getId();
+        this.title = post.getTitle();
         this.content = post.getContent();
         this.postType = post.getPostType();
         this.likeCnt = post.getLikeCnt();
