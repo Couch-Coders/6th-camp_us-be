@@ -1,6 +1,9 @@
 package couch.camping.domain.notification.service;
 
-import couch.camping.controller.member.dto.response.NotificationRetrieveResponseDto;
+import couch.camping.controller.member.dto.response.MemberNotificationResponseDto;
+import couch.camping.controller.member.dto.response.NotificationCommentRetrieveResponseDto;
+import couch.camping.controller.member.dto.response.NotificationPostRetrieveResponseDto;
+import couch.camping.controller.member.dto.response.NotificationReviewRetrieveResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.notification.entity.Notification;
 import couch.camping.domain.notification.repository.NotificationRepository;
@@ -38,9 +41,16 @@ public class NotificationService {
         notificationRepository.changeNotifications(memberId);
     }
 
-    public Page<NotificationRetrieveResponseDto> retrieveNotifications(Long memberId, Pageable pageable) {
+    public Page<MemberNotificationResponseDto> retrieveNotifications(Long memberId, Pageable pageable) {
         return notificationRepository.findByOwnerMemberId(pageable, memberId)
-                .map(notification -> new NotificationRetrieveResponseDto(notification));
+                .map(notification -> {
+                    if (notification.getReview() != null)
+                        return new NotificationReviewRetrieveResponseDto(notification);
+                    else if (notification.getComment() != null)
+                        return new NotificationCommentRetrieveResponseDto(notification);
+                    else
+                        return new NotificationPostRetrieveResponseDto(notification);
+                });
     }
 
     @Transactional

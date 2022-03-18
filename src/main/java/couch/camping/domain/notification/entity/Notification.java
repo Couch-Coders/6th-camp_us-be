@@ -2,7 +2,9 @@ package couch.camping.domain.notification.entity;
 
 
 import couch.camping.domain.base.BaseTimeEntity;
+import couch.camping.domain.comment.entity.Comment;
 import couch.camping.domain.member.entity.Member;
+import couch.camping.domain.post.entity.Post;
 import couch.camping.domain.review.entity.Review;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -32,6 +34,14 @@ public class Notification extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
     private Review review;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
     private boolean isChecked;
 
