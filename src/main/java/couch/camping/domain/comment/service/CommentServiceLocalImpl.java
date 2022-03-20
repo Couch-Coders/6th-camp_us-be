@@ -11,6 +11,8 @@ import couch.camping.domain.comment.repository.CommentRepository;
 import couch.camping.domain.commentlike.entity.CommentLike;
 import couch.camping.domain.commentlike.repository.CommentLikeRepository;
 import couch.camping.domain.member.entity.Member;
+import couch.camping.domain.notification.entity.Notification;
+import couch.camping.domain.notification.repository.NotificationRepository;
 import couch.camping.domain.post.entity.Post;
 import couch.camping.domain.post.repository.PostRepository;
 import couch.camping.exception.CustomException;
@@ -36,12 +38,13 @@ public class CommentServiceLocalImpl implements CommentService {
     private final CommentLikeRepository commentLikeRepository;
     private final PostRepository postRepository;
     private final UserDetailsService userDetailsService;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     @Override
     public CommentWriteResponseDto writeComment(CommentWriteRequestDto commentWriteRequestDto, Member member, Long postId) {
 
-        Post post = postRepository.findById(postId)
+        Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
                 });
@@ -49,10 +52,21 @@ public class CommentServiceLocalImpl implements CommentService {
         Comment comment = Comment.builder()
                 .content(commentWriteRequestDto.getContent())
                 .member(member)
-                .post(post)
+                .post(findPost)
                 .build();
 
         Comment saveComment = commentRepository.save(comment);
+
+        if (findPost.getMember() != member) { // 자신의 게시글이 아닌 게시글에 댓글을 다는 경우
+
+            Notification notification = Notification.builder()
+                    .writeComment(saveComment)
+                    .member(member)//좋아요를 누른 회원 엔티티
+                    .ownerMember(findPost.getMember())//게시글의 회원
+                    .build();
+
+            notificationRepository.save(notification);
+        }
 
         return new CommentWriteResponseDto(saveComment);
     }
@@ -95,6 +109,21 @@ public class CommentServiceLocalImpl implements CommentService {
                     .member(member)
                     .build();
             commentLikeRepository.save(commentLike);
+
+            if (findComment.getMember() != member) { // 자신의 댓글이 아닌 게시글을 좋아요를 누를 경우
+                Optional<Notification> optionalNotification = notificationRepository.findByMemberIdAndCommentId(member.getId(), commentId);
+
+                if (!optionalNotification.isPresent()) {
+                    Notification notification = Notification.builder()
+                            .comment(findComment)//댓글 엔티티
+                            .member(member)//좋아요를 누른 회원 엔티티
+                            .ownerMember(findComment.getMember())//게시글의 회원
+                            .build();
+
+                    notificationRepository.save(notification);
+                }
+            }
+
         }
     }
 

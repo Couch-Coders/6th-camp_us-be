@@ -1,6 +1,6 @@
 package couch.camping.controller.member;
 
-import couch.camping.controller.member.dto.response.NotificationRetrieveResponseDto;
+import couch.camping.controller.member.dto.response.MemberNotificationResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.notification.service.NotificationService;
 import io.swagger.annotations.ApiOperation;
@@ -22,8 +22,8 @@ public class MemberNotificationController {
     //회원 알림 조회
     @ApiOperation(value = "회원 알림 조회 API", notes = "Header 의 토큰에 해당하는 회원의 전체 알림을 조회합니다.")
     @GetMapping("/me/notifications")
-    public ResponseEntity<Page<NotificationRetrieveResponseDto>> getMemberNotifications(Pageable pageable,
-                                                                                        Authentication authentication) {
+    public ResponseEntity<Page<MemberNotificationResponseDto>> getMemberNotifications(Pageable pageable,
+                                                                                      Authentication authentication) {
         Long memberId = ((Member) authentication.getPrincipal()).getId();
         return ResponseEntity.ok(notificationService
                 .retrieveNotifications(memberId, pageable));

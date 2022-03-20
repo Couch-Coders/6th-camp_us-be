@@ -13,7 +13,6 @@ import java.util.Optional;
 
 import static couch.camping.domain.member.entity.QMember.member;
 import static couch.camping.domain.notification.entity.QNotification.notification;
-import static couch.camping.domain.review.entity.QReview.review;
 
 @RequiredArgsConstructor
 public class NotificationCustomRepositoryImpl implements NotificationCustomRepository {
@@ -32,12 +31,31 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
     }
 
     @Override
+    public Optional<Notification> findByMemberIdAndPostId(Long memberId, Long postId) {
+        Notification content = queryFactory
+                .selectFrom(notification)
+                .where(notification.member.id.eq(memberId), notification.post.id.eq(postId))
+                .fetchOne();
+
+        return Optional.ofNullable(content);
+    }
+
+    @Override
+    public Optional<Notification> findByMemberIdAndCommentId(Long memberId, Long commentId) {
+        Notification content = queryFactory
+                .selectFrom(notification)
+                .where(notification.member.id.eq(memberId), notification.comment.id.eq(commentId))
+                .fetchOne();
+
+        return Optional.ofNullable(content);
+    }
+
+    @Override
     public Page<Notification> findByOwnerMemberId(Pageable pageable, Long memberId) {
 
         List<Notification> content = queryFactory
                 .selectFrom(notification)
                 .join(notification.member, member).fetchJoin()
-                .join(notification.review, review).fetchJoin()
                 .where(notification.ownerMember.id.eq(memberId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

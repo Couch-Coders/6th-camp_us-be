@@ -10,6 +10,8 @@ import couch.camping.controller.post.dto.response.PostRetrieveLoginResponseDto;
 import couch.camping.controller.post.dto.response.PostRetrieveResponseDto;
 import couch.camping.controller.post.dto.response.PostWriteResponseDto;
 import couch.camping.domain.member.entity.Member;
+import couch.camping.domain.notification.entity.Notification;
+import couch.camping.domain.notification.repository.NotificationRepository;
 import couch.camping.domain.post.entity.Post;
 import couch.camping.domain.post.repository.PostRepository;
 import couch.camping.domain.postimage.entity.PostImage;
@@ -42,6 +44,7 @@ public class PostServiceImpl implements PostService {
     private final PostImageRepository postImageRepository;
     private final PostLikeRepository postLikeRepository;
     private final UserDetailsService userDetailsService;
+    private final NotificationRepository notificationRepository;
     private final FirebaseAuth firebaseAuth;
 
     @Transactional
@@ -122,6 +125,20 @@ public class PostServiceImpl implements PostService {
                     .build();
 
             postLikeRepository.save(postLike);
+            if (findPost.getMember() != member) { // 자신의 게시글이 아닌 게시글을 좋아요를 누를 경우
+                Optional<Notification> optionalNotification = notificationRepository.findByMemberIdAndPostId(member.getId(), postId);
+
+                if (!optionalNotification.isPresent()) {
+                    Notification notification = Notification.builder()
+                            .post(findPost)//게시글 엔티티
+                            .member(member)//좋아요를 누른 회원 엔티티
+                            .ownerMember(findPost.getMember())//게시글의 회원
+                            .build();
+
+                    notificationRepository.save(notification);
+                }
+            }
+
         }
     }
 
