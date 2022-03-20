@@ -44,7 +44,7 @@ public class CommentServiceLocalImpl implements CommentService {
     @Override
     public CommentWriteResponseDto writeComment(CommentWriteRequestDto commentWriteRequestDto, Member member, Long postId) {
 
-        Post post = postRepository.findById(postId)
+        Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
                 });
@@ -52,10 +52,21 @@ public class CommentServiceLocalImpl implements CommentService {
         Comment comment = Comment.builder()
                 .content(commentWriteRequestDto.getContent())
                 .member(member)
-                .post(post)
+                .post(findPost)
                 .build();
 
         Comment saveComment = commentRepository.save(comment);
+
+        if (findPost.getMember() != member) { // 자신의 게시글이 아닌 게시글에 댓글을 다는 경우
+
+            Notification notification = Notification.builder()
+                    .writeComment(saveComment)
+                    .member(member)//좋아요를 누른 회원 엔티티
+                    .ownerMember(findPost.getMember())//게시글의 회원
+                    .build();
+
+            notificationRepository.save(notification);
+        }
 
         return new CommentWriteResponseDto(saveComment);
     }

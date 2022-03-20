@@ -43,6 +43,10 @@ public class Notification extends BaseTimeEntity {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment2_id")
+    private Comment writeComment;
+
     private boolean isChecked;
 
     public void changeIsChecked() {

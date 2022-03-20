@@ -44,6 +44,8 @@ public class QNotification extends EntityPathBase<Notification> {
 
     public final couch.camping.domain.review.entity.QReview review;
 
+    public final couch.camping.domain.comment.entity.QComment writeComment;
+
     public QNotification(String variable) {
         this(Notification.class, forVariable(variable), INITS);
     }
@@ -67,6 +69,7 @@ public class QNotification extends EntityPathBase<Notification> {
         this.ownerMember = inits.isInitialized("ownerMember") ? new couch.camping.domain.member.entity.QMember(forProperty("ownerMember")) : null;
         this.post = inits.isInitialized("post") ? new couch.camping.domain.post.entity.QPost(forProperty("post"), inits.get("post")) : null;
         this.review = inits.isInitialized("review") ? new couch.camping.domain.review.entity.QReview(forProperty("review"), inits.get("review")) : null;
+        this.writeComment = inits.isInitialized("writeComment") ? new couch.camping.domain.comment.entity.QComment(forProperty("writeComment"), inits.get("writeComment")) : null;
     }
 
 }

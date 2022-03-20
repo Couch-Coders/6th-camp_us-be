@@ -1,9 +1,6 @@
 package couch.camping.domain.notification.service;
 
-import couch.camping.controller.member.dto.response.MemberNotificationResponseDto;
-import couch.camping.controller.member.dto.response.NotificationCommentRetrieveResponseDto;
-import couch.camping.controller.member.dto.response.NotificationPostRetrieveResponseDto;
-import couch.camping.controller.member.dto.response.NotificationReviewRetrieveResponseDto;
+import couch.camping.controller.member.dto.response.*;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.notification.entity.Notification;
 import couch.camping.domain.notification.repository.NotificationRepository;
@@ -48,8 +45,10 @@ public class NotificationService {
                         return new NotificationReviewRetrieveResponseDto(notification);
                     else if (notification.getComment() != null)
                         return new NotificationCommentRetrieveResponseDto(notification);
-                    else
+                    else if (notification.getPost() != null)
                         return new NotificationPostRetrieveResponseDto(notification);
+                    else
+                        return new NotificationCommentWriteRetrieveResponseDto(notification);
                 });
     }
 
