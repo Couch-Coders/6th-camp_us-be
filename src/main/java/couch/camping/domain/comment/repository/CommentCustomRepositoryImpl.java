@@ -23,8 +23,11 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
     public Page<Comment> findAllByIdWithFetchJoinMemberPaging(Long postId, Pageable pageable) {
         List<Comment> commentList = queryFactory
                 .selectFrom(comment)
-                .where(comment.post.id.eq(postId))
                 .join(comment.member, member).fetchJoin()
+                .where(comment.post.id.eq(postId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(comment.createdDate.asc())
                 .fetch();
 
         Long total = queryFactory.select(comment.count())
@@ -40,8 +43,8 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
 
         Comment comment = queryFactory
                 .selectFrom(QComment.comment)
-                .where(QComment.comment.id.eq(postId))
                 .join(QComment.comment.member, member).fetchJoin()
+                .where(QComment.comment.id.eq(postId))
                 .fetchOne();
 
         return Optional.ofNullable(comment);

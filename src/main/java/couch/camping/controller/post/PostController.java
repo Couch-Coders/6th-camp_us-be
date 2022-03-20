@@ -43,7 +43,7 @@ public class PostController {
 
     //게시글 전체 조회
     @GetMapping("")
-    @ApiOperation(value = "커뮤니티 게시글 전체 조회 API", notes = "커뮤니티에서 모든 게시글을 조회합니다.")
+    @ApiOperation(value = "커뮤니티 게시글 전체 조회 API", notes = "커뮤니티에서 모든 게시글을 조회합니다. 쿼리스트링 예시(?page=0&size=10)")
     public ResponseEntity retrieveAllPost(Pageable pageable, @ApiParam(value = "게시글 분류", required = false) @RequestParam(defaultValue = "all") String postType,
                                           HttpServletRequest request) {
         String header = RequestUtil.getAuthorizationToken(request);
@@ -71,7 +71,7 @@ public class PostController {
     
     //베스트 게시글 조회
     @GetMapping("/best")
-    @ApiOperation(value = "커뮤니티 베스트 게시글 조회 API", notes = "게시글 중 좋아요가 가장 많은 게시글을 불러옵니다.")
+    @ApiOperation(value = "커뮤니티 베스트 게시글 조회 API", notes = "게시글 중 좋아요가 가장 많은 게시글을 불러옵니다. 쿼리스트링 예시(?page=0&size=10)")
     public ResponseEntity retrieveAllBestPost(Pageable pageable) {
         return ResponseEntity.ok(postService.retrieveAllBestPost(pageable));
     }
