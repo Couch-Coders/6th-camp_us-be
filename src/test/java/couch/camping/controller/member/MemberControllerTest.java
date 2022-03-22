@@ -90,6 +90,7 @@ class MemberControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("로그인 테스트")
     void memberLoginTest() throws Exception {
+        //TODO 생성 메서드 개발
         memberService.register(uid, name, email, nickname, imgUrl);
 
         ResultActions resultActions = mockMvc.perform(
@@ -113,6 +114,7 @@ class MemberControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("닉네임 수정 테스트")
     void MemberEditNickname() throws Exception {
+        //TODO 생성 메서드 개발
         memberService.register(uid, name, email, nickname, imgUrl);
         Map<String, String> map = new HashMap<>();
         map.put("nickname", "김상운");
@@ -134,7 +136,7 @@ class MemberControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("회원 조회 테스트")
     void memberInfoTest() throws Exception {
-
+        //TODO 생성 메서드 개발
         memberService.register(uid, name, email, nickname, imgUrl);
 
         ResultActions resultActions = mockMvc.perform(

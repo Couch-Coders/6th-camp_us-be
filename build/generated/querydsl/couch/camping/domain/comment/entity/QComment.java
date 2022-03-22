@@ -22,25 +22,17 @@ public class QComment extends EntityPathBase<Comment> {
 
     public static final QComment comment = new QComment("comment");
 
-    public final couch.camping.domain.base.QBaseEntity _super = new couch.camping.domain.base.QBaseEntity(this);
-
     public final ListPath<couch.camping.domain.commentlike.entity.CommentLike, couch.camping.domain.commentlike.entity.QCommentLike> commentLikeList = this.<couch.camping.domain.commentlike.entity.CommentLike, couch.camping.domain.commentlike.entity.QCommentLike>createList("commentLikeList", couch.camping.domain.commentlike.entity.CommentLike.class, couch.camping.domain.commentlike.entity.QCommentLike.class, PathInits.DIRECT2);
 
     public final StringPath content = createString("content");
 
-    //inherited
-    public final StringPath createdBy = _super.createdBy;
+    public final StringPath createdBy = createString("createdBy");
 
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
+    public final DateTimePath<java.time.LocalDateTime> createdDate = createDateTime("createdDate", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    //inherited
-    public final StringPath lastModifiedBy = _super.lastModifiedBy;
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
+    public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = createDateTime("lastModifiedDate", java.time.LocalDateTime.class);
 
     public final NumberPath<Integer> likeCnt = createNumber("likeCnt", Integer.class);
 
