@@ -1,8 +1,12 @@
 package couch.camping.controller.member.dto.response;
 
 import couch.camping.domain.notification.entity.Notification;
+import couch.camping.domain.postimage.entity.PostImage;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,11 +22,17 @@ public class NotificationPostRetrieveResponseDto extends MemberNotificationRespo
 
     private String postType;
 
+    private List<String> postImgUrlList = new ArrayList<>();
+
     public NotificationPostRetrieveResponseDto(Notification notification) {
         super(notification, "postLike");
         this.postId = notification.getPost().getId();
         this.title = notification.getPost().getTitle();;
         this.content = notification.getPost().getContent();
         this.postType = notification.getPost().getPostType();
+
+        for (PostImage postImage : notification.getPost().getPostImageList()) {
+            postImgUrlList.add(postImage.getImgUrl());
+        }
     }
 }
