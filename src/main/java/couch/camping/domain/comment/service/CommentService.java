@@ -5,6 +5,7 @@ import couch.camping.controller.comment.dto.request.CommentWriteRequestDto;
 import couch.camping.controller.comment.dto.response.CommentEditResponseDto;
 import couch.camping.controller.comment.dto.response.CommentRetrieveResponseDto;
 import couch.camping.controller.comment.dto.response.CommentWriteResponseDto;
+import couch.camping.controller.member.dto.response.MemberCommentsResponseDto;
 import couch.camping.domain.member.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,4 +24,5 @@ public interface CommentService {
 
     void deleteComment(Long commentId, Member member);
 
+    Page<MemberCommentsResponseDto> retrieveMemberComment(Member member, Pageable pageable);
 }

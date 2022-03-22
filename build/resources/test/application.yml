@@ -3,7 +3,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/camp?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
-    password: 369369rt
+    password: rkdmseodud930
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -20,6 +20,10 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
 
 logging.level:
   org.hibernate.SQL: debug
