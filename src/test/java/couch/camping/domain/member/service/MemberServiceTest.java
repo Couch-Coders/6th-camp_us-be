@@ -1,6 +1,7 @@
 package couch.camping.domain.member.service;
 
 
+import couch.camping.controller.member.dto.response.MemberRegisterResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.member.repository.MemberRepository;
 import couch.camping.exception.CustomException;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -36,7 +36,6 @@ class MemberServiceTest {
     @Mock
     MemberRepository memberRepository;
     
-    @Spy
     @InjectMocks
     MemberService memberService;
 
@@ -80,16 +79,15 @@ class MemberServiceTest {
     @DisplayName("회원 등록 테스트")
     void memberRegisterTest() {
 
+        //given
+        MemberRegisterResponseDto responseDto = new MemberRegisterResponseDto(member);
+
         //when
         when(memberRepository.findByUid(any(String.class))).thenReturn(Optional.empty());
         when(memberRepository.save(any(Member.class))).thenReturn(member);
 
         //then
-        assertThat(memberService.register(uid, name, email, nickname, imgUrl).getUid()).isEqualTo(uid);
-        assertThat(memberService.register(uid, name, email, nickname, imgUrl).getName()).isEqualTo(name);
-        assertThat(memberService.register(uid, name, email, nickname, imgUrl).getEmail()).isEqualTo(email);
-        assertThat(memberService.register(uid, name, email, nickname, imgUrl).getNickname()).isEqualTo(nickname);
-        assertThat(memberService.register(uid, name, email, nickname, imgUrl).getImgUrl()).isEqualTo(imgUrl);
+        assertThat(memberService.register(uid, name, email, nickname, imgUrl)).isEqualTo(responseDto);
     }
 
     @Test
@@ -114,7 +112,7 @@ class MemberServiceTest {
 
         //when
         //@InjectMock 객체를 스터빙 할 경우 @Spy, @Mock 을 사용
-        doReturn(changingNickname).when(memberService).editMemberNickName(any(Member.class), any(String.class));
+        //doReturn(changingNickname).when(memberService).editMemberNickName(any(Member.class), any(String.class));
 
         //then
         assertThat(memberService.editMemberNickName(member, changingNickname)).isEqualTo(changingNickname);

@@ -3,12 +3,14 @@ package couch.camping.controller.member.dto.response;
 import couch.camping.domain.member.entity.Member;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter @Setter
+@EqualsAndHashCode
 @ApiModel(description = "회원 가입 응답 DTO")
 public class MemberRegisterResponseDto {
 
