@@ -1,6 +1,5 @@
 package couch.camping.domain.post.entity;
 
-import couch.camping.domain.base.BaseEntity;
 import couch.camping.domain.comment.entity.Comment;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.postimage.entity.PostImage;
@@ -9,17 +8,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class Post extends BaseEntity {
+public class Post {
 
     @Id @GeneratedValue
     @Column(name = "post_id")
@@ -52,10 +56,21 @@ public class Post extends BaseEntity {
 
     private int commentCnt;
 
+    @Column(updatable = false)
+    @CreatedDate
+    private LocalDateTime createdDate;
+
+    private LocalDateTime lastModifiedDate;
+
+    @CreatedBy
+    @Column(updatable = false)
+    private String createdBy;
+
     public void editPost(String title, String content, String hashTag) {
         this.title = title;
         this.content = content;
         this.postType = hashTag;
+        this.lastModifiedDate = LocalDateTime.now();
     }
 
     public void increaseLikeCnt() {

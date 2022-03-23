@@ -25,8 +25,8 @@ public class PostCommentController {
     private final CommentService commentService;
 
     //게시글의 댓글 전체 조회
-    @ApiOperation(value = "커뮤니티 댓글 전체 조회 API", notes = "게시글 ID를 통해 댓글 전체를 조회합니다.")
-    @GetMapping("/posts/{postId}/comment")
+    @ApiOperation(value = "커뮤니티 댓글 전체 조회 API", notes = "게시글 ID를 통해 댓글 전체를 조회합니다. 쿼리스트링 예시(?page=0&size=10)")
+    @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<Page<CommentRetrieveResponseDto>> retrieveAllComment(@ApiParam(value = "게시글 ID", required = true) @PathVariable Long postId,
                                                                                HttpServletRequest request,
                                                                                Pageable pageable){
@@ -36,7 +36,7 @@ public class PostCommentController {
 
     //댓글 작성
     @ApiOperation(value = "커뮤니티 댓글 작성 API", notes = "게시글 ID를 통해 해당 게시글에 댓글을 작성합니다.")
-    @PostMapping("/posts/{postId}/comment") //이게 코멘트 컨트롤러에 있는 게 맞나?
+    @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentWriteResponseDto> writeComment(@RequestBody CommentWriteRequestDto commentWriteRequestDto,
                                                                 @ApiParam(value = "게시글 ID", required = true) @PathVariable Long postId,
                                                                 Authentication authentication){
