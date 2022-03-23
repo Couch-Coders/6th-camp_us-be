@@ -207,8 +207,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Page<MemberCommentsResponseDto> retrieveMemberComment(Member member, Pageable pageable) {
-        return null;
+        Long memberId = member.getId();
+        return commentRepository.findByMemberId(memberId, pageable)
+                .map(comment -> new MemberCommentsResponseDto(comment));
     }
-
-
 }
