@@ -3,6 +3,7 @@ package couch.camping.domain.post.service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import couch.camping.controller.member.dto.response.MemberPostResponseDto;
 import couch.camping.controller.post.dto.request.PostEditRequestDto;
 import couch.camping.controller.post.dto.request.PostWriteRequestDto;
 import couch.camping.controller.post.dto.response.PostEditResponseDto;
@@ -217,5 +218,12 @@ public class PostServiceImpl implements PostService {
         }
 
         postRepository.deleteById(postId);
+    }
+
+    @Override
+    public Page<MemberPostResponseDto> retrieveMemberComment(Member member, Pageable pageable) {
+        Long memberId = member.getId();
+        return postRepository.findByMemberId(memberId, pageable)
+                .map(post -> new MemberPostResponseDto(post));
     }
 }
