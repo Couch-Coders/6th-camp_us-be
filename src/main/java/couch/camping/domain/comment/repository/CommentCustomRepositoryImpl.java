@@ -49,4 +49,22 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
 
         return Optional.ofNullable(comment);
     }
+
+    @Override
+    public Page<Comment> findByMemberId(Long memberId, Pageable pageable) {
+        List<Comment> commentList = queryFactory
+                .selectFrom(comment)
+                .where(comment.member.id.eq(memberId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(comment.createdDate.desc())
+                .fetch();
+
+        Long total = queryFactory
+                .select(comment.count())
+                .from(comment)
+                .where(comment.member.id.eq(memberId))
+                .fetchOne();
+        return new PageImpl<>(commentList, pageable, total);
+    }
 }

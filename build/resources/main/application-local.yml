@@ -5,6 +5,7 @@ spring:
     username: root
     password: rkdmseodud930
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,6 +21,10 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
 
 logging.level:
   org.hibernate.SQL: debug
