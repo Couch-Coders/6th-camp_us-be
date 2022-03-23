@@ -1,5 +1,6 @@
 package couch.camping.domain.post.service;
 
+import couch.camping.controller.member.dto.response.MemberPostResponseDto;
 import couch.camping.controller.post.dto.request.PostEditRequestDto;
 import couch.camping.controller.post.dto.request.PostWriteRequestDto;
 import couch.camping.controller.post.dto.response.PostEditResponseDto;
@@ -25,4 +26,5 @@ public interface PostService {
 
     void deletePost(Long postId, Member member);
 
+    Page<MemberPostResponseDto> retrieveMemberComment(Member member, Pageable pageable);
 }

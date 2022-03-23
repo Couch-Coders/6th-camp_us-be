@@ -9,6 +9,7 @@ import couch.camping.controller.comment.dto.response.CommentEditResponseDto;
 import couch.camping.controller.comment.dto.response.CommentRetrieveLoginResponseDto;
 import couch.camping.controller.comment.dto.response.CommentRetrieveResponseDto;
 import couch.camping.controller.comment.dto.response.CommentWriteResponseDto;
+import couch.camping.controller.member.dto.response.MemberCommentsResponseDto;
 import couch.camping.domain.comment.entity.Comment;
 import couch.camping.domain.comment.repository.CommentRepository;
 import couch.camping.domain.commentlike.entity.CommentLike;
@@ -202,5 +203,12 @@ public class CommentServiceImpl implements CommentService {
         }
 
         commentRepository.deleteById(commentId);
+    }
+
+    @Override
+    public Page<MemberCommentsResponseDto> retrieveMemberComment(Member member, Pageable pageable) {
+        Long memberId = member.getId();
+        return commentRepository.findByMemberId(memberId, pageable)
+                .map(comment -> new MemberCommentsResponseDto(comment));
     }
 }
