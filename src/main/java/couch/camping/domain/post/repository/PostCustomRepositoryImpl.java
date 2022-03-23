@@ -68,6 +68,25 @@ public class PostCustomRepositoryImpl implements PostCustomRepository{
     }
 
     @Override
+    public Page<Post> findByMemberId(Long memberId, Pageable pageable) {
+        List<Post> content = queryFactory
+                .selectFrom(post)
+                .where(post.member.id.eq(memberId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(post.createdDate.desc())
+                .fetch();
+
+        Long total = queryFactory
+                .select(post.count())
+                .from(post)
+                .where(post.member.id.eq(memberId))
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
     public Optional<Post> findByIdWithFetchJoinMember(Long postId) {
         Post post = queryFactory
                 .select(QPost.post)

@@ -43,5 +43,4 @@ public class PostCommentController {
         Member member = (Member) authentication.getPrincipal();
         return new ResponseEntity(commentService.writeComment(commentWriteRequestDto, member, postId), HttpStatus.CREATED);
     }
-
 }
