@@ -23,7 +23,7 @@ public class MemberCommentsResponseDto {
     @ApiModelProperty(required = true, value = "게시글 ID", example = "1257")
     private Long postId;
 
-    @ApiModelProperty(required = true, value = "게시글 내용", example = "안녕하세용")
+    @ApiModelProperty(required = true, value = "댓글 내용", example = "안녕하세용")
     private String content;
 
     @ApiModelProperty(required = true, value = "댓글 생성 날짜", example = "2022-03-15 00:05:57")
