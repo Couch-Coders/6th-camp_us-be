@@ -10,4 +10,6 @@ public interface CommentCustomRepository {
 
     Page<Comment> findAllByIdWithFetchJoinMemberPaging(Long postId, Pageable pageable);
     Optional<Comment> findIdWithFetchJoinMember(Long postId);
+
+    Page<Comment> findByMemberId(Long memberId, Pageable pageable);
 }
