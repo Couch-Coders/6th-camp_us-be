@@ -22,7 +22,7 @@ public interface PostService {
 
     Page<PostRetrieveResponseDto> retrieveAllPost(String postType, Pageable pageable, String header);
 
-    Page<PostRetrieveResponseDto> retrieveAllBestPost(Pageable pageable);
+    Page<PostRetrieveResponseDto> retrieveAllBestPost(Pageable pageable, String header);
 
     void deletePost(Long postId, Member member);
 
