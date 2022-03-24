@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,8 +29,17 @@ public class MemberPostResponseDto {
     @ApiModelProperty(required = true, value = "게시글 내용", example = "안녕하세용")
     private String content;
 
-    @ApiModelProperty(required = true, value = "게시글 이미지", example = "\"www.abc.com\"")
-    private String imgUrl;
+    @ApiModelProperty(required = true, value = "게시글 업로드 된 이미지", example = "[\"www.abc.com\", \"www.avb.com\"]")
+    private List<String> imgUrlList = new ArrayList<>();
+
+    @ApiModelProperty(required = true, value = "게시글 타입", example = "question")
+    private String postType;
+
+    @ApiModelProperty(required = true, value = "게시글 좋아요 개수", example = "10")
+    private int likeCnt;
+
+    @ApiModelProperty(required = true, value = "게시글의 댓글 개수", example = "9")
+    private int commentCnt;
 
     @ApiModelProperty(required = true, value = "댓글 생성 날짜", example = "2022-03-15 00:05:57")
     private LocalDateTime createdDate;
@@ -38,11 +49,10 @@ public class MemberPostResponseDto {
         this.postId = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        try {
-            this.imgUrl = post.getPostImageList().get(0).toString();
-        } catch (IndexOutOfBoundsException e) {
-            this.imgUrl = "이미지가 없습니다.";
-        }
+        this.postType = post.getPostType();
+        this.likeCnt = post.getLikeCnt();
+        this.commentCnt = post.getCommentCnt();
+        imgUrlList.addAll(imgUrlList);
         this.createdDate = post.getCreatedDate();
     }
 }
