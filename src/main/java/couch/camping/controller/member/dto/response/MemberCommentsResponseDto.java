@@ -23,6 +23,15 @@ public class MemberCommentsResponseDto {
     @ApiModelProperty(required = true, value = "게시글 ID", example = "1257")
     private Long postId;
 
+    @ApiModelProperty(required = true, value = "해당 게시글 제목", example = "개꿀팁 알려드립니다.")
+    private String postTitle;
+
+    @ApiModelProperty(required = true, value = "게시글 타입", example = "question")
+    private String postType;
+
+    @ApiModelProperty(required = true, value = "댓글 좋아요 개수", example = "10")
+    private int likeCnt;
+
     @ApiModelProperty(required = true, value = "댓글 내용", example = "안녕하세용")
     private String content;
 
@@ -31,6 +40,9 @@ public class MemberCommentsResponseDto {
 
     public MemberCommentsResponseDto(Comment comment) {
         this.commentId = comment.getId();
+        this.postType = comment.getPost().getPostType();
+        this.postTitle = comment.getPost().getTitle();
+        this.likeCnt = comment.getLikeCnt();
         this.memberId = comment.getMember().getId();
         this.postId = comment.getPost().getId();
         this.content = comment.getContent();
