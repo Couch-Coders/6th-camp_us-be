@@ -59,8 +59,9 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public void editMemberNickName(Member member, String nickname) {
+    public String editMemberNickName(Member member, String nickname) {
         member.changeNickname(nickname);
+        return member.getNickname();
     }
 
     //헤더에서
