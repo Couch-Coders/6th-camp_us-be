@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter @Setter
 @Builder
+@EqualsAndHashCode
 @ApiModel(description = "커뮤니티 게시글 작성 응답 DTO")
 public class PostWriteResponseDto {
 

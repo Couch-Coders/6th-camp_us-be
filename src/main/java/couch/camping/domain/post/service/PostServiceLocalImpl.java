@@ -195,9 +195,29 @@ public class PostServiceLocalImpl implements PostService {
     }
 
     @Override
-    public Page<PostRetrieveResponseDto> retrieveAllBestPost(Pageable pageable) {
-        return postRepository.findAllBestPost(pageable)
-                .map(post -> new PostRetrieveResponseDto(post, post.getCommentList().size(), post.getPostImageList()));
+    public Page<PostRetrieveResponseDto> retrieveAllBestPost(Pageable pageable, String header) {
+        if (header == null)
+                return postRepository.findAllBestPost(pageable)
+                        .map(post -> new PostRetrieveResponseDto(post, post.getCommentList().size(), post.getPostImageList()));
+        else {
+            Member member;
+            try {
+                member = (Member)userDetailsService.loadUserByUsername(header);
+            } catch (UsernameNotFoundException e) {
+                throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
+            }
+
+            return postRepository.findAllBestPost(pageable)
+                    .map(post -> {
+                        List<PostLike> postLikeList = post.getPostLikeList();
+                        for (PostLike postLike : postLikeList) {
+                            if (postLike.getMember() == member) {
+                                return new PostRetrieveLoginResponseDto(post, post.getCommentList().size(), post.getPostImageList(), true);
+                            }
+                        }
+                        return new PostRetrieveLoginResponseDto(post, post.getCommentList().size(), post.getPostImageList(), false);
+                    });
+        }
     }
 
     @Transactional
