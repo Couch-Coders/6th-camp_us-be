@@ -2,6 +2,7 @@ package couch.camping.domain.post.entity;
 
 import couch.camping.domain.comment.entity.Comment;
 import couch.camping.domain.member.entity.Member;
+import couch.camping.domain.notification.entity.Notification;
 import couch.camping.domain.postimage.entity.PostImage;
 import couch.camping.domain.postlike.entity.PostLike;
 import lombok.AllArgsConstructor;
@@ -44,6 +45,10 @@ public class Post {
     @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PostLike> postLikeList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Notification> notificationList = new ArrayList<>();
 
     private String title;
 

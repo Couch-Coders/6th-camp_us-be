@@ -1,6 +1,8 @@
 package couch.camping.domain.post.service;
 
+import couch.camping.controller.post.dto.request.PostEditRequestDto;
 import couch.camping.controller.post.dto.request.PostWriteRequestDto;
+import couch.camping.controller.post.dto.response.PostEditResponseDto;
 import couch.camping.controller.post.dto.response.PostWriteResponseDto;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.notification.repository.NotificationRepository;
@@ -24,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +38,7 @@ import static org.mockito.Mockito.when;
 class PostServiceLocalImplTest {
     
     //member 필드
+    private static Long memberId = 1L;
     private static final String uid = "abcd";
     private static final String email = "abcd@daum.com";
     private static final String name = "성이름";
@@ -42,6 +46,7 @@ class PostServiceLocalImplTest {
     private static final String imgUrl = "https://www.balladang.com";
     
     //post 필드
+    private static Long postId = 1L;
     private static String title = "캠핑장 같이 가실 분~?";
     private static String content = "장비는 제가 준비 하겠습니다.";
     private static String postType = "free";
@@ -71,7 +76,7 @@ class PostServiceLocalImplTest {
     @BeforeEach
     void before() {
         member = Member.builder()
-                .id(1L)
+                .id(memberId)
                 .uid(uid)
                 .email(email)
                 .name(name)
@@ -127,4 +132,35 @@ class PostServiceLocalImplTest {
         assertThat(postServiceLocal.writePost(postWriteRequestDto, member)).isEqualTo(postWriteResponseDto);
     }
     
+    @Test
+    @DisplayName("게시글 수정 테스트")
+    void editPostTest() {
+
+        //given
+        String editTitle = "수정 제목";
+        String editContent = "수정 내용";
+        String editPostType = "picture";
+        List<String> editImgUrlList = Arrays.asList("www.picture.com");
+
+        PostEditRequestDto postEditRequestDto = PostEditRequestDto.builder()
+                .title(editTitle)
+                .content(editContent)
+                .postType(editPostType)
+                .imgUrlList(editImgUrlList)
+                .build();
+
+        PostEditResponseDto postEditResponseDto = PostEditResponseDto.builder()
+                .postId(postId)
+                .title(editTitle)
+                .content(editContent)
+                .postType(editPostType)
+                .imgUrlList(editImgUrlList)
+                .build();
+
+        //when
+        when(postRepository.findById(any())).thenReturn(Optional.ofNullable(post));
+        
+        //then
+        assertThat(postServiceLocal.editPost(postId, member, postEditRequestDto)).isEqualTo(postEditResponseDto);
+    }
 }
