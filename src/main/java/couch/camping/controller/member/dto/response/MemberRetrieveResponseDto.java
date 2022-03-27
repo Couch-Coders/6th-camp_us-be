@@ -31,7 +31,11 @@ public class MemberRetrieveResponseDto {
     @ApiModelProperty(required = true, value = "회원이 작성한 리뷰 개수", example = "4")
     private long reviewCnt;
 
-    public MemberRetrieveResponseDto(Member member, long reviewCnt) {
+    private long postCnt;
+    private long commentCnt;
+    private long campCnt;
+
+    public MemberRetrieveResponseDto(Member member, long reviewCnt, long postCount, long commentCount, long campLikeCount) {
         this.memberId = member.getId();
         this.uid = member.getUid();
         this.email = member.getEmail();
@@ -40,5 +44,8 @@ public class MemberRetrieveResponseDto {
         this.imgUrl = member.getImgUrl();
         this.reviewCnt = reviewCnt;
         this.createdDate = member.getCreatedDate();
+        this.postCnt = postCount;
+        this.commentCnt = commentCount;
+        this.campCnt = campLikeCount;
     }
 }

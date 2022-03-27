@@ -16,7 +16,7 @@ public interface PostService {
 
     PostEditResponseDto editPost(Long postId, Member member, PostEditRequestDto postEditRequestDto);
 
-    void likePost(Long postId, Member member);
+    int likePost(Long postId, Member member);
 
     PostRetrieveResponseDto retrievePost(Long postId, String header);
 
@@ -27,4 +27,6 @@ public interface PostService {
     void deletePost(Long postId, Member member);
 
     Page<MemberPostResponseDto> retrieveMemberComment(Member member, Pageable pageable);
+
+    long countMemberPosts(Long id);
 }

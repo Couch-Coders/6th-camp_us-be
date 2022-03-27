@@ -109,7 +109,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public void likePost(Long postId, Member member) {
+    public int likePost(Long postId, Member member) {
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
@@ -143,6 +143,8 @@ public class PostServiceImpl implements PostService {
             }
 
         }
+
+        return findPost.getLikeCnt();
     }
 
     @Override
@@ -246,5 +248,10 @@ public class PostServiceImpl implements PostService {
         Long memberId = member.getId();
         return postRepository.findByMemberId(memberId, pageable)
                 .map(post -> new MemberPostResponseDto(post));
+    }
+
+    @Override
+    public long countMemberPosts(Long id) {
+        return postRepository.countByMemberId(id);
     }
 }
