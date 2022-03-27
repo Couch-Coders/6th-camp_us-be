@@ -97,4 +97,13 @@ public class PostCustomRepositoryImpl implements PostCustomRepository{
 
         return Optional.ofNullable(post);
     }
+
+    @Override
+    public Long countByMemberId(Long memberId) {
+        return queryFactory
+                .select(post.count())
+                .from(post)
+                .where(post.member.id.eq(memberId))
+                .fetchOne();
+    }
 }

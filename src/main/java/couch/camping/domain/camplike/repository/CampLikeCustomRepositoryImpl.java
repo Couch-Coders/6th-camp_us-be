@@ -1,9 +1,7 @@
 package couch.camping.domain.camplike.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import couch.camping.domain.camp.entity.QCamp;
 import couch.camping.domain.camplike.entity.CampLike;
-import couch.camping.domain.camplike.entity.QCampLike;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -20,5 +18,14 @@ public class CampLikeCustomRepositoryImpl implements CampLikeCustomRepository{
         return queryFactory.selectFrom(campLike)
                 .where(campLike.member.id.eq(memberId))
                 .fetch();
+    }
+
+    @Override
+    public long countByMemberId(Long memberId) {
+        return queryFactory
+                .select(campLike.count())
+                .from(campLike)
+                .where(campLike.member.id.eq(memberId))
+                .fetchOne();
     }
 }

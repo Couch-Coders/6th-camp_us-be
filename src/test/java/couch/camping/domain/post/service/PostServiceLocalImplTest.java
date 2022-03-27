@@ -10,6 +10,7 @@ import couch.camping.domain.post.entity.Post;
 import couch.camping.domain.post.repository.PostRepository;
 import couch.camping.domain.postimage.entity.PostImage;
 import couch.camping.domain.postimage.repository.PostImageRepository;
+import couch.camping.domain.postlike.entity.PostLike;
 import couch.camping.domain.postlike.repository.PostLikeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +31,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -46,11 +47,14 @@ class PostServiceLocalImplTest {
     private static final String imgUrl = "https://www.balladang.com";
     
     //post 필드
-    private static Long postId = 1L;
+    private static Long postId = 2L;
     private static String title = "캠핑장 같이 가실 분~?";
     private static String content = "장비는 제가 준비 하겠습니다.";
     private static String postType = "free";
     private static List<String> imgUrlList = Arrays.asList("picture1", "picture2", "picture3");
+
+    //postLike 필드
+    private static Long postLikeId = 2L;
 
 
     @Mock
@@ -67,11 +71,14 @@ class PostServiceLocalImplTest {
     @InjectMocks
     PostServiceLocalImpl postServiceLocal;
 
+    Member member;
+
     Post post;
+
+    PostLike postLike;
 
     List<PostImage> postImageList = new ArrayList<>();;
 
-    Member member;
 
     @BeforeEach
     void before() {
@@ -91,7 +98,7 @@ class PostServiceLocalImplTest {
             );
 
             post = Post.builder()
-                    .id(1L)
+                    .id(postId)
                     .member(member)
                     .title(title)
                     .content(content)
@@ -99,6 +106,12 @@ class PostServiceLocalImplTest {
                     .postImageList(postImageList)
                     .build();
         }
+
+        postLike = PostLike.builder()
+                .id(postLikeId)
+                .post(post)
+                .member(member)
+                .build();
     }
 
     @AfterEach
@@ -163,4 +176,31 @@ class PostServiceLocalImplTest {
         //then
         assertThat(postServiceLocal.editPost(postId, member, postEditRequestDto)).isEqualTo(postEditResponseDto);
     }
+    
+    @Test
+    @DisplayName("게시글 좋아요 테스트")
+    void likePostTest() {
+
+        //when
+        when(postRepository.findById(postId)).thenReturn(Optional.ofNullable(post));
+
+        //then
+        assertThat(postServiceLocal.likePost(postId, member)).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("게시글 중복 좋아요 테스트")
+    void duplicateLikePostTest() {
+        //given
+        post.setLikeCnt(1);
+
+        //when
+        when(postRepository.findById(postId)).thenReturn(Optional.ofNullable(post));
+        when(postLikeRepository.findByMemberIdAndPostId(memberId, postId)).thenReturn(Optional.ofNullable(postLike));
+
+        assertThat(postServiceLocal.likePost(postId, member)).isEqualTo(0);
+    }
+
+
+
 }
