@@ -205,4 +205,9 @@ public class CommentServiceLocalImpl implements CommentService {
         return commentRepository.findByMemberId(memberId, pageable)
                 .map(comment -> new MemberCommentsResponseDto(comment));
     }
+
+    @Override
+    public long countMemberComments(Long id) {
+        return commentRepository.countByMemberId(id);
+    }
 }

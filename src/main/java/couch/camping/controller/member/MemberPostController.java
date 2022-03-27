@@ -22,7 +22,7 @@ public class MemberPostController {
 
     //회원이 작성한 게시글 조회
     @ApiOperation(value = "회원이 작성한 게시글 조회 API", notes = "Header 의 토큰에 해당하는 회원이 작성한 게시글을 조회합니다.")
-    @GetMapping("/me/post")
+    @GetMapping("/me/posts")
     public ResponseEntity<Page<MemberPostResponseDto>> getMemberPost(Pageable pageable, Authentication authentication){
         Member member = (Member) authentication.getPrincipal();
 
