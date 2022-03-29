@@ -174,7 +174,7 @@ public class PostServiceLocalImpl implements PostService {
         }
         if (header == null) {
             return postRepository.findAllByIdWithFetchJoinMemberPaging(postType, pageable)
-                    .map(post -> new PostRetrieveResponseDto(post, post.getCommentList().size(), post.getPostImageList()));
+                    .map(post -> new PostRetrieveResponseDto(post, post.getCommentCnt(), post.getPostImageList()));
         } else {
             Member member;
             try {
