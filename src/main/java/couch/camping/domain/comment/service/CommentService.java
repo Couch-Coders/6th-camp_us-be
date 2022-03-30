@@ -16,7 +16,7 @@ public interface CommentService {
 
     CommentEditResponseDto editComment(CommentEditRequestDto commentEditRequestDto, Member member, Long commentId);
 
-    void likeComment(Long commentId, Member member);
+    int likeComment(Long commentId, Member member);
 
     CommentRetrieveResponseDto retrieveComment(Long commentId, String header);
 

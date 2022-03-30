@@ -98,7 +98,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public void likeComment(Long commentId, Member member) {
+    public int likeComment(Long commentId, Member member) {
         Comment findComment = commentRepository.findById(commentId)
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_COMMENT, "댓글 ID에 맞는 댓글이 없습니다.");
@@ -132,6 +132,8 @@ public class CommentServiceImpl implements CommentService {
             }
 
         }
+
+        return findComment.getLikeCnt();
     }
 
     @Override

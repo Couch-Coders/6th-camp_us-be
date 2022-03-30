@@ -48,9 +48,7 @@ public class PostServiceLocalImpl implements PostService {
     @Transactional
     @Override
     public PostWriteResponseDto writePost(PostWriteRequestDto postWriteRequestDto, Member member) {
-        List<String> postTypeList = Arrays.asList("free", "picture", "question");
-
-        validatePostType(postTypeList, postWriteRequestDto.getPostType());
+        validatePostType(Arrays.asList("free", "picture", "question"), postWriteRequestDto.getPostType());
 
         Post savePost = postRepository.save(addPostImageToPost(postWriteRequestDto, member, createPost(postWriteRequestDto, member)));
 
