@@ -309,7 +309,7 @@ class CommentServiceLocalImplTest {
         Page<CommentRetrieveResponseDto> actual = commentServiceLocal.retrieveAllComment(postId, "not null", pageRequest);
 
         //then
-        actual.getContent().stream().forEach(System.out::println);
+//        actual.getContent().stream().forEach(System.out::println);
     }
 
     private List<CommentRetrieveResponseDto> commentMapToCommentRetrieveResponseDto(List<Comment> commentList) {
