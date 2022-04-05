@@ -1,6 +1,7 @@
 package couch.camping.controller.member.dto.response;
 
 import couch.camping.domain.post.entity.Post;
+import couch.camping.domain.postimage.entity.PostImage;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,8 +52,10 @@ public class MemberPostResponseDto {
         this.content = post.getContent();
         this.postType = post.getPostType();
         this.likeCnt = post.getLikeCnt();
-        this.commentCnt = post.getCommentCnt();
-        imgUrlList.addAll(imgUrlList);
+        this.commentCnt = post.getCommentList().size();
+        for (PostImage postImage : post.getPostImageList()) {
+            imgUrlList.add(postImage.getImgUrl());
+        }
         this.createdDate = post.getCreatedDate();
     }
 }
