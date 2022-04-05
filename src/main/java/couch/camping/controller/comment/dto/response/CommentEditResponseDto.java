@@ -3,14 +3,12 @@ package couch.camping.controller.comment.dto.response;
 import couch.camping.domain.comment.entity.Comment;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter @NoArgsConstructor
 @Setter @AllArgsConstructor
 @ApiModel(description = "커뮤니티 댓글 수정 응답 DTO")
+@EqualsAndHashCode
 public class CommentEditResponseDto {
 
     @ApiModelProperty(required = true, value = "댓글 ID", example = "2710")

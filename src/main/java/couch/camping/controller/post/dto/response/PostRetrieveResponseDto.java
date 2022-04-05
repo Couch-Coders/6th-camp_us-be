@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
+@EqualsAndHashCode
 @NoArgsConstructor
+@ToString
 @ApiModel(description = "커뮤니티 게시글 조회 응답 DTO")
 public class PostRetrieveResponseDto {
 

@@ -41,21 +41,27 @@ public class MemberService implements UserDetailsService {
     
     //회원 등록
     @Transactional
-    public MemberRegisterResponseDto register(String uid, String name, String email, String nickname, String imgUrl) {
+    public MemberRegisterResponseDto register(MemberRegister memberRegister) {
+        validateAlreadyRegistered(memberRegister);
+        return new MemberRegisterResponseDto(memberRepository.save(createMember(memberRegister)));
+    }
 
-        Optional<Member> optionalMember = memberRepository.findByUid(uid);
+    private Member createMember(MemberRegister memberRegister) {
+        Member member = Member.builder()
+                .uid(memberRegister.getUid())
+                .name(memberRegister.getName())
+                .email(memberRegister.getEmail())
+                .nickname(memberRegister.getNickname())
+                .imgUrl(memberRegister.getImgUrl())
+                .build();
+        return member;
+    }
+
+    private void validateAlreadyRegistered(MemberRegister memberRegister) {
+        Optional<Member> optionalMember = memberRepository.findByUid(memberRegister.getUid());
         if (optionalMember.isPresent()) {
             throw new CustomException(ErrorCode.EXIST_MEMBER, "해당 계정으로 이미 회원가입을 했습니다.");
         }
-        Member member = Member.builder()
-                .uid(uid)
-                .name(name)
-                .email(email)
-                .nickname(nickname)
-                .imgUrl(imgUrl)
-                .build();
-
-        return new MemberRegisterResponseDto(memberRepository.save(member));
     }
 
     @Transactional

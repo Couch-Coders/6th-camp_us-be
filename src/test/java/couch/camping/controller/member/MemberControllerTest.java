@@ -2,6 +2,7 @@ package couch.camping.controller.member;
 
 import couch.camping.common.BaseControllerTest;
 import couch.camping.controller.member.dto.request.MemberSaveRequestDto;
+import couch.camping.domain.member.service.MemberRegister;
 import couch.camping.domain.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,7 +92,7 @@ class MemberControllerTest extends BaseControllerTest {
     @DisplayName("로그인 테스트")
     void memberLoginTest() throws Exception {
         //TODO 생성 메서드 개발
-        memberService.register(uid, name, email, nickname, imgUrl);
+        memberService.register(new MemberRegister(uid, name, email, nickname, imgUrl));
 
         ResultActions resultActions = mockMvc.perform(
                 get("/members/me")
@@ -115,7 +116,7 @@ class MemberControllerTest extends BaseControllerTest {
     @DisplayName("닉네임 수정 테스트")
     void MemberEditNickname() throws Exception {
         //TODO 생성 메서드 개발
-        memberService.register(uid, name, email, nickname, imgUrl);
+        memberService.register(new MemberRegister(uid, name, email, nickname, imgUrl));
         Map<String, String> map = new HashMap<>();
         map.put("nickname", "김상운");
 
@@ -137,7 +138,7 @@ class MemberControllerTest extends BaseControllerTest {
     @DisplayName("회원 조회 테스트")
     void memberInfoTest() throws Exception {
         //TODO 생성 메서드 개발
-        memberService.register(uid, name, email, nickname, imgUrl);
+        memberService.register(new MemberRegister(uid, name, email, nickname, imgUrl));
 
         ResultActions resultActions = mockMvc.perform(
                 get("/members/me/info")
