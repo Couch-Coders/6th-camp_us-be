@@ -57,20 +57,24 @@ class MemberServiceTest {
     @DisplayName("회원 조회 테스트")
     void loadByUserNameTest() {
 
-        //when
+        //given
         when(memberRepository.findByUid(any(String.class))).thenReturn(Optional.ofNullable(member));
 
+        //when
+        Member member = (Member) memberService.loadUserByUsername(uid);
+
         //then
-        assertThat(((Member)memberService.loadUserByUsername(uid))).isEqualTo(member);
+        assertThat(member).isEqualTo(this.member);
     }
 
     @Test
     @DisplayName("회원 조회 실패 테스트")
     void loadByUserNameNotFoundTest() {
 
-        //when
+        //given
         when(memberRepository.findByUid(any(String.class))).thenReturn(Optional.empty());
 
+        //when
         //then
         Assertions.assertThrows(UsernameNotFoundException.class, () -> memberService.loadUserByUsername(uid));
     }
@@ -81,26 +85,28 @@ class MemberServiceTest {
 
         //given
         MemberRegisterResponseDto responseDto = new MemberRegisterResponseDto(member);
-
-        //when
         when(memberRepository.findByUid(any(String.class))).thenReturn(Optional.empty());
         when(memberRepository.save(any(Member.class))).thenReturn(member);
 
+        //when
+        MemberRegisterResponseDto register = memberService.register(new MemberRegister(uid, name, email, nickname, imgUrl));
+
         //then
-        assertThat(memberService.register(uid, name, email, nickname, imgUrl)).isEqualTo(responseDto);
+        assertThat(register).isEqualTo(responseDto);
     }
 
     @Test
     @DisplayName("중복 회원 등록 테스트")
     void memberDuplicatedRegisterTest() {
 
-        //when
+        //given
         when(memberRepository.findByUid(any(String.class))).thenReturn(Optional.ofNullable(member));
         when(memberRepository.save(any(Member.class))).thenReturn(member);
 
+        //when
         //then
         Assertions.assertThrows(CustomException.class,
-                () -> memberService.register(uid, name, email, nickname, imgUrl));
+                () -> memberService.register(new MemberRegister(uid, name, email, nickname, imgUrl)));
     }
     
     @Test
@@ -111,10 +117,9 @@ class MemberServiceTest {
         String changingNickname = "changedName";
 
         //when
-        //@InjectMock 객체를 스터빙 할 경우 @Spy, @Mock 을 사용
-        //doReturn(changingNickname).when(memberService).editMemberNickName(any(Member.class), any(String.class));
+        String changedName = memberService.editMemberNickName(member, changingNickname);
 
         //then
-        assertThat(memberService.editMemberNickName(member, changingNickname)).isEqualTo(changingNickname);
+        assertThat(changedName).isEqualTo(changingNickname);
     }
 }

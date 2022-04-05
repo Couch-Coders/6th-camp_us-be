@@ -8,6 +8,7 @@ import couch.camping.controller.member.dto.response.MemberRetrieveResponseDto;
 import couch.camping.domain.camplike.repository.CampLikeRepository;
 import couch.camping.domain.comment.service.CommentService;
 import couch.camping.domain.member.entity.Member;
+import couch.camping.domain.member.service.MemberRegister;
 import couch.camping.domain.member.service.MemberService;
 import couch.camping.domain.post.service.PostService;
 import couch.camping.domain.review.service.ReviewService;
@@ -39,9 +40,11 @@ public class MemberController {
     @ApiOperation(value = "로컬 회원 가입 API", notes = "로컬 개발 전용 회원 가입 API")
     @PostMapping("/local")
     public ResponseEntity<MemberRegisterResponseDto> registerLocalMember(@RequestBody @Valid MemberSaveRequestDto memberSaveRequestDto) {
+        MemberRegister memberRegister = new MemberRegister(memberSaveRequestDto.getUid(), memberSaveRequestDto.getName(),
+                memberSaveRequestDto.getEmail(), memberSaveRequestDto.getNickname(), memberSaveRequestDto.getImgUrl());
+
         MemberRegisterResponseDto responseDto = memberService.register(
-                memberSaveRequestDto.getUid(), memberSaveRequestDto.getName()
-                , memberSaveRequestDto.getEmail(), memberSaveRequestDto.getNickname(), memberSaveRequestDto.getImgUrl());
+                memberRegister);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -57,9 +60,11 @@ public class MemberController {
         // TOKEN을 가져온다.
         FirebaseToken decodedToken = memberService.decodeToken(header);
         // 사용자를 등록한다.
+        MemberRegister memberRegister = new MemberRegister(decodedToken.getUid(), decodedToken.getName(),
+                decodedToken.getEmail(), memberRegisterRequestDto.getNickname(), decodedToken.getPicture());
+
         MemberRegisterResponseDto responseDto = memberService.register(
-                decodedToken.getUid(), decodedToken.getName(), decodedToken.getEmail()
-                , memberRegisterRequestDto.getNickname(), decodedToken.getPicture());
+                memberRegister);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
