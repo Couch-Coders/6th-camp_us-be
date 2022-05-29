@@ -26,7 +26,7 @@ public class CampingApplication {
 
 		return modelMapper;
 	}
-
+//as
 	@Bean
 	public JPAQueryFactory jpaQueryFactory(EntityManager em) {
 		return new JPAQueryFactory(em);
