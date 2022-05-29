@@ -16,7 +16,7 @@ public interface CommentService {
 
     CommentEditResponseDto editComment(CommentEditRequestDto commentEditRequestDto, Member member, Long commentId);
 
-    void likeComment(Long commentId, Member member);
+    int likeComment(Long commentId, Member member);
 
     CommentRetrieveResponseDto retrieveComment(Long commentId, String header);
 
@@ -25,4 +25,6 @@ public interface CommentService {
     void deleteComment(Long commentId, Member member);
 
     Page<MemberCommentsResponseDto> retrieveMemberComment(Member member, Pageable pageable);
+
+    long countMemberComments(Long id);
 }

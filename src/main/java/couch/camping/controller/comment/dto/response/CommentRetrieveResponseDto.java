@@ -4,10 +4,7 @@ package couch.camping.controller.comment.dto.response;
 import couch.camping.domain.comment.entity.Comment;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(description = "로그인 전 댓글 조회 응답 DTO")
+@EqualsAndHashCode
 public class CommentRetrieveResponseDto {
 
     @ApiModelProperty(required = true, value = "댓글 ID", example = "2710")

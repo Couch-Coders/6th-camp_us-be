@@ -67,4 +67,13 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
                 .fetchOne();
         return new PageImpl<>(commentList, pageable, total);
     }
+
+    @Override
+    public Long countByMemberId(Long memberId) {
+        return queryFactory
+                .select(comment.count())
+                .from(comment)
+                .where(comment.member.id.eq(memberId))
+                .fetchOne();
+    }
 }

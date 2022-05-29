@@ -14,6 +14,7 @@ import java.util.List;
 @Getter @Setter
 @Builder
 @ApiModel(description = "커뮤니티 게시글 수정 응답 DTO")
+@EqualsAndHashCode
 public class PostEditResponseDto {
 
     @ApiModelProperty(required = true, value = "게시글 ID", example = "2821")

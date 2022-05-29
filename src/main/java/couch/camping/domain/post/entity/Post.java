@@ -2,12 +2,10 @@ package couch.camping.domain.post.entity;
 
 import couch.camping.domain.comment.entity.Comment;
 import couch.camping.domain.member.entity.Member;
+import couch.camping.domain.notification.entity.Notification;
 import couch.camping.domain.postimage.entity.PostImage;
 import couch.camping.domain.postlike.entity.PostLike;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
+@Getter @Setter
 public class Post {
 
     @Id @GeneratedValue
@@ -44,6 +42,10 @@ public class Post {
     @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PostLike> postLikeList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Notification> notificationList = new ArrayList<>();
 
     private String title;
 
