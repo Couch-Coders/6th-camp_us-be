@@ -256,6 +256,7 @@ public class CommentServiceLocalImpl implements CommentService {
 
     private Page<Comment> findAllComment(Long postId, Pageable pageable) {
         return commentRepository.findAllByIdWithFetchJoinMemberPaging(postId, pageable);
+
     }
 
     @Transactional

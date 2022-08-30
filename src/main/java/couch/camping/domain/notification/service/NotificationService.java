@@ -19,25 +19,6 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
 
-    @Transactional
-    public void updateNotification(Member member, Long notificationId) {
-        Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.NOT_FOUND_NOTIFICATION, "알림 ID 에 맞는 알림이 없습니다.");
-                });
-
-        if (notification.getOwnerMember() != member) {
-            throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 알림이 아닙니다.");
-        }
-
-        notification.changeIsChecked();
-    }
-
-    @Transactional
-    public void updateNotifications(Long memberId) {
-        notificationRepository.changeNotifications(memberId);
-    }
-
     public Page<MemberNotificationResponseDto> retrieveNotifications(Long memberId, Pageable pageable) {
         return notificationRepository.findByOwnerMemberId(pageable, memberId)
                 .map(notification -> {
@@ -50,6 +31,25 @@ public class NotificationService {
                     else
                         return new NotificationCommentWriteRetrieveResponseDto(notification);
                 });
+    }
+
+    @Transactional
+    public void updateNotification(Member member, Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_NOTIFICATION, "알림 ID에 맞는 알림이 없습니다.");
+                });
+
+        if (notification.getOwnerMember() != member) {
+            throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 알림이 아닙니다.");
+        }
+
+        notification.changeIsCheckedTrue();
+    }
+
+    @Transactional
+    public void updateNotifications(Long memberId) {
+        notificationRepository.changeNotifications(memberId);
     }
 
     @Transactional

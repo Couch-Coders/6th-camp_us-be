@@ -46,8 +46,6 @@ public class MemberNotificationController {
     public ResponseEntity countMemberNotReadNotification(Authentication authentication) {
         Long memberId = ((Member) authentication.getPrincipal()).getId();
         return ResponseEntity.ok(notificationService.countMemberNotReadNotifications(memberId));
-
-
     }
 
     //알림 전체 읽음

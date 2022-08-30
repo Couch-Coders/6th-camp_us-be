@@ -40,6 +40,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final couch.camping.domain.member.entity.QMember member;
 
+    public final ListPath<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification> notificationList = this.<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification>createList("notificationList", couch.camping.domain.notification.entity.Notification.class, couch.camping.domain.notification.entity.QNotification.class, PathInits.DIRECT2);
+
     public final ListPath<couch.camping.domain.postimage.entity.PostImage, couch.camping.domain.postimage.entity.QPostImage> postImageList = this.<couch.camping.domain.postimage.entity.PostImage, couch.camping.domain.postimage.entity.QPostImage>createList("postImageList", couch.camping.domain.postimage.entity.PostImage.class, couch.camping.domain.postimage.entity.QPostImage.class, PathInits.DIRECT2);
 
     public final ListPath<couch.camping.domain.postlike.entity.PostLike, couch.camping.domain.postlike.entity.QPostLike> postLikeList = this.<couch.camping.domain.postlike.entity.PostLike, couch.camping.domain.postlike.entity.QPostLike>createList("postLikeList", couch.camping.domain.postlike.entity.PostLike.class, couch.camping.domain.postlike.entity.QPostLike.class, PathInits.DIRECT2);
