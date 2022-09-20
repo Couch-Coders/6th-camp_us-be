@@ -1,8 +1,6 @@
 package couch.camping.domain.comment.entity;
 
-import couch.camping.domain.commentlike.entity.CommentLike;
 import couch.camping.domain.member.entity.Member;
-import couch.camping.domain.notification.entity.Notification;
 import couch.camping.domain.post.entity.Post;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -37,14 +35,6 @@ public class Comment {
     @Builder.Default
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<CommentLike> commentLikeList = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    List<Notification> notificationList = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "writeComment", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    List<Notification> notificationWriteList = new ArrayList<>();
 
     @Lob
     private String content;

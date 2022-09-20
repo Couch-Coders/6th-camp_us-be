@@ -2,7 +2,7 @@ package couch.camping.controller.member;
 
 import couch.camping.controller.member.dto.response.MemberPostResponseDto;
 import couch.camping.domain.member.entity.Member;
-import couch.camping.domain.post.service.PostService;
+import couch.camping.domain.post.service.post.PostService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

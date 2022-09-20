@@ -1,6 +1,5 @@
 package couch.camping.domain.camp.entity;
 
-import couch.camping.domain.camplike.entity.CampLike;
 import lombok.*;
 
 import javax.persistence.*;
@@ -161,4 +160,5 @@ public class Camp {
         totalRate += afterRate;
         this.avgRate = totalRate / reviewCnt;
     }
+
 }

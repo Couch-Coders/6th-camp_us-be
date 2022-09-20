@@ -4,7 +4,6 @@ import couch.camping.domain.base.BaseEntity;
 import couch.camping.domain.camp.entity.Camp;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.notification.entity.Notification;
-import couch.camping.domain.reviewlike.entity.ReviewLike;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
