@@ -14,13 +14,15 @@ public class PostImageCustomRepositoryImpl implements PostImageCustomRepository{
     private final EntityManager em;
 
     @Override
-    public void deleteByPostId(Long postId) {
-        queryFactory
+    public long deleteByPostId(Long postId) {
+        long count = queryFactory
                 .delete(postImage)
                 .where(postImage.post.id.eq(postId))
                 .execute();
 
         em.flush();
         em.clear();
+
+        return count;
     }
 }
