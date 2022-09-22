@@ -256,7 +256,12 @@ public class CommentServiceLocalImpl implements CommentService {
     }
 
     private Page<Comment> findAllComment(Long postId, Pageable pageable) {
+<<<<<<< HEAD:src/main/java/couch/camping/domain/comment/service/impl/CommentServiceLocalImpl.java
         return commentRepository.findAllByPostIdWithFetchJoinMemberPaging(postId, pageable);
+=======
+        return commentRepository.findAllByIdWithFetchJoinMemberPaging(postId, pageable);
+
+>>>>>>> 4d06d9e8d40d7c556b7db5c8a9bc487742f4ca2b:src/main/java/couch/camping/domain/comment/service/CommentServiceLocalImpl.java
     }
 
     @Transactional

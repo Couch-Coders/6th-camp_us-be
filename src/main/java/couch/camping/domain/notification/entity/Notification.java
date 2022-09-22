@@ -49,7 +49,7 @@ public class Notification extends BaseTimeEntity {
 
     private boolean isChecked;
 
-    public void changeIsChecked() {
+    public void changeIsCheckedTrue() {
         this.isChecked = true;
     }
 
