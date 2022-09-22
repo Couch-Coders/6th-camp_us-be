@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ReviewCustomRepository {
 
-    Page<Review> findAllBestReview(Pageable pageable);
+    Page<Review> findAllReviewGoeOneOrderByLikeCnt(Pageable pageable);
 
     Page<Review> findByCampId(Pageable pageable, Long campId);
 
@@ -16,5 +16,5 @@ public interface ReviewCustomRepository {
 
     Long countByMemberId(Long memberId);
 
-    List<Review> findImageUrlByCampId(Long campId);
+    List<Review> findNotNullImgUrlByCampId(Long campId);
 }

@@ -14,9 +14,10 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
+@Getter @Setter
 @Builder
 @EntityListeners(AuditingEntityListener.class)
+@EqualsAndHashCode
 public class Review extends BaseEntity {
 
     @Id @GeneratedValue

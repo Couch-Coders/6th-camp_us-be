@@ -21,7 +21,7 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Review> findAllBestReview(Pageable pageable) {
+    public Page<Review> findAllReviewGoeOneOrderByLikeCnt(Pageable pageable) {
 
         List<Review> content = queryFactory
                 .selectFrom(review)
@@ -96,7 +96,7 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
     }
 
     @Override
-    public List<Review> findImageUrlByCampId(Long campId) {
+    public List<Review> findNotNullImgUrlByCampId(Long campId) {
         List<Review> content = queryFactory
                 .select(review)
                 .from(review)

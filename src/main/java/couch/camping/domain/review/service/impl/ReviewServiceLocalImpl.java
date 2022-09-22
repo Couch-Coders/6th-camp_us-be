@@ -175,7 +175,7 @@ public class ReviewServiceLocalImpl implements ReviewService {
     }
 
     public Page<ReviewRetrieveResponseDto> getBestReviews(Pageable pageable) {
-        return reviewRepository.findAllBestReview(pageable)
+        return reviewRepository.findAllReviewGoeOneOrderByLikeCnt(pageable)
                 .map(review -> new ReviewRetrieveResponseDto(review));
     }
 
@@ -191,7 +191,7 @@ public class ReviewServiceLocalImpl implements ReviewService {
 
     @Override
     public List<ReviewImageUrlResponseDto> retrieveAllImageUrl(Long campId) {
-        List<Review> reviews = reviewRepository.findImageUrlByCampId(campId);
+        List<Review> reviews = reviewRepository.findNotNullImgUrlByCampId(campId);
         List<ReviewImageUrlResponseDto> list = new ArrayList<>();
 
         for (Review r : reviews) {
