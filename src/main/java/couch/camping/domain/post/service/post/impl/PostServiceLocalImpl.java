@@ -54,41 +54,6 @@ public class PostServiceLocalImpl implements PostService {
         return new PostWriteResponseDto(savePost, savePost.getPostImageList());
     }
 
-    private Post savePost(PostWriteRequestDto postWriteRequestDto, Member member) {
-        Post post = createPost(postWriteRequestDto, member);
-        addPostImageToPost(post, postWriteRequestDto.getImgUrlList());
-        return postRepository.save(post);
-    }
-
-    private void addPostImageToPost(Post post, List<String> imgUrlList) {
-        for (String imgUrl : imgUrlList) {
-            post.getPostImageList().add(new PostImage(post.getMember(), post, imgUrl));
-        }
-    }
-
-    private void validatePostType(List<String> postTypeList, String postType) {
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("쿼리스트링 postType 의 값은 ");
-        for (String s : postTypeList) {
-            sb.append(s + " ");
-        }
-        sb.append("만 가능합니다.");
-
-        if (!postTypeList.contains(postType))
-            throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, sb.toString());
-    }
-
-    private Post createPost(PostWriteRequestDto postWriteRequestDto, Member member) {
-        return Post.builder()
-                .title(postWriteRequestDto.getTitle())
-                .content(postWriteRequestDto.getContent())
-                .postType(postWriteRequestDto.getPostType())
-                .lastModifiedDate(LocalDateTime.now())
-                .member(member)
-                .build();
-    }
-
     @Transactional
     @Override
     public PostEditResponseDto editPost(Long postId, Member member, PostEditRequestDto postEditRequestDto) {
@@ -102,38 +67,8 @@ public class PostServiceLocalImpl implements PostService {
         deletePostImage(postId);
 
         List<PostImage> postImageList = createPostImageList(member, postEditRequestDto, findPost);
-        postImageRepository.saveAll(postImageList);
+        savePostImageList(postImageList);
         return new PostEditResponseDto(findPost, postImageList);
-    }
-
-    private void deletePostImage(Long postId) {
-        postImageRepository.deleteByPostId(postId);
-    }
-
-    private List<PostImage> createPostImageList(Member member, PostEditRequestDto postEditRequestDto, Post findPost) {
-        List<PostImage> postImageList = new ArrayList<>();
-        for (String imgUrl : postEditRequestDto.getImgUrlList()) {
-            PostImage postImage = PostImage.builder()
-                    .post(findPost)
-                    .member(member)
-                    .imgUrl(imgUrl)
-                    .build();
-            postImageList.add(postImage);
-        }
-        return postImageList;
-    }
-
-    private void validateAuthority(Member loginMember, Member ownerMember) {
-        if (isNotSameMember(loginMember, ownerMember)) {
-            throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 게시글이 아닙니다.");
-        }
-    }
-
-    private Post findPostOrElseThrow(Long postId) {
-        return postRepository.findById(postId)
-                .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
-                });
     }
 
     @Transactional
@@ -153,6 +88,127 @@ public class PostServiceLocalImpl implements PostService {
         }
 
         return findPost.getLikeCnt();
+    }
+
+    @Override
+    public PostRetrieveResponseDto retrievePost(Long postId, String header) {
+        Post findPost = findPostWithFetchJoinMember(postId);
+
+        if (header == null) {//비로그인
+            return createPostRetrieveResponseDto(findPost);
+        } else {//로그인
+            Member member = getMemberOrElseThrow(header);
+            Optional<PostLike> optionalPostLike = findMemberLikePost(postId, member);
+            return createPostRetrieveLoginResponseDto(findPost, optionalPostLike.isPresent());
+        }
+
+    }
+
+    @Override
+    public Page<PostRetrieveResponseDto> retrieveAllPost(String postType, Pageable pageable, String header) {
+        List<String> postTypeList = Arrays.asList("all", "free", "picture", "question");
+        validatePostType(postTypeList, postType);
+
+        if (header == null)
+            return findAllByIdWithFetchJoinMemberPaging(postType, pageable)
+                    .map(post -> createRetrieveResponseDto(post));
+        else {
+            return findAllByIdWithFetchJoinMemberPaging(postType, pageable)
+                    .map(post -> createLoginRetrieveResponseDto(getMemberOrElseThrow(header), post));
+        }
+    }
+
+    @Override
+    public Page<PostRetrieveResponseDto> retrieveAllBestPost(Pageable pageable, String header) {
+        if (header == null)
+            return findAllBestPagingPost(pageable)
+                    .map(post -> createRetrieveResponseDto(post));
+        else
+            return findAllBestPagingPost(pageable)
+                    .map(post -> createLoginRetrieveResponseDto(getMemberOrElseThrow(header), post));
+    }
+
+    @Transactional
+    @Override
+    public void deletePost(Long postId, Member member) {
+        Post findPost = findPostOrElseThrow(postId);
+
+        validateAuthority(member, findPost.getMember());
+
+        deletePostByPostId(postId);
+    }
+
+    @Override
+    public Page<MemberPostResponseDto> retrieveMemberComment(Member member, Pageable pageable) {
+        return findPostByMemberId(member, pageable)
+                .map(post -> new MemberPostResponseDto(post));
+    }
+
+    @Override
+    public long countMemberPosts(Long id) {
+        return countPostByMemberId(id);
+    }
+
+    private Long countPostByMemberId(Long id) {
+        return postRepository.countByMemberId(id);
+    }
+
+    private Page<Post> findPostByMemberId(Member member, Pageable pageable) {
+        return postRepository.findByMemberId(member.getId(), pageable);
+    }
+
+    private void deletePostByPostId(Long postId) {
+        postRepository.deleteById(postId);
+    }
+
+    private Page<Post> findAllBestPagingPost(Pageable pageable) {
+        return postRepository.findAllBestPost(pageable);
+    }
+
+    private Page<Post> findAllByIdWithFetchJoinMemberPaging(String postType, Pageable pageable) {
+        return postRepository.findAllByIdWithFetchJoinMemberPaging(postType, pageable);
+    }
+
+    private PostRetrieveResponseDto createLoginRetrieveResponseDto(Member member, Post post) {
+        for (PostLike postLike : post.getPostLikeList()) {
+            if (!isNotSameMember(postLike.getMember(), member)) {
+                return createPostRetrieveLoginResponseDto(post, true);
+            }
+        }
+        return createPostRetrieveLoginResponseDto(post, false);
+    }
+
+    private PostRetrieveResponseDto createRetrieveResponseDto(Post post) {
+        return new PostRetrieveResponseDto(post, post.getCommentCnt(), post.getPostImageList());
+    }
+
+    private Optional<PostLike> findMemberLikePost(Long postId, Member member) {
+        return postLikeRepository.findByMemberIdAndPostId(member.getId(), postId);
+    }
+
+    private PostRetrieveResponseDto createPostRetrieveLoginResponseDto(Post findPost, boolean present) {
+        return new PostRetrieveLoginResponseDto(findPost, findPost.getCommentList().size(), findPost.getPostImageList(), present);
+    }
+
+    private PostRetrieveResponseDto createPostRetrieveResponseDto(Post findPost) {
+        return createRetrieveResponseDto(findPost);
+    }
+
+    private Post findPostWithFetchJoinMember(Long postId) {
+        return postRepository.findByIdWithFetchJoinMember(postId)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
+                });
+    }
+
+    private Member getMemberOrElseThrow(String header) {
+        Member member;
+        try {
+            member = (Member) userDetailsService.loadUserByUsername(header);
+        } catch (UsernameNotFoundException e) {
+            throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
+        }
+        return member;
     }
 
     private void checkToSaveNotification(Long postId, Member member, Post findPost) {
@@ -206,111 +262,73 @@ public class PostServiceLocalImpl implements PostService {
         return loginMember != ownerMember;
     }
 
-    @Override
-    public PostRetrieveResponseDto retrievePost(Long postId, String header) {
-        Post findPost = findPostWithFetchJoinMember(postId);
+    private void deletePostImage(Long postId) {
+        postImageRepository.deleteByPostId(postId);
+    }
 
-        if (header == null) {//비로그인
-            return createPostRetrieveResponseDto(findPost);
-        } else {//로그인
-            Member member = getMemberOrElseThrow(header);
-            Optional<PostLike> optionalPostLike = findMemberLikePost(postId, member);
-            return createPostRetrieveLoginResponseDto(findPost, optionalPostLike.isPresent());
+    private List<PostImage> createPostImageList(Member member, PostEditRequestDto postEditRequestDto, Post findPost) {
+        List<PostImage> postImageList = new ArrayList<>();
+        for (String imgUrl : postEditRequestDto.getImgUrlList()) {
+            PostImage postImage = PostImage.builder()
+                    .post(findPost)
+                    .member(member)
+                    .imgUrl(imgUrl)
+                    .build();
+            postImageList.add(postImage);
+        }
+        return postImageList;
+    }
+
+    private void validateAuthority(Member loginMember, Member ownerMember) {
+        if (isNotSameMember(loginMember, ownerMember)) {
+            throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 게시글이 아닙니다.");
         }
     }
 
-    private Optional<PostLike> findMemberLikePost(Long postId, Member member) {
-        return postLikeRepository.findByMemberIdAndPostId(member.getId(), postId);
-    }
-
-    private PostRetrieveResponseDto createPostRetrieveLoginResponseDto(Post findPost, boolean present) {
-        return new PostRetrieveLoginResponseDto(findPost, findPost.getCommentList().size(), findPost.getPostImageList(), present);
-    }
-
-    private PostRetrieveResponseDto createPostRetrieveResponseDto(Post findPost) {
-        return createRetrieveResponseDto(findPost);
-    }
-
-    private Post findPostWithFetchJoinMember(Long postId) {
-        return postRepository.findByIdWithFetchJoinMember(postId)
+    private Post findPostOrElseThrow(Long postId) {
+        return postRepository.findById(postId)
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_POST, "게시글 ID 에 맞는 게시글이 없습니다.");
                 });
     }
 
-    private Member getMemberOrElseThrow(String header) {
-        Member member;
-        try {
-            member = (Member) userDetailsService.loadUserByUsername(header);
-        } catch (UsernameNotFoundException e) {
-            throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
-        }
-        return member;
+    private Post savePost(PostWriteRequestDto postWriteRequestDto, Member member) {
+        Post post = createPost(postWriteRequestDto, member);
+        addPostImageToPost(post, postWriteRequestDto.getImgUrlList());
+        return postRepository.save(post);
     }
 
-    @Override
-    public Page<PostRetrieveResponseDto> retrieveAllPost(String postType, Pageable pageable, String header) {
-        List<String> postTypeList = Arrays.asList("all", "free", "picture", "question");
-        validatePostType(postTypeList, postType);
-
-        if (header == null)
-            return findAllByIdWithFetchJoinMemberPaging(postType, pageable)
-                    .map(post -> createRetrieveResponseDto(post));
-        else {
-            return findAllByIdWithFetchJoinMemberPaging(postType, pageable)
-                    .map(post -> createLoginRetrieveResponseDto(getMemberOrElseThrow(header), post));
+    private void addPostImageToPost(Post post, List<String> imgUrlList) {
+        for (String imgUrl : imgUrlList) {
+            post.getPostImageList().add(new PostImage(post.getMember(), post, imgUrl));
         }
     }
 
-    private Page<Post> findAllByIdWithFetchJoinMemberPaging(String postType, Pageable pageable) {
-        return postRepository.findAllByIdWithFetchJoinMemberPaging(postType, pageable);
-    }
+    private void validatePostType(List<String> postTypeList, String postType) {
 
-    private PostRetrieveResponseDto createLoginRetrieveResponseDto(Member member, Post post) {
-        for (PostLike postLike : post.getPostLikeList()) {
-            if (!isNotSameMember(postLike.getMember(), member)) {
-                return createPostRetrieveLoginResponseDto(post, true);
-            }
+        StringBuilder sb = new StringBuilder();
+        sb.append("쿼리스트링 postType 의 값은 ");
+        for (String s : postTypeList) {
+            sb.append(s + " ");
         }
-        return createPostRetrieveLoginResponseDto(post, false);
+        sb.append("만 가능합니다.");
+
+        if (!postTypeList.contains(postType))
+            throw new CustomException(ErrorCode.BAD_REQUEST_PARAM, sb.toString());
     }
 
-    private PostRetrieveResponseDto createRetrieveResponseDto(Post post) {
-        return new PostRetrieveResponseDto(post, post.getCommentCnt(), post.getPostImageList());
+    private Post createPost(PostWriteRequestDto postWriteRequestDto, Member member) {
+        return Post.builder()
+                .title(postWriteRequestDto.getTitle())
+                .content(postWriteRequestDto.getContent())
+                .postType(postWriteRequestDto.getPostType())
+                .lastModifiedDate(LocalDateTime.now())
+                .member(member)
+                .build();
     }
 
-    @Override
-    public Page<PostRetrieveResponseDto> retrieveAllBestPost(Pageable pageable, String header) {
-        if (header == null)
-            return findAllBestPagingPost(pageable)
-                    .map(post -> createRetrieveResponseDto(post));
-        else
-            return findAllBestPagingPost(pageable)
-                    .map(post -> createLoginRetrieveResponseDto(getMemberOrElseThrow(header), post));
+    private void savePostImageList(List<PostImage> postImageList) {
+        postImageRepository.saveAll(postImageList);
     }
 
-    private Page<Post> findAllBestPagingPost(Pageable pageable) {
-        return postRepository.findAllBestPost(pageable);
-    }
-
-    @Transactional
-    @Override
-    public void deletePost(Long postId, Member member) {
-        Post findPost = findPostOrElseThrow(postId);
-
-        validateAuthority(member, findPost.getMember());
-
-        postRepository.deleteById(postId);
-    }
-
-    @Override
-    public Page<MemberPostResponseDto> retrieveMemberComment(Member member, Pageable pageable) {
-        return postRepository.findByMemberId(member.getId(), pageable)
-                .map(post -> new MemberPostResponseDto(post));
-    }
-
-    @Override
-    public long countMemberPosts(Long id) {
-        return postRepository.countByMemberId(id);
-    }
 }
