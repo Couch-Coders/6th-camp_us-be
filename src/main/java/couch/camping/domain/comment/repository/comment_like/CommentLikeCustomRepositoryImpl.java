@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
+import static couch.camping.domain.commentlike.entity.QCommentLike.*;
+
 @RequiredArgsConstructor
 public class CommentLikeCustomRepositoryImpl implements CommentLikeCustomRepository{
 
@@ -15,11 +17,11 @@ public class CommentLikeCustomRepositoryImpl implements CommentLikeCustomReposit
 
     @Override
     public Optional<CommentLike> findByMemberIdAndCommentId(Long memberId, Long commentId) {
-        CommentLike commentLike = queryFactory
-                .selectFrom(QCommentLike.commentLike)
-                .where(QCommentLike.commentLike.member.id.eq(memberId), QCommentLike.commentLike.comment.id.eq(commentId))
+        CommentLike content = queryFactory
+                .selectFrom(commentLike)
+                .where(commentLike.member.id.eq(memberId), commentLike.comment.id.eq(commentId))
                 .fetchOne();
 
-        return Optional.ofNullable(commentLike);
+        return Optional.ofNullable(content);
     }
 }
