@@ -30,7 +30,7 @@ public class QCamp extends EntityPathBase<Camp> {
 
     public final StringPath brazierCl = createString("brazierCl");
 
-    public final ListPath<couch.camping.domain.camplike.entity.CampLike, couch.camping.domain.camplike.entity.QCampLike> campLikeList = this.<couch.camping.domain.camplike.entity.CampLike, couch.camping.domain.camplike.entity.QCampLike>createList("campLikeList", couch.camping.domain.camplike.entity.CampLike.class, couch.camping.domain.camplike.entity.QCampLike.class, PathInits.DIRECT2);
+    public final ListPath<CampLike, couch.camping.domain.camplike.entity.QCampLike> campLikeList = this.<CampLike, couch.camping.domain.camplike.entity.QCampLike>createList("campLikeList", CampLike.class, couch.camping.domain.camplike.entity.QCampLike.class, PathInits.DIRECT2);
 
     public final StringPath caravAcmpnyAt = createString("caravAcmpnyAt");
 
