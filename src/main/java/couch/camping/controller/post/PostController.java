@@ -6,7 +6,7 @@ import couch.camping.controller.post.dto.response.PostEditResponseDto;
 import couch.camping.controller.post.dto.response.PostRetrieveResponseDto;
 import couch.camping.controller.post.dto.response.PostWriteResponseDto;
 import couch.camping.domain.member.entity.Member;
-import couch.camping.domain.post.service.PostService;
+import couch.camping.domain.post.service.post.PostService;
 import couch.camping.util.RequestUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

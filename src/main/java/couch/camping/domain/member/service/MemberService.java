@@ -41,24 +41,24 @@ public class MemberService implements UserDetailsService {
     
     //회원 등록
     @Transactional
-    public MemberRegisterResponseDto register(MemberRegister memberRegister) {
-        validateAlreadyRegistered(memberRegister);
-        return new MemberRegisterResponseDto(memberRepository.save(createMember(memberRegister)));
+    public MemberRegisterResponseDto register(MemberRegisterDto memberRegisterDto) {
+        validateAlreadyRegistered(memberRegisterDto);
+        return new MemberRegisterResponseDto(memberRepository.save(createMember(memberRegisterDto)));
     }
 
-    private Member createMember(MemberRegister memberRegister) {
+    private Member createMember(MemberRegisterDto memberRegisterDto) {
         Member member = Member.builder()
-                .uid(memberRegister.getUid())
-                .name(memberRegister.getName())
-                .email(memberRegister.getEmail())
-                .nickname(memberRegister.getNickname())
-                .imgUrl(memberRegister.getImgUrl())
+                .uid(memberRegisterDto.getUid())
+                .name(memberRegisterDto.getName())
+                .email(memberRegisterDto.getEmail())
+                .nickname(memberRegisterDto.getNickname())
+                .imgUrl(memberRegisterDto.getImgUrl())
                 .build();
         return member;
     }
 
-    private void validateAlreadyRegistered(MemberRegister memberRegister) {
-        Optional<Member> optionalMember = memberRepository.findByUid(memberRegister.getUid());
+    private void validateAlreadyRegistered(MemberRegisterDto memberRegisterDto) {
+        Optional<Member> optionalMember = memberRepository.findByUid(memberRegisterDto.getUid());
         if (optionalMember.isPresent()) {
             throw new CustomException(ErrorCode.EXIST_MEMBER, "해당 계정으로 이미 회원가입을 했습니다.");
         }

@@ -6,14 +6,15 @@ import couch.camping.controller.comment.dto.response.CommentEditResponseDto;
 import couch.camping.controller.comment.dto.response.CommentRetrieveResponseDto;
 import couch.camping.controller.comment.dto.response.CommentWriteResponseDto;
 import couch.camping.domain.comment.entity.Comment;
-import couch.camping.domain.comment.repository.CommentRepository;
-import couch.camping.domain.commentlike.entity.CommentLike;
-import couch.camping.domain.commentlike.repository.CommentLikeRepository;
+import couch.camping.domain.comment.repository.comment.CommentRepository;
+import couch.camping.domain.comment.entity.CommentLike;
+import couch.camping.domain.comment.repository.comment_like.CommentLikeRepository;
+import couch.camping.domain.comment.service.impl.CommentServiceLocalImpl;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.notification.repository.NotificationRepository;
 import couch.camping.domain.post.entity.Post;
-import couch.camping.domain.post.repository.PostRepository;
-import couch.camping.domain.postimage.entity.PostImage;
+import couch.camping.domain.post.repository.post.PostRepository;
+import couch.camping.domain.post.entity.PostImage;
 import couch.camping.exception.CustomException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -281,7 +282,7 @@ class CommentServiceLocalImplTest {
 
         List<Comment> commentList = createCommentList(size);
         PageImpl<Comment> comments = new PageImpl<>(commentList, PageRequest.of(0, size), size);
-        when(commentRepository.findAllByIdWithFetchJoinMemberPaging(any(), any())).thenReturn(comments);
+        when(commentRepository.findAllByPostIdWithFetchJoinMemberPaging(any(), any())).thenReturn(comments);
 
         List<CommentRetrieveResponseDto> expected = commentMapToCommentRetrieveResponseDto(commentList);
 
@@ -301,7 +302,7 @@ class CommentServiceLocalImplTest {
         List<Comment> commentList = createCommentList(size);
         PageRequest pageRequest = PageRequest.of(0, size);
         PageImpl<Comment> comments = new PageImpl<>(commentList, pageRequest, size);
-        when(commentRepository.findAllByIdWithFetchJoinMemberPaging(any(), any())).thenReturn(comments);
+        when(commentRepository.findAllByPostIdWithFetchJoinMemberPaging(any(), any())).thenReturn(comments);
 
         List<CommentRetrieveResponseDto> expected = commentMapToCommentRetrieveResponseDto(commentList);
 

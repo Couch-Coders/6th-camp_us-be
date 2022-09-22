@@ -1,7 +1,7 @@
 package couch.camping.controller.member.dto.response;
 
 import couch.camping.domain.notification.entity.Notification;
-import couch.camping.domain.postimage.entity.PostImage;
+import couch.camping.domain.post.entity.PostImage;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

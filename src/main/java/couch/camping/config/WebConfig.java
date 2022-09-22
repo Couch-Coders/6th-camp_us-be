@@ -23,6 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/css/**", "/*.ico", "/error");
     }
 
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)

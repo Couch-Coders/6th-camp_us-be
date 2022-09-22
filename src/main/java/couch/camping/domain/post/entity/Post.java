@@ -3,8 +3,6 @@ package couch.camping.domain.post.entity;
 import couch.camping.domain.comment.entity.Comment;
 import couch.camping.domain.member.entity.Member;
 import couch.camping.domain.notification.entity.Notification;
-import couch.camping.domain.postimage.entity.PostImage;
-import couch.camping.domain.postlike.entity.PostLike;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter @Setter
+@EqualsAndHashCode
 public class Post {
 
     @Id @GeneratedValue

@@ -1,7 +1,7 @@
 package couch.camping.controller.post.dto.response;
 
 import couch.camping.domain.post.entity.Post;
-import couch.camping.domain.postimage.entity.PostImage;
+import couch.camping.domain.post.entity.PostImage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;

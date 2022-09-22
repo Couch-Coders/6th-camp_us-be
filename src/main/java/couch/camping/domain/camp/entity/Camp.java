@@ -1,6 +1,5 @@
 package couch.camping.domain.camp.entity;
 
-import couch.camping.domain.camplike.entity.CampLike;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,8 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor @NoArgsConstructor
 @Getter
 @Setter
 @Builder
@@ -161,4 +159,5 @@ public class Camp {
         totalRate += afterRate;
         this.avgRate = totalRate / reviewCnt;
     }
+
 }

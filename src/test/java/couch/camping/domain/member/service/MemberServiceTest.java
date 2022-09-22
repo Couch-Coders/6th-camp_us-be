@@ -89,7 +89,7 @@ class MemberServiceTest {
         when(memberRepository.save(any(Member.class))).thenReturn(member);
 
         //when
-        MemberRegisterResponseDto register = memberService.register(new MemberRegister(uid, name, email, nickname, imgUrl));
+        MemberRegisterResponseDto register = memberService.register(new MemberRegisterDto(uid, name, email, nickname, imgUrl));
 
         //then
         assertThat(register).isEqualTo(responseDto);
@@ -106,7 +106,7 @@ class MemberServiceTest {
         //when
         //then
         Assertions.assertThrows(CustomException.class,
-                () -> memberService.register(new MemberRegister(uid, name, email, nickname, imgUrl)));
+                () -> memberService.register(new MemberRegisterDto(uid, name, email, nickname, imgUrl)));
     }
     
     @Test
