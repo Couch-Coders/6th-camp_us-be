@@ -220,7 +220,7 @@ public class CommentServiceLocalImpl implements CommentService {
     }
 
     private Comment findIdWithFetchJoinMemberOrElseThrow(Long commentId) {
-        return commentRepository.findIdWithFetchJoinMember(commentId)
+        return commentRepository.findByIdWithFetchJoinMember(commentId)
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_COMMENT, "댓글 ID에 맞는 댓글이 없습니다.");
                 });
@@ -256,7 +256,7 @@ public class CommentServiceLocalImpl implements CommentService {
     }
 
     private Page<Comment> findAllComment(Long postId, Pageable pageable) {
-        return commentRepository.findAllByIdWithFetchJoinMemberPaging(postId, pageable);
+        return commentRepository.findAllByPostIdWithFetchJoinMemberPaging(postId, pageable);
     }
 
     @Transactional

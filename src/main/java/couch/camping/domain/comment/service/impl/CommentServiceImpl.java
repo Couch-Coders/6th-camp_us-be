@@ -139,7 +139,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentRetrieveResponseDto retrieveComment(Long commentId, String header) {
-        Comment findComment = commentRepository.findIdWithFetchJoinMember(commentId)
+        Comment findComment = commentRepository.findByIdWithFetchJoinMember(commentId)
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_COMMENT, "댓글 ID에 맞는 댓글이 없습니다.");
                 });
@@ -169,7 +169,7 @@ public class CommentServiceImpl implements CommentService {
     public Page<CommentRetrieveResponseDto> retrieveAllComment(Long postId, String header, Pageable pageable) {
 
         if (header == null) {
-            return commentRepository.findAllByIdWithFetchJoinMemberPaging(postId, pageable)
+            return commentRepository.findAllByPostIdWithFetchJoinMemberPaging(postId, pageable)
                     .map(comment -> new CommentRetrieveResponseDto(comment));
         } else {
             Member member;
@@ -180,7 +180,7 @@ public class CommentServiceImpl implements CommentService {
                 throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
             }
 
-            return commentRepository.findAllByIdWithFetchJoinMemberPaging(postId, pageable)
+            return commentRepository.findAllByPostIdWithFetchJoinMemberPaging(postId, pageable)
                     .map(comment -> {
                         List<CommentLike> commentLikeList = comment.getCommentLikeList();
                         for (CommentLike commentLike : commentLikeList) {

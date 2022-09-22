@@ -18,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter @Setter
+@EqualsAndHashCode
 public class Comment {
 
     @Id @GeneratedValue

@@ -2,7 +2,6 @@ package couch.camping.domain.comment.repository.comment;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import couch.camping.domain.comment.entity.Comment;
-import couch.camping.domain.comment.entity.QComment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,7 +19,7 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Comment> findAllByIdWithFetchJoinMemberPaging(Long postId, Pageable pageable) {
+    public Page<Comment> findAllByPostIdWithFetchJoinMemberPaging(Long postId, Pageable pageable) {
         List<Comment> commentList = queryFactory
                 .selectFrom(comment)
                 .join(comment.member, member).fetchJoin()
@@ -39,15 +38,15 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
     }
 
     @Override
-    public Optional<Comment> findIdWithFetchJoinMember(Long postId) {
+    public Optional<Comment> findByIdWithFetchJoinMember(Long commentId) {
 
-        Comment comment = queryFactory
-                .selectFrom(QComment.comment)
-                .join(QComment.comment.member, member).fetchJoin()
-                .where(QComment.comment.id.eq(postId))
+        Comment content = queryFactory
+                .selectFrom(comment)
+                .join(comment.member, member).fetchJoin()
+                .where(comment.id.eq(commentId))
                 .fetchOne();
 
-        return Optional.ofNullable(comment);
+        return Optional.ofNullable(content);
     }
 
     @Override
