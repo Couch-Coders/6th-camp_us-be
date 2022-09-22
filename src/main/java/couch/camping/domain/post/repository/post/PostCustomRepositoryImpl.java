@@ -3,7 +3,6 @@ package couch.camping.domain.post.repository.post;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import couch.camping.domain.post.entity.Post;
-import couch.camping.domain.post.entity.QPost;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,7 +15,7 @@ import static couch.camping.domain.member.entity.QMember.member;
 import static couch.camping.domain.post.entity.QPost.post;
 
 @RequiredArgsConstructor
-public class PostCustomRepositoryImpl implements PostCustomRepository{
+public class PostCustomRepositoryImpl implements PostCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 
@@ -88,14 +87,14 @@ public class PostCustomRepositoryImpl implements PostCustomRepository{
 
     @Override
     public Optional<Post> findByIdWithFetchJoinMember(Long postId) {
-        Post post = queryFactory
-                .select(QPost.post)
-                .from(QPost.post)
-                .join(QPost.post.member, member).fetchJoin()
-                .where(QPost.post.id.eq(postId))
+        Post content = queryFactory
+                .select(post)
+                .from(post)
+                .join(post.member, member).fetchJoin()
+                .where(post.id.eq(postId))
                 .fetchOne();
 
-        return Optional.ofNullable(post);
+        return Optional.ofNullable(content);
     }
 
     @Override

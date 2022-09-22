@@ -273,8 +273,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<MemberPostResponseDto> retrieveMemberComment(Member member, Pageable pageable) {
-        Long memberId = member.getId();
-        return postRepository.findByMemberId(memberId, pageable)
+        return postRepository.findByMemberId(member.getId(), pageable)
                 .map(post -> new MemberPostResponseDto(post));
     }
 
