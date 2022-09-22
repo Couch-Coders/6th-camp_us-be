@@ -38,6 +38,10 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final couch.camping.domain.member.entity.QMember member;
 
+    public final ListPath<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification> notificationList = this.<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification>createList("notificationList", couch.camping.domain.notification.entity.Notification.class, couch.camping.domain.notification.entity.QNotification.class, PathInits.DIRECT2);
+
+    public final ListPath<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification> notificationWriteList = this.<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification>createList("notificationWriteList", couch.camping.domain.notification.entity.Notification.class, couch.camping.domain.notification.entity.QNotification.class, PathInits.DIRECT2);
+
     public final couch.camping.domain.post.entity.QPost post;
 
     public QComment(String variable) {
