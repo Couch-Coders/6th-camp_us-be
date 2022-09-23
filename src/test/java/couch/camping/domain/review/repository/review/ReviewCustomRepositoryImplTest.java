@@ -52,7 +52,7 @@ class ReviewCustomRepositoryImplTest extends BaseControllerTest {
         PageImpl<Review> expected = new PageImpl<>(reviewList, pageRequest, 3L);
 
         //when
-        Page<Review> result = reviewRepository.findAllReviewGoeOneOrderByLikeCnt(pageRequest);
+        Page<Review> result = reviewRepository.findAllGoeOneLikeCntOrderByLikeCnt(pageRequest);
 
         //then
         assertThat(result).isEqualTo(expected);
@@ -98,7 +98,7 @@ class ReviewCustomRepositoryImplTest extends BaseControllerTest {
         PageImpl<Review> expected = new PageImpl<>(reviewList, pageRequest, 3L);
         
         //when
-        Page<Review> result = reviewRepository.findByMemberId(pageRequest, saveMember.getId());
+        Page<Review> result = reviewRepository.findByMemberIdWithPaging(pageRequest, saveMember.getId());
 
         //then
         assertThat(result).isEqualTo(expected);

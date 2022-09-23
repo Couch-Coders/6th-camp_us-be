@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode
 @ApiModel(description = "리뷰 작성 응답 DTO")
 public class ReviewWriteResponseDto {
 

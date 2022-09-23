@@ -67,7 +67,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     }
 
     @Override
-    public Page<Post> findByMemberId(Long memberId, Pageable pageable) {
+    public Page<Post> findByMemberIdWithPaging(Long memberId, Pageable pageable) {
         List<Post> content = queryFactory
                 .selectFrom(post)
                 .where(post.member.id.eq(memberId))

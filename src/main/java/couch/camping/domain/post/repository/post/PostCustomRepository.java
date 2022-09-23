@@ -13,7 +13,7 @@ public interface PostCustomRepository {
 
     Page<Post> findAllBestPost(Pageable pageable);
 
-    Page<Post> findByMemberId(Long memberId, Pageable pageable);
+    Page<Post> findByMemberIdWithPaging(Long memberId, Pageable pageable);
 
     Long countByMemberId(Long memberId);
 }

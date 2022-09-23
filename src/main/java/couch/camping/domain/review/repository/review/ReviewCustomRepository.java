@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface ReviewCustomRepository {
 
-    Page<Review> findAllReviewGoeOneOrderByLikeCnt(Pageable pageable);
+    Page<Review> findAllGoeOneLikeCntOrderByLikeCnt(Pageable pageable);
 
     Page<Review> findByCampId(Pageable pageable, Long campId);
 
-    Page<Review> findByMemberId(Pageable pageable, Long memberId);
+    Page<Review> findByMemberIdWithPaging(Pageable pageable, Long memberId);
 
     Long countByMemberId(Long memberId);
 
