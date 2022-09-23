@@ -52,7 +52,7 @@ public class QReview extends EntityPathBase<Review> {
 
     public final NumberPath<Integer> rate = createNumber("rate", Integer.class);
 
-    public final ListPath<couch.camping.domain.reviewlike.entity.ReviewLike, couch.camping.domain.reviewlike.entity.QReviewLike> reviewLikeList = this.<couch.camping.domain.reviewlike.entity.ReviewLike, couch.camping.domain.reviewlike.entity.QReviewLike>createList("reviewLikeList", couch.camping.domain.reviewlike.entity.ReviewLike.class, couch.camping.domain.reviewlike.entity.QReviewLike.class, PathInits.DIRECT2);
+    public final ListPath<ReviewLike, QReviewLike> reviewLikeList = this.<ReviewLike, QReviewLike>createList("reviewLikeList", ReviewLike.class, QReviewLike.class, PathInits.DIRECT2);
 
     public QReview(String variable) {
         this(Review.class, forVariable(variable), INITS);

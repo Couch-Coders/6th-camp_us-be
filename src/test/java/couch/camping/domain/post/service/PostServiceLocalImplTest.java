@@ -7,12 +7,10 @@ import couch.camping.controller.post.dto.response.PostRetrieveLoginResponseDto;
 import couch.camping.controller.post.dto.response.PostRetrieveResponseDto;
 import couch.camping.controller.post.dto.response.PostWriteResponseDto;
 import couch.camping.domain.member.entity.Member;
-import couch.camping.domain.notification.repository.NotificationRepository;
 import couch.camping.domain.post.entity.Post;
-import couch.camping.domain.post.repository.post.PostRepository;
 import couch.camping.domain.post.entity.PostImage;
-import couch.camping.domain.post.repository.post_image.PostImageRepository;
 import couch.camping.domain.post.entity.PostLike;
+import couch.camping.domain.post.repository.post.PostRepository;
 import couch.camping.domain.post.repository.post_like.PostLikeRepository;
 import couch.camping.domain.post.service.post.impl.PostServiceLocalImpl;
 import couch.camping.exception.CustomException;
@@ -66,14 +64,10 @@ class PostServiceLocalImplTest {
     @Mock
     PostRepository postRepository;
     @Mock
-    PostImageRepository postImageRepository;
-    @Mock
     PostLikeRepository postLikeRepository;
     @Mock
     UserDetailsService userDetailsService;
-    @Mock
-    NotificationRepository notificationRepository;
-    
+
     @InjectMocks
     PostServiceLocalImpl postServiceLocal;
 

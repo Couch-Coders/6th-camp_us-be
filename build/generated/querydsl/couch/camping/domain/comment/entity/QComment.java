@@ -22,7 +22,7 @@ public class QComment extends EntityPathBase<Comment> {
 
     public static final QComment comment = new QComment("comment");
 
-    public final ListPath<couch.camping.domain.commentlike.entity.CommentLike, couch.camping.domain.commentlike.entity.QCommentLike> commentLikeList = this.<couch.camping.domain.commentlike.entity.CommentLike, couch.camping.domain.commentlike.entity.QCommentLike>createList("commentLikeList", couch.camping.domain.commentlike.entity.CommentLike.class, couch.camping.domain.commentlike.entity.QCommentLike.class, PathInits.DIRECT2);
+    public final ListPath<CommentLike, QCommentLike> commentLikeList = this.<CommentLike, QCommentLike>createList("commentLikeList", CommentLike.class, QCommentLike.class, PathInits.DIRECT2);
 
     public final StringPath content = createString("content");
 
@@ -37,10 +37,6 @@ public class QComment extends EntityPathBase<Comment> {
     public final NumberPath<Integer> likeCnt = createNumber("likeCnt", Integer.class);
 
     public final couch.camping.domain.member.entity.QMember member;
-
-    public final ListPath<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification> notificationList = this.<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification>createList("notificationList", couch.camping.domain.notification.entity.Notification.class, couch.camping.domain.notification.entity.QNotification.class, PathInits.DIRECT2);
-
-    public final ListPath<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification> notificationWriteList = this.<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification>createList("notificationWriteList", couch.camping.domain.notification.entity.Notification.class, couch.camping.domain.notification.entity.QNotification.class, PathInits.DIRECT2);
 
     public final couch.camping.domain.post.entity.QPost post;
 
