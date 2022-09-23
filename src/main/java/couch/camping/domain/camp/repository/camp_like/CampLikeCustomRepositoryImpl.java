@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static couch.camping.domain.camplike.entity.QCampLike.campLike;
+import static couch.camping.domain.camp.entity.QCampLike.campLike;
 
 @RequiredArgsConstructor
 public class CampLikeCustomRepositoryImpl implements CampLikeCustomRepository{

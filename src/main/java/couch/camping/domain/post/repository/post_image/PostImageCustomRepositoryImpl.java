@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import javax.persistence.EntityManager;
 
-import static couch.camping.domain.postimage.entity.QPostImage.postImage;
+import static couch.camping.domain.post.entity.QPostImage.postImage;
 
 @RequiredArgsConstructor
 public class PostImageCustomRepositoryImpl implements PostImageCustomRepository{

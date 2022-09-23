@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import couch.camping.domain.camp.entity.Camp;
+import couch.camping.domain.camp.entity.QCampLike;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static couch.camping.domain.camp.entity.QCamp.camp;
-import static couch.camping.domain.camplike.entity.QCampLike.campLike;
+import static couch.camping.domain.camp.entity.QCampLike.*;
 import static org.springframework.util.StringUtils.hasText;
 
 @RequiredArgsConstructor
@@ -138,7 +139,6 @@ public class CampCustomRepositoryImpl implements CampCustomRepository{
 
     @Override
     public Page<Camp> findMemberLikeCamp(Long memberId, Pageable pageable) {
-
         JPAQuery<Camp> query = queryFactory
                 .select(campLike.camp)
                 .from(campLike)
