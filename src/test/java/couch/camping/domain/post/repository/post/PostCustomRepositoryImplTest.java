@@ -125,7 +125,7 @@ class PostCustomRepositoryImplTest extends BaseControllerTest {
         PageImpl<Post> expected = new PageImpl<>(postList, pageRequest, 3L);
 
         //when
-        Page<Post> actual = postRepository.findByMemberId(member.getId(), pageRequest);
+        Page<Post> actual = postRepository.findByMemberIdWithPaging(member.getId(), pageRequest);
 
         //then
         assertThat(actual).isEqualTo(expected);

@@ -158,7 +158,7 @@ public class PostServiceImpl implements PostService {
     }
 
     private Page<Post> findPostByMemberId(Member member, Pageable pageable) {
-        return postRepository.findByMemberId(member.getId(), pageable);
+        return postRepository.findByMemberIdWithPaging(member.getId(), pageable);
     }
 
     private void deletePostByPostId(Long postId) {
