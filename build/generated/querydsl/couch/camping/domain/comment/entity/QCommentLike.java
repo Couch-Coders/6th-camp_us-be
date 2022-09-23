@@ -1,4 +1,4 @@
-package couch.camping.domain.commentlike.entity;
+package couch.camping.domain.comment.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -8,7 +8,6 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
-import couch.camping.domain.comment.entity.CommentLike;
 
 
 /**
@@ -17,13 +16,13 @@ import couch.camping.domain.comment.entity.CommentLike;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QCommentLike extends EntityPathBase<CommentLike> {
 
-    private static final long serialVersionUID = -2033452768L;
+    private static final long serialVersionUID = 1364690199L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QCommentLike commentLike = new QCommentLike("commentLike");
 
-    public final couch.camping.domain.comment.entity.QComment comment;
+    public final QComment comment;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -47,7 +46,7 @@ public class QCommentLike extends EntityPathBase<CommentLike> {
 
     public QCommentLike(Class<? extends CommentLike> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.comment = inits.isInitialized("comment") ? new couch.camping.domain.comment.entity.QComment(forProperty("comment"), inits.get("comment")) : null;
+        this.comment = inits.isInitialized("comment") ? new QComment(forProperty("comment"), inits.get("comment")) : null;
         this.member = inits.isInitialized("member") ? new couch.camping.domain.member.entity.QMember(forProperty("member")) : null;
     }
 

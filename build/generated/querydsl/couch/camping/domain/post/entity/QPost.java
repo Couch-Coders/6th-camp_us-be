@@ -41,15 +41,10 @@ public class QPost extends EntityPathBase<Post> {
     public final couch.camping.domain.member.entity.QMember member;
 
     public final ListPath<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification> notificationList = this.<couch.camping.domain.notification.entity.Notification, couch.camping.domain.notification.entity.QNotification>createList("notificationList", couch.camping.domain.notification.entity.Notification.class, couch.camping.domain.notification.entity.QNotification.class, PathInits.DIRECT2);
-<<<<<<< HEAD
-=======
 
-    public final ListPath<couch.camping.domain.postimage.entity.PostImage, couch.camping.domain.postimage.entity.QPostImage> postImageList = this.<couch.camping.domain.postimage.entity.PostImage, couch.camping.domain.postimage.entity.QPostImage>createList("postImageList", couch.camping.domain.postimage.entity.PostImage.class, couch.camping.domain.postimage.entity.QPostImage.class, PathInits.DIRECT2);
->>>>>>> 4d06d9e8d40d7c556b7db5c8a9bc487742f4ca2b
+    public final ListPath<PostImage, QPostImage> postImageList = this.<PostImage, QPostImage>createList("postImageList", PostImage.class, QPostImage.class, PathInits.DIRECT2);
 
-    public final ListPath<PostImage, couch.camping.domain.postimage.entity.QPostImage> postImageList = this.<PostImage, couch.camping.domain.postimage.entity.QPostImage>createList("postImageList", PostImage.class, couch.camping.domain.postimage.entity.QPostImage.class, PathInits.DIRECT2);
-
-    public final ListPath<PostLike, couch.camping.domain.postlike.entity.QPostLike> postLikeList = this.<PostLike, couch.camping.domain.postlike.entity.QPostLike>createList("postLikeList", PostLike.class, couch.camping.domain.postlike.entity.QPostLike.class, PathInits.DIRECT2);
+    public final ListPath<PostLike, QPostLike> postLikeList = this.<PostLike, QPostLike>createList("postLikeList", PostLike.class, QPostLike.class, PathInits.DIRECT2);
 
     public final StringPath postType = createString("postType");
 

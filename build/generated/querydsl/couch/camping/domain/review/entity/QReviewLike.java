@@ -1,4 +1,4 @@
-package couch.camping.domain.reviewlike.entity;
+package couch.camping.domain.review.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -8,7 +8,6 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
-import couch.camping.domain.review.entity.ReviewLike;
 
 
 /**
@@ -17,7 +16,7 @@ import couch.camping.domain.review.entity.ReviewLike;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QReviewLike extends EntityPathBase<ReviewLike> {
 
-    private static final long serialVersionUID = 1803669976L;
+    private static final long serialVersionUID = 193178753L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -35,7 +34,7 @@ public class QReviewLike extends EntityPathBase<ReviewLike> {
 
     public final couch.camping.domain.member.entity.QMember member;
 
-    public final couch.camping.domain.review.entity.QReview review;
+    public final QReview review;
 
     public QReviewLike(String variable) {
         this(ReviewLike.class, forVariable(variable), INITS);
@@ -56,7 +55,7 @@ public class QReviewLike extends EntityPathBase<ReviewLike> {
     public QReviewLike(Class<? extends ReviewLike> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new couch.camping.domain.member.entity.QMember(forProperty("member")) : null;
-        this.review = inits.isInitialized("review") ? new couch.camping.domain.review.entity.QReview(forProperty("review"), inits.get("review")) : null;
+        this.review = inits.isInitialized("review") ? new QReview(forProperty("review"), inits.get("review")) : null;
     }
 
 }

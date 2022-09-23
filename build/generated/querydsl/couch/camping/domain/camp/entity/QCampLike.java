@@ -1,4 +1,4 @@
-package couch.camping.domain.camplike.entity;
+package couch.camping.domain.camp.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -8,7 +8,6 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
-import couch.camping.domain.camp.entity.CampLike;
 
 
 /**
@@ -17,7 +16,7 @@ import couch.camping.domain.camp.entity.CampLike;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QCampLike extends EntityPathBase<CampLike> {
 
-    private static final long serialVersionUID = -1239222614L;
+    private static final long serialVersionUID = 677626899L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -25,7 +24,7 @@ public class QCampLike extends EntityPathBase<CampLike> {
 
     public final couch.camping.domain.base.QBaseTimeEntity _super = new couch.camping.domain.base.QBaseTimeEntity(this);
 
-    public final couch.camping.domain.camp.entity.QCamp camp;
+    public final QCamp camp;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
@@ -55,7 +54,7 @@ public class QCampLike extends EntityPathBase<CampLike> {
 
     public QCampLike(Class<? extends CampLike> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.camp = inits.isInitialized("camp") ? new couch.camping.domain.camp.entity.QCamp(forProperty("camp")) : null;
+        this.camp = inits.isInitialized("camp") ? new QCamp(forProperty("camp")) : null;
         this.member = inits.isInitialized("member") ? new couch.camping.domain.member.entity.QMember(forProperty("member")) : null;
     }
 
