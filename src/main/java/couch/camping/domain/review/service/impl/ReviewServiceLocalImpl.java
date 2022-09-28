@@ -49,20 +49,20 @@ public class ReviewServiceLocalImpl implements ReviewService {
     @Transactional
     public ReviewWriteResponseDto write(Long campId, Member member, ReviewWriteRequestDto reviewWriteRequestDto) {
 
-        Camp findCamp = findCampByCampId(campId)
-                .orElseThrow(() -> throwCustomException(ErrorCode.NOT_FOUND_CAMP, "캠핑장 ID 에 해당하는 캠핑장이 없습니다."));
+        Camp findCamp = validateOptionalCampIsNull(findCampByCampId(campId));
 
-        Review review = createReview(member, reviewWriteRequestDto, findCamp);
+        Review saveReview = saveReview(createReview(member, reviewWriteRequestDto, findCamp));
 
-        Review saveReview = saveReview(review);
         findCamp.increaseRate(reviewWriteRequestDto.getRate());
+
         return new ReviewWriteResponseDto(saveReview);
     }
 
     @Override
     public Page<ReviewRetrieveResponseDto> retrieveAll(Long campId, Pageable pageable, String header) {
+        Page<Review> findPostReviewPage = findReviewPageByCampId(campId, pageable);
         if (header == null) {
-            return findReviewPageByCampId(campId, pageable)
+            return findPostReviewPage
                     .map(review -> new ReviewRetrieveResponseDto(review));
         } else {
             Member member;
@@ -71,25 +71,15 @@ public class ReviewServiceLocalImpl implements ReviewService {
             } catch (UsernameNotFoundException e) {
                 throw new CustomException(ErrorCode.NOT_FOUND_MEMBER, "토큰에 해당하는 회원이 존재하지 않습니다.");
             }
-            return findReviewPageByCampId(campId, pageable)
-                    .map(review -> {
-                        List<ReviewLike> reviewLikeList = review.getReviewLikeList();
-
-                        for (ReviewLike reviewLike : reviewLikeList) {
-                            if (reviewLike.getMember() == member) {
-                                return new ReviewRetrieveLoginResponse(review, true);
-                            }
-                        }
-                        return new ReviewRetrieveLoginResponse(review, false);
-                    });
+            return ReviewPageMapToRespPageDto(findPostReviewPage, member);
         }
     }
 
     @Override
     @Transactional
     public void deleteReview(Long reviewId, Member member) {
-        Review findReview = findOptionalReviewByReviewId(reviewId)
-                .orElseThrow(() -> throwCustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다."));
+        Optional<Review> optionalReviewByReviewId = findOptionalReviewByReviewId(reviewId);
+        Review findReview = validateOptionalReviewIsNull(optionalReviewByReviewId);
 
         if (!isSameMember(member, findReview)) {
             throwCustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 리뷰가 아닙니다.");
@@ -103,9 +93,7 @@ public class ReviewServiceLocalImpl implements ReviewService {
     @Transactional
     public ReviewWriteResponseDto editReview(Long reviewId, ReviewWriteRequestDto reviewWriteRequestDto, Member member) {
 
-        Review findReview = findOptionalReviewByReviewId(reviewId)
-                .orElseThrow(() ->
-                    throwCustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다."));
+        Review findReview = validateOptionalReviewIsNull(findOptionalReviewByReviewId(reviewId));
 
         if (!isSameMember(member, findReview)) {
             throwCustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 리뷰가 아닙니다.");
@@ -118,21 +106,11 @@ public class ReviewServiceLocalImpl implements ReviewService {
         return new ReviewWriteResponseDto(editReview);
     }
 
-    private Review editReview(ReviewWriteRequestDto reviewWriteRequestDto, Review findReview) {
-        Review editReview = findReview.changeReview(
-                reviewWriteRequestDto.getContent(),
-                reviewWriteRequestDto.getRate(),
-                reviewWriteRequestDto.getImgUrl()
-        );
-        return editReview;
-    }
-
     @Override
     @Transactional
     public void likeReview(Long reviewId, Member member) {
 
-        Review findReview = findOptionalReviewByReviewId(reviewId)
-                .orElseThrow(() -> throwCustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다."));
+        Review findReview = validateOptionalReviewIsNull(findOptionalReviewByReviewId(reviewId));
 
         Optional<ReviewLike> optionalReviewLike = findOptionalReviewLikeByReviewIdAndMemberId(reviewId, member);
 
@@ -174,6 +152,41 @@ public class ReviewServiceLocalImpl implements ReviewService {
     public List<ReviewImageUrlResponseDto> retrieveAllImageUrl(Long campId) {
         List<Review> reviews = findReviewListByNotNullImgUrl(campId);
         return reviewMapToReviewImageUrlResponseDto(reviews);
+    }
+
+    private Review validateOptionalReviewIsNull(Optional<Review> optionalReview) {
+        return optionalReview
+                .orElseThrow(() -> throwCustomException(ErrorCode.NOT_FOUND_REVIEW, "리뷰 ID 에 맞는 리뷰가 없습니다."));
+    }
+
+    private Camp validateOptionalCampIsNull(Optional<Camp> campByCampId) {
+        return campByCampId
+                .orElseThrow(() -> throwCustomException(ErrorCode.NOT_FOUND_CAMP, "캠핑장 ID 에 해당하는 캠핑장이 없습니다."));
+    }
+
+    private Page<ReviewRetrieveResponseDto> ReviewPageMapToRespPageDto(Page<Review> findPostReviewPage, Member member) {
+        return findPostReviewPage
+                .map(review -> reviewMapToReviewRespDto(member, review));
+    }
+
+    private ReviewRetrieveLoginResponse reviewMapToReviewRespDto(Member member, Review review) {
+        List<ReviewLike> reviewLikeList = review.getReviewLikeList();
+
+        for (ReviewLike reviewLike : reviewLikeList) {
+            if (reviewLike.getMember() == member) {
+                return new ReviewRetrieveLoginResponse(review, true);
+            }
+        }
+        return new ReviewRetrieveLoginResponse(review, false);
+    }
+
+    private Review editReview(ReviewWriteRequestDto reviewWriteRequestDto, Review review) {
+        Review editReview = review.changeReview(
+                reviewWriteRequestDto.getContent(),
+                reviewWriteRequestDto.getRate(),
+                reviewWriteRequestDto.getImgUrl()
+        );
+        return editReview;
     }
 
     private void deleteReviewByReviewId(Long reviewId) {
