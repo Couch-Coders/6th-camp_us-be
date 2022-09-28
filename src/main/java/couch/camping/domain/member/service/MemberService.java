@@ -46,6 +46,12 @@ public class MemberService implements UserDetailsService {
         return new MemberRegisterResponseDto(memberRepository.save(createMember(memberRegisterDto)));
     }
 
+    @Transactional
+    public String editMemberNickName(Member member, String nickname) {
+        member.changeNickname(nickname);
+        return member.getNickname();
+    }
+
     private Member createMember(MemberRegisterDto memberRegisterDto) {
         Member member = Member.builder()
                 .uid(memberRegisterDto.getUid())
@@ -62,12 +68,6 @@ public class MemberService implements UserDetailsService {
         if (optionalMember.isPresent()) {
             throw new CustomException(ErrorCode.EXIST_MEMBER, "해당 계정으로 이미 회원가입을 했습니다.");
         }
-    }
-
-    @Transactional
-    public String editMemberNickName(Member member, String nickname) {
-        member.changeNickname(nickname);
-        return member.getNickname();
     }
 
     //헤더에서

@@ -55,6 +55,77 @@ public class CommentServiceLocalImpl implements CommentService {
         return new CommentWriteResponseDto(saveComment);
     }
 
+    @Transactional
+    @Override
+    public CommentEditResponseDto editComment(CommentEditRequestDto commentEditRequestDto, Member member, Long commentId) {
+        Comment findComment = findCommentOrElseThrow(commentId);
+
+        validateAuthorization(member, findComment.getMember());
+
+        findComment.editComment(commentEditRequestDto.getContent());
+
+        return new CommentEditResponseDto(findComment);
+    }
+
+    @Transactional
+    @Override
+    public int likeComment(Long commentId, Member member) {
+        Comment findComment = findCommentOrElseThrow(commentId);
+        calculateCommentLikeCnt(member, findComment);
+        return findComment.getLikeCnt();
+    }
+
+    @Override
+    public CommentRetrieveResponseDto retrieveComment(Long commentId, String header) {
+        Comment findComment = findIdWithFetchJoinMemberOrElseThrow(commentId);
+        if (header == null) {
+            return createCommentRetrieveResponseDto(findComment);
+        } else {
+            Member member = getMemberOrElseThrow(header);
+            return createCommentRetrieveLoginResponseDto(findComment, member);
+        }
+    }
+
+    @Override
+    public Page<CommentRetrieveResponseDto> retrieveAllComment(Long postId, String header, Pageable pageable) {
+
+        Page<Comment> commentPage = findAllComment(postId, pageable);
+        if (header == null)
+            return createAllCommentDto(commentPage);
+        else
+            return createAllLoginCommentDto(commentPage, getMemberOrElseThrow(header));
+    }
+
+    @Transactional
+    @Override
+    public void deleteComment(Long commentId, Member member) {
+        validateAuthorization(member, findCommentOrElseThrow(commentId).getMember());
+        deleteCommentByCommentId(commentId);
+    }
+
+    @Override
+    public Page<MemberCommentsResponseDto> retrieveMemberComment(Member member, Pageable pageable) {
+        return findPageCommentByMemberID(member, pageable)
+                .map(comment -> new MemberCommentsResponseDto(comment));
+    }
+
+    @Override
+    public long countMemberComments(Long id) {
+        return countMemberByMemberId(id);
+    }
+
+    private Long countMemberByMemberId(Long id) {
+        return commentRepository.countByMemberId(id);
+    }
+
+    private Page<Comment> findPageCommentByMemberID(Member member, Pageable pageable) {
+        return commentRepository.findByMemberId(member.getId(), pageable);
+    }
+
+    private void deleteCommentByCommentId(Long commentId) {
+        commentRepository.deleteById(commentId);
+    }
+
     private void saveNotification(Notification notification) {
         notificationRepository.save(notification);
     }
@@ -91,18 +162,6 @@ public class CommentServiceLocalImpl implements CommentService {
                 });
     }
 
-    @Transactional
-    @Override
-    public CommentEditResponseDto editComment(CommentEditRequestDto commentEditRequestDto, Member member, Long commentId) {
-        Comment findComment = findCommentOrElseThrow(commentId);
-
-        validateAuthorization(member, findComment.getMember());
-
-        findComment.editComment(commentEditRequestDto.getContent());
-
-        return new CommentEditResponseDto(findComment);
-    }
-
     private void validateAuthorization(Member loginMember, Member ownerMember) {
         if (isNotSameMember(loginMember, ownerMember))
             throw new CustomException(ErrorCode.FORBIDDEN_MEMBER, "해당 회원의 댓글이 아닙니다.");
@@ -113,14 +172,6 @@ public class CommentServiceLocalImpl implements CommentService {
                 .orElseThrow(() -> {
                     throw new CustomException(ErrorCode.NOT_FOUND_COMMENT, "댓글 ID에 맞는 댓글이 없습니다.");
                 });
-    }
-
-    @Transactional
-    @Override
-    public int likeComment(Long commentId, Member member) {
-        Comment findComment = findCommentOrElseThrow(commentId);
-        calculateCommentLikeCnt(member, findComment);
-        return findComment.getLikeCnt();
     }
 
     private void calculateCommentLikeCnt(Member member, Comment comment) {
@@ -186,17 +237,6 @@ public class CommentServiceLocalImpl implements CommentService {
         commentLikeRepository.deleteById(commentLikeId);
     }
 
-    @Override
-    public CommentRetrieveResponseDto retrieveComment(Long commentId, String header) {
-        Comment findComment = findIdWithFetchJoinMemberOrElseThrow(commentId);
-        if (header == null) {
-            return createCommentRetrieveResponseDto(findComment);
-        } else {
-            Member member = getMemberOrElseThrow(header);
-            return createCommentRetrieveLoginResponseDto(findComment, member);
-        }
-    }
-
     private CommentRetrieveResponseDto createCommentRetrieveResponseDto(Comment comment) {
         return new CommentRetrieveResponseDto(comment);
     }
@@ -227,16 +267,6 @@ public class CommentServiceLocalImpl implements CommentService {
     }
 
 
-    @Override
-    public Page<CommentRetrieveResponseDto> retrieveAllComment(Long postId, String header, Pageable pageable) {
-
-        Page<Comment> commentPage = findAllComment(postId, pageable);
-        if (header == null)
-            return createAllCommentDto(commentPage);
-        else
-            return createAllLoginCommentDto(commentPage, getMemberOrElseThrow(header));
-    }
-
     private Page<CommentRetrieveResponseDto> createAllLoginCommentDto(Page<Comment> commentPage, Member member) {
         return commentPage
                 .map(comment -> mapToLoginCommentDto(member, comment));
@@ -257,23 +287,5 @@ public class CommentServiceLocalImpl implements CommentService {
 
     private Page<Comment> findAllComment(Long postId, Pageable pageable) {
         return commentRepository.findAllByPostIdWithFetchJoinMemberPaging(postId, pageable);
-    }
-
-    @Transactional
-    @Override
-    public void deleteComment(Long commentId, Member member) {
-        validateAuthorization(member, findCommentOrElseThrow(commentId).getMember());
-        commentRepository.deleteById(commentId);
-    }
-
-    @Override
-    public Page<MemberCommentsResponseDto> retrieveMemberComment(Member member, Pageable pageable) {
-        return commentRepository.findByMemberId(member.getId(), pageable)
-                .map(comment -> new MemberCommentsResponseDto(comment));
-    }
-
-    @Override
-    public long countMemberComments(Long id) {
-        return commentRepository.countByMemberId(id);
     }
 }
