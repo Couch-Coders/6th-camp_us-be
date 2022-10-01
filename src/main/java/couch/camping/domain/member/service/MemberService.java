@@ -33,23 +33,33 @@ public class MemberService implements UserDetailsService {
     //스프링 시큐리티에서 DB 에서 uid 를 조회
     @Override
     public UserDetails loadUserByUsername(String uid) throws UsernameNotFoundException {
-        return memberRepository.findByUid(uid)
-                .orElseThrow(() -> {
-                    throw new UsernameNotFoundException("해당 회원이 존재하지 않습니다.");
-                });
+        return validateOptionalMember(findOptionalMemberByMemberUid(uid));
     }
-    
+
     //회원 등록
     @Transactional
     public MemberRegisterResponseDto register(MemberRegisterDto memberRegisterDto) {
         validateAlreadyRegistered(memberRegisterDto);
-        return new MemberRegisterResponseDto(memberRepository.save(createMember(memberRegisterDto)));
+        return new MemberRegisterResponseDto(saveMember(createMember(memberRegisterDto)));
     }
-
     @Transactional
     public String editMemberNickName(Member member, String nickname) {
         member.changeNickname(nickname);
         return member.getNickname();
+    }
+    private Member validateOptionalMember(Optional<Member> optionalMemberByMemberUid) {
+        return optionalMemberByMemberUid
+                .orElseThrow(() -> {
+                    throw new UsernameNotFoundException("해당 회원이 존재하지 않습니다.");
+                });
+    }
+
+    private Optional<Member> findOptionalMemberByMemberUid(String uid) {
+        return memberRepository.findByUid(uid);
+    }
+
+    private Member saveMember(Member member) {
+        return memberRepository.save(member);
     }
 
     private Member createMember(MemberRegisterDto memberRegisterDto) {
@@ -64,7 +74,7 @@ public class MemberService implements UserDetailsService {
     }
 
     private void validateAlreadyRegistered(MemberRegisterDto memberRegisterDto) {
-        Optional<Member> optionalMember = memberRepository.findByUid(memberRegisterDto.getUid());
+        Optional<Member> optionalMember = findOptionalMemberByMemberUid(memberRegisterDto.getUid());
         if (optionalMember.isPresent()) {
             throw new CustomException(ErrorCode.EXIST_MEMBER, "해당 계정으로 이미 회원가입을 했습니다.");
         }
