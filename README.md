@@ -2,7 +2,7 @@
 <p align="center"><img src="https://res.cloudinary.com/divncmfka/image/upload/v1645903982/CampUs_pd9lyb.png" width="100%"/></p>
 
 
-### **🏠 _배포 주소_** [https://www.camp-us.ga](https://www.camp-us.ga)
+### **🏠 _배포 주소_** [https://www.camp-us.ga](https://www.camp-us.ga) (현재는 닫혀있습니다.)
 # **전국 캠핑장 추천 플랫폼 - **CampUs -** ⛺️ (BE)**
 
 ### "열심히 일한 당신, 어디론가 떠나고 싶으신가요?"
